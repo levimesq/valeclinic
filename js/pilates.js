@@ -360,11 +360,17 @@ document.addEventListener('DOMContentLoaded', () => {
             <h4>Turma das ${turma.hora} <span class="modality-badge">${turma.nome}</span></h4>
             <p>Profissional: <strong>${turma.profissional}</strong> · ${activeDay}-feira</p>
           </div>
-          <div class="class-occupancy">
-            <span class="occupancy-text">${occupancyText}</span>
-            <div class="occupancy-bar-bg">
-              <div class="occupancy-bar-fill ${occupancyColor}" style="width: ${ocupacaoPct}%;"></div>
+          <div class="class-header-right">
+            <div class="class-occupancy">
+              <span class="occupancy-text">${occupancyText}</span>
+              <div class="occupancy-bar-bg">
+                <div class="occupancy-bar-fill ${occupancyColor}" style="width: ${ocupacaoPct}%;"></div>
+              </div>
             </div>
+            <button type="button" class="btn-delete-turma" data-turma-id="${turma.id}" data-hora="${turma.hora}" data-dia="${activeDay}" title="Excluir Turma">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              <span>Excluir Turma</span>
+            </button>
           </div>
         </div>
 
@@ -374,6 +380,35 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       // Event Listeners dentro do card
+
+      // 0) Botão Excluir Turma (Exclui a turma e seus agendamentos no Supabase)
+      const btnDeleteTurma = card.querySelector('.btn-delete-turma');
+      if (btnDeleteTurma) {
+        btnDeleteTurma.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const horaTurma = btnDeleteTurma.dataset.hora;
+          const diaTurma = btnDeleteTurma.dataset.dia;
+          const turmaId = btnDeleteTurma.dataset.turmaId;
+
+          const msg = enrolled.length > 0
+            ? `Deseja realmente excluir a Turma das ${horaTurma} de ${diaTurma}?\n\nEsta turma possui ${enrolled.length} aluno(s) agendado(s). Todos os agendamentos vinculados a esta turma serão removidos permanentemente do Supabase e da Agenda Geral.`
+            : `Deseja realmente excluir a Turma das ${horaTurma} de ${diaTurma}?`;
+
+          if (confirm(msg)) {
+            // Deletar a turma salva no store
+            if (turma.id) {
+              ValeStore.deletePilatesTurma(turma.id);
+            }
+            // Deletar todos os agendamentos do Supabase
+            enrolled.forEach(aluno => {
+              ValeStore.deleteAgendamento(aluno.id);
+            });
+            // Re-renderizar
+            renderPilatesCards();
+          }
+        });
+      }
 
       // A) Botões de Encaixar Paciente na Vaga Livre
       card.querySelectorAll('.btn-encaixar-slot').forEach(btn => {
