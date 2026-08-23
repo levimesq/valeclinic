@@ -1,0 +1,885 @@
+/* ==========================================
+   ValeClinic - Estilos do Módulo Pilates Studio (Redesign)
+   ========================================== */
+
+/* ------------------------------------------
+   ESTRUTURA GERAL
+   ------------------------------------------ */
+.pilates-content {
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Header de Ações (Topo) */
+.pilates-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.pilates-header-titles h2 {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.pilates-header-titles p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.pilates-btn-group {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-primary-action {
+  height: 44px;
+  padding: 0 20px;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 12px rgba(11, 27, 54, 0.15);
+}
+
+.btn-primary-action svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-primary-action:hover {
+  background-color: var(--color-secondary);
+  transform: translateY(-2px);
+}
+
+.btn-secondary-action {
+  height: 44px;
+  padding: 0 20px;
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-secondary-action svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-secondary);
+}
+
+.btn-secondary-action:hover {
+  background-color: rgba(197, 160, 89, 0.08);
+}
+
+/* ------------------------------------------
+   KPIS (4 Cards em Linha)
+   ------------------------------------------ */
+.pilates-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.pkpi-card {
+  background-color: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pkpi-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pkpi-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pkpi-value {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.pkpi-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pkpi-icon.blue { background: rgba(11, 27, 54, 0.08); color: var(--color-primary); }
+.pkpi-icon.gold { background: rgba(197, 160, 89, 0.12); color: var(--color-secondary); }
+.pkpi-icon.green { background: rgba(16, 185, 129, 0.12); color: #10B981; }
+.pkpi-icon.red { background: rgba(239, 68, 68, 0.1); color: #EF4444; }
+
+.pkpi-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ------------------------------------------
+   SELETOR DE DIAS DA SEMANA (TABS)
+   ------------------------------------------ */
+.days-tabs-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid #E2E8F0;
+  margin-top: 10px;
+}
+
+.days-tabs-container::-webkit-scrollbar {
+  display: none;
+}
+
+.days-tabs {
+  display: flex;
+  gap: 32px;
+  min-width: max-content;
+}
+
+.day-tab {
+  padding: 12px 4px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #64748B;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.day-tab:hover {
+  color: var(--color-primary);
+}
+
+.day-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-secondary);
+}
+
+/* ------------------------------------------
+   GRID PRINCIPAL (70% / 30%)
+   ------------------------------------------ */
+.pilates-main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 28px;
+  margin-top: 10px;
+}
+
+/* Coluna Esquerda: Lista de Turmas */
+.classes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.class-card {
+  background-color: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.class-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.class-title-group h4 {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.class-title-group h4 .modality-badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  background: rgba(11, 27, 54, 0.08);
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.class-title-group p {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+}
+
+/* Barra de Ocupação */
+.class-occupancy {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: right;
+}
+
+.occupancy-text {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.occupancy-bar-bg {
+  width: 100%;
+  height: 6px;
+  background-color: #F1F5F9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.occupancy-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.occupancy-bar-fill.green { background: #10B981; }
+.occupancy-bar-fill.orange { background: #F59E0B; }
+.occupancy-bar-fill.red { background: #EF4444; }
+
+/* Grid de Alunos Matriculados */
+.enrolled-students-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  background: #F8FAFC;
+  padding: 16px;
+  border-radius: var(--radius-input);
+}
+
+.student-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+}
+
+.student-pill-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(197, 160, 89, 0.15);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.student-pill-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.student-pill-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.student-pill-status {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.status-presente { color: #10B981; }
+.status-faltou { color: #EF4444; }
+.status-reposicao { color: #F59E0B; }
+.status-agendado { color: var(--color-text-muted); }
+
+/* Vaga Livre / Botão Encaixar */
+.empty-slot-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 12px;
+  border: 1.5px dashed var(--color-secondary);
+  border-radius: 12px;
+  background: rgba(197, 160, 89, 0.05);
+  color: var(--color-secondary);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 58px;
+}
+
+.empty-slot-btn:hover {
+  background: rgba(197, 160, 89, 0.15);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.student-pill-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-icon-pill {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-icon-pill:hover {
+  filter: brightness(0.92);
+  transform: translateY(-1px);
+}
+
+/* Coluna Direita: Painel Lateral (Fila/Reposição) */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.side-card {
+  background-color: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.side-card h3 {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.side-card h3 .badge {
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.replacement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rep-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #F8FAFC;
+  border-left: 3px solid #F59E0B;
+  border-radius: 8px;
+}
+
+.rep-item-info h5 {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+}
+
+.rep-item-info p {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.btn-icon-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(197, 160, 89, 0.1);
+  color: var(--color-secondary);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn-icon-sm:hover {
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+/* ------------------------------------------
+   MODAIS
+   ------------------------------------------ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(11, 27, 54, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-container {
+  background-color: #FFFFFF;
+  width: 100%;
+  max-width: 600px;
+  border-radius: var(--radius-card);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  transform: translateY(20px);
+  transition: transform var(--transition-normal);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay.active .modal-container {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: 20px 24px;
+  background-color: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-family: var(--font-title);
+  color: var(--color-primary);
+  font-size: 1.25rem;
+}
+
+.btn-close-modal {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #64748B;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.btn-close-modal:hover {
+  color: #EF4444;
+}
+
+.modal-body {
+  padding: 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.modal-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group-full {
+  grid-column: span 2;
+}
+
+.modal-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+.modal-input, .modal-select {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-input);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  background-color: #F8FAFC;
+  color: var(--color-text-primary);
+  transition: all var(--transition-fast);
+}
+
+.modal-input:focus, .modal-select:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  background-color: #F8FAFC;
+  border-top: 1px solid #E2E8F0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-modal-cancel {
+  padding: 0 20px;
+  height: 40px;
+  border: 1px solid #E2E8F0;
+  background-color: #FFFFFF;
+  border-radius: var(--radius-btn);
+  color: #64748B;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-modal-cancel:hover {
+  background-color: #F1F5F9;
+}
+
+.btn-modal-save {
+  padding: 0 24px;
+  height: 40px;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-modal-save:hover {
+  background-color: var(--color-secondary);
+}
+
+.modal-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-page);
+  resize: vertical;
+  min-height: 70px;
+  transition: all var(--transition-fast);
+}
+
+.modal-textarea:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+}
+
+/* Banner de Informações do Paciente no Modal */
+.modal-patient-banner {
+  background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #E2E8F0;
+  margin-bottom: 20px;
+}
+
+.modal-patient-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #FFFFFF;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.modal-patient-details h4 {
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  margin: 0;
+}
+
+.modal-patient-details p {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* Escala de Dor / Desconforto */
+.pain-scale-group {
+  margin-top: 6px;
+}
+
+.pain-scale-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.pain-btn {
+  flex: 1;
+  min-width: 40px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  background-color: #FFFFFF;
+  color: var(--color-text-main);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pain-btn:hover {
+  border-color: var(--color-secondary);
+  background-color: #FFFDF7;
+}
+
+.pain-btn.active-green {
+  background-color: #10B981;
+  color: #FFFFFF;
+  border-color: #10B981;
+}
+
+.pain-btn.active-yellow {
+  background-color: #F59E0B;
+  color: #FFFFFF;
+  border-color: #F59E0B;
+}
+
+.pain-btn.active-red {
+  background-color: #EF4444;
+  color: #FFFFFF;
+  border-color: #EF4444;
+}
+
+/* Gráfico de Progresso Componentes */
+.chart-period-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: #F1F5F9;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.chart-filter-btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.chart-filter-btn.active {
+  background: #FFFFFF;
+  color: var(--color-primary);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  font-weight: 700;
+}
+
+.chart-visual-container {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.chart-svg-box {
+  width: 100%;
+  height: 220px;
+}
+
+.goal-summary-card {
+  background: linear-gradient(135deg, rgba(11, 27, 54, 0.04) 0%, rgba(197, 160, 89, 0.1) 100%);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goal-info h5 {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.goal-info h3 {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--color-primary);
+  margin-top: 4px;
+}
+
+.goal-badge-percent {
+  background: #10B981;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+/* ------------------------------------------
+   RESPONSIVIDADE (Mobile / Celular)
+   ------------------------------------------ */
+@media (max-width: 1200px) {
+  .pilates-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .pilates-content {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .pilates-header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .pilates-btn-group {
+    flex-direction: column;
+  }
+
+  .btn-primary-action, .btn-secondary-action {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pilates-kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .class-card-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .class-occupancy {
+    width: 100%;
+    text-align: left;
+  }
+
+  .enrolled-students-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-container {
+    max-width: 95vw;
+    margin: 10px;
+  }
+
+  .modal-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group-full {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .pilates-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pkpi-value {
+    font-size: 1.5rem;
+  }
+}

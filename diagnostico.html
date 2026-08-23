@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ValeClinic - Diagn&oacute;stico Supabase</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; padding: 20px; color: #0f172a; }
+    h1 { font-size: 1.4rem; margin-bottom: 16px; }
+    .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .card h2 { font-size: 1rem; margin-bottom: 8px; color: #1e3a5f; }
+    .status { padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin: 4px 0; }
+    .ok { background: #d1fae5; color: #065f46; }
+    .err { background: #fee2e2; color: #991b1b; }
+    .warn { background: #fef9c3; color: #854d0e; }
+    pre { font-size: 0.75rem; background: #f8fafc; padding: 8px; border-radius: 6px; overflow-x: auto; max-height: 200px; margin-top: 8px; }
+    button { background: #1e3a5f; color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; margin: 4px; }
+    button:hover { opacity: 0.9; }
+    #log { white-space: pre-wrap; font-family: monospace; font-size: 0.78rem; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Diagn&oacute;stico de Conex&atilde;o - ValeClinic × Supabase</h1>
+
+  <div class="card">
+    <h2>1. SDK do Supabase</h2>
+    <div id="sdkStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. Conex&atilde;o com o Banco</h2>
+    <div id="connStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>3. Tabelas Existentes</h2>
+    <div id="tablesStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>4. Teste de Escrita</h2>
+    <div id="writeStatus"></div>
+    <button onclick="testWrite()">Testar INSERT</button>
+  </div>
+
+  <div class="card">
+    <h2>5. localStorage Atual</h2>
+    <div id="localStatus"></div>
+    <button onclick="clearLocal()">🗑️ Limpar Cache Local (for&ccedil;ar re-sync)</button>
+  </div>
+
+  <div class="card">
+    <h2>Log Detalhado</h2>
+    <pre id="log"></pre>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const LOG = document.getElementById('log');
+    function log(msg) { LOG.textContent += new Date().toLocaleTimeString() + ' | ' + msg + '\n'; }
+    function statusHTML(cls, msg) { return `<div class="status ${cls}">${msg}</div>`; }
+
+    // Config
+    const SUPABASE_URL = 'https://nzlwmlieznykmlkcfmsp.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56bHdtbGllem55a21sa2NmbXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjExODUsImV4cCI6MjEwMDkzNzE4NX0.SumL1Iu4G9Y1pNb0nsqirC1CqJs8x2gtqke_pFvQhJM';
+    const TABLES = ['pacientes', 'agendamentos', 'financeiro', 'faltas', 'equipe'];
+
+    // 1. SDK
+    const sdkEl = document.getElementById('sdkStatus');
+    if (window.supabase && window.supabase.createClient) {
+      sdkEl.innerHTML = statusHTML('ok', '✅ Supabase SDK carregado (v2)');
+      log('SDK OK');
+    } else {
+      sdkEl.innerHTML = statusHTML('err', '❌ SDK NO carregado — verifique a CDN');
+      log('SDK FALHOU');
+    }
+
+    // 2. Conex&atilde;o
+    let db = null;
+    const connEl = document.getElementById('connStatus');
+    try {
+      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      connEl.innerHTML = statusHTML('ok', '✅ Client criado com sucesso');
+      log('Client criado: ' + SUPABASE_URL);
+      log('Key (primeiros 20 chars): ' + SUPABASE_KEY.substring(0, 20) + '...');
+    } catch(e) {
+      connEl.innerHTML = statusHTML('err', '❌ Falha ao criar client: ' + e.message);
+      log('Client ERRO: ' + e.message);
+    }
+
+    // 3. Tabelas
+    const tablesEl = document.getElementById('tablesStatus');
+    async function checkTables() {
+      if (!db) { tablesEl.innerHTML = statusHTML('err', 'Sem conex&atilde;o'); return; }
+      for (const t of TABLES) {
+        try {
+          const { data, error, status } = await db.from(t).select('*').limit(1);
+          if (error) {
+            tablesEl.innerHTML += statusHTML('err', `❌ ${t}: ${error.message} (HTTP ${status})`);
+            log(`Tabela ${t}: ERRO - ${error.message} (code: ${error.code}, status: ${status})`);
+          } else {
+            tablesEl.innerHTML += statusHTML('ok', `✅ ${t}: OK (${data.length} registro(s) retornados)`);
+            log(`Tabela ${t}: OK - ${data.length} registros`);
+          }
+        } catch(e) {
+          tablesEl.innerHTML += statusHTML('err', `❌ ${t}: Exce&ccedil;&atilde;o - ${e.message}`);
+          log(`Tabela ${t}: EXCE&Ccedil;O - ${e.message}`);
+        }
+      }
+    }
+    checkTables();
+
+    // 4. Teste de Escrita
+    const writeEl = document.getElementById('writeStatus');
+    async function testWrite() {
+      if (!db) { writeEl.innerHTML = statusHTML('err', 'Sem conex&atilde;o'); return; }
+      const testRecord = { id: 'diag-' + Date.now(), name: 'TESTE DIAGNOSTICO', phone: '0000' };
+      try {
+        const { data, error } = await db.from('pacientes').upsert(testRecord, { onConflict: 'id' });
+        if (error) {
+          writeEl.innerHTML = statusHTML('err', `❌ INSERT falhou: ${error.message} (code: ${error.code})`);
+          log(`Escrita ERRO: ${JSON.stringify(error)}`);
+        } else {
+          writeEl.innerHTML = statusHTML('ok', '✅ INSERT funcionou! Deletando registro de teste...');
+          log('Escrita OK! Limpando...');
+          await db.from('pacientes').delete().eq('id', testRecord.id);
+          writeEl.innerHTML += statusHTML('ok', '✅ DELETE OK - Tudo funcionando!');
+        }
+      } catch(e) {
+        writeEl.innerHTML = statusHTML('err', `❌ Exce&ccedil;&atilde;o: ${e.message}`);
+        log(`Escrita EXCE&Ccedil;O: ${e.message}`);
+      }
+    }
+
+    // 5. LocalStorage
+    const localEl = document.getElementById('localStatus');
+    TABLES.forEach(t => {
+      const key = 'valeclinic_' + t;
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try {
+          const arr = JSON.parse(raw);
+          localEl.innerHTML += statusHTML('warn', `📦 ${key}: ${arr.length} registros em cache`);
+        } catch(e) {
+          localEl.innerHTML += statusHTML('err', `❌ ${key}: dados corrompidos`);
+        }
+      } else {
+        localEl.innerHTML += statusHTML('ok', `✅ ${key}: vazio (limpo)`);
+      }
+    });
+
+    function clearLocal() {
+      TABLES.forEach(t => localStorage.removeItem('valeclinic_' + t));
+      localEl.innerHTML = statusHTML('ok', '✅ Cache local limpo! Recarregue a p&aacute;gina para puxar dados frescos do Supabase.');
+      log('Cache localStorage limpo.');
+    }
+  </script>
+</body>
+</html>

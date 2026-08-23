@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="ValeClinic - Gest&atilde;o de Equipe e Permiss&otilde;es. Controle de profissionais, registros de conselho e n&iacute;veis de acesso.">
+  <title>ValeClinic | Gest&atilde;o de Equipe & Permiss&otilde;es</title>
+
+  <!-- CSS Modular -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/configuracoes.css">
+</head>
+<body>
+
+  <!-- Overlay Mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- 1. SIDEBAR (Menu Lateral) -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img class="sidebar-logo" src="assets/logo.png" alt="ValeClinic Logo">
+      <h2 class="sidebar-brand-name">VALE<span>CLINIC</span></h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="dashboard.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="pacientes.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Pacientes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="agenda.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Agenda
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="fisio.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            Fisioterapia
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="pilates.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+            Pilates Studio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="fono.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="22"></line>
+            </svg>
+            Fonoaudiologia
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="financeiro.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Financeiro
+          </a>
+        </li>
+        
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="btn-logout" style="text-decoration: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Sair do Sistema
+      </a>
+    </div>
+  </aside>
+
+  <!-- 2. CONTE&Uacute;DO PRINCIPAL -->
+  <div class="main-wrapper">
+
+    <!-- Header Superior -->
+    <header class="header-top">
+      <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="header-greeting"></div>
+
+      <div class="header-actions">
+        <button class="btn-notification" id="bellBtn" aria-label="Notifica&ccedil;&otilde;es">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge"></span>
+        </button>
+
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name">Dra. Leonarda Vale</span>
+            <span class="user-role">Diretora Cl&iacute;nica</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Conte&uacute;do Espec&iacute;fico das Configura&ccedil;&otilde;es / Equipe -->
+    <main class="config-content">
+
+      <!-- 1. CABE&Ccedil;ALHO & BOTO DE A&Ccedil;O -->
+      <section class="config-header-actions">
+        <div class="config-header-titles">
+          <h2>Gest&atilde;o de Equipe & Permiss&otilde;es</h2>
+          <p>Controle os profissionais cadastrados, cargos, registros de conselho e n&iacute;veis de acesso ao sistema.</p>
+        </div>
+        <button class="btn-config-primary" id="btnNovoUser">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Novo Profissional / Usu&aacute;rio
+        </button>
+      </section>
+
+      <!-- 2. CARDS DE RESUMO DA EQUIPE (KPIS) -->
+      <section class="config-kpi-grid">
+        <div class="ckpi-card kpi-total">
+          <div class="ckpi-info">
+            <span class="ckpi-label">&#128101; Total Colaboradores</span>
+            <span class="ckpi-value" id="kpiTotalEquipe">0</span>
+          </div>
+          <div class="ckpi-icon blue-navy">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+        </div>
+
+        <div class="ckpi-card kpi-clinico">
+          <div class="ckpi-info">
+            <span class="ckpi-label">&#129658; Corpo Cl&iacute;nico</span>
+            <span class="ckpi-value" id="kpiCorpoClinico">0</span>
+          </div>
+          <div class="ckpi-icon gold">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+          </div>
+        </div>
+
+        <div class="ckpi-card kpi-admin">
+          <div class="ckpi-info">
+            <span class="ckpi-label">›Žï¸ Recep&ccedil;&atilde;o & Admin</span>
+            <span class="ckpi-value" id="kpiRecepcaoAdmin">0</span>
+          </div>
+          <div class="ckpi-icon blue">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          </div>
+        </div>
+
+        <div class="ckpi-card kpi-ativos">
+          <div class="ckpi-info">
+            <span class="ckpi-label">&#128994; Usu&aacute;rios Ativos</span>
+            <span class="ckpi-value" id="kpiUsuariosAtivos">0</span>
+          </div>
+          <div class="ckpi-icon green">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. TABELA / LIVRO DE USU&Aacute;RIOS -->
+      <section class="config-table-section">
+        <div class="config-table-header">
+          <div class="config-table-title-block">
+            <h3>Livro de Profissionais & Permiss&otilde;es</h3>
+            <p>Lista oficial do corpo cl&iacute;nico, administra&ccedil;&atilde;o e seus respectivos n&iacute;veis de acesso.</p>
+          </div>
+          <div class="config-search-box">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="config-search-input" id="cfgSearchInput" placeholder="Buscar por nome, cargo ou registro...">
+          </div>
+        </div>
+
+        <div class="config-table-wrapper">
+          <table class="config-table">
+            <thead>
+              <tr>
+                <th>Colaborador</th>
+                <th>Cargo / Especialidade</th>
+                <th>Registro Profissional</th>
+                <th>N&iacute;vel de Acesso</th>
+                <th>Status</th>
+                <th>A&ccedil;&otilde;es</th>
+              </tr>
+            </thead>
+            <tbody id="configTbody">
+              <!-- Renderizado via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- POPUP DE NOTIFICA&Ccedil;&Otilde;ES -->
+  <div id="notificationsPopover" class="notifications-popover">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #E2E8F0; margin-bottom: 12px;">
+      <h4 style="font-family: var(--font-title); color: var(--color-primary); font-size: 1rem;">Notifica&ccedil;&otilde;es</h4>
+      <span style="font-size: 0.75rem; background: rgba(16,185,129,0.12); color: #047857; padding: 2px 8px; border-radius: 10px; font-weight: 700;">Equipe Ok</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem;">
+      <div style="padding: 10px; background: #F8FAFC; border-radius: 8px; border-left: 3px solid #10B981;">
+        <strong>Equipe:</strong> Todos os 8 colaboradores est&atilde;o com credenciais ativas.
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. MODAIS -->
+
+  <!-- Modal: Novo / Editar Colaborador -->
+  <div class="config-modal-overlay" id="modalColaborador">
+    <div class="config-modal">
+      <div class="config-modal-header">
+        <h3 id="modalTitle">Novo Colaborador / Usu&aacute;rio</h3>
+        <button class="config-modal-close">&times;</button>
+      </div>
+      <form id="formColaborador">
+        <div class="config-modal-body">
+          
+          <!-- Upload de Foto Simulado -->
+          <div class="avatar-upload-preview-group">
+            <div class="avatar-preview-lg">VC</div>
+            <div class="avatar-upload-text">
+              <h5>Foto de Perfil do Colaborador</h5>
+              <p>Envie uma imagem JPG ou PNG (simulado para a ficha).</p>
+            </div>
+          </div>
+
+          <div class="cfg-form-row">
+            <div class="cfg-form-group">
+              <label class="cfg-form-label">Nome Completo *</label>
+              <input type="text" class="cfg-form-input" id="cfgNome" placeholder="Ex: Nome do Colaborador" required>
+            </div>
+            <div class="cfg-form-group">
+              <label class="cfg-form-label">E-mail de Acesso (Login) *</label>
+              <input type="email" class="cfg-form-input" id="cfgEmail" placeholder="nome@valeclinic.com.br" required>
+            </div>
+          </div>
+
+          <div class="cfg-form-row">
+            <div class="cfg-form-group">
+              <label class="cfg-form-label">Cargo / Especialidade *</label>
+              <select class="cfg-form-select" id="cfgCargo" required>
+                <option value="fisio">Fisioterapia</option>
+                <option value="fono">Fonoaudiologia</option>
+                <option value="pilates">Pilates Studio</option>
+                <option value="recepcao">Recep&ccedil;&atilde;o</option>
+                <option value="gerencia">Ger&ecirc;ncia / AdministrA&ccedil;&atilde;o</option>
+              </select>
+            </div>
+            <div class="cfg-form-group">
+              <label class="cfg-form-label">Registro Profissional / Conselho</label>
+              <input type="text" class="cfg-form-input" id="cfgRegistro" placeholder="Ex: CREFITO 12345-F ou CRFa 9876-SP">
+            </div>
+          </div>
+
+          <div class="cfg-form-group full">
+            <label class="cfg-form-label">N&iacute;vel de Permiss&atilde;o *</label>
+            <select class="cfg-form-select" id="cfgAcesso" required>
+              <option value="admin">Administrador (Acesso Total + Financeiro)</option>
+              <option value="saude" selected>Profissional de Sa&uacute;de (Agenda + Prontu&aacute;rios)</option>
+              <option value="recepcao">Recep&ccedil;&atilde;o (Agendamento + Check-in)</option>
+            </select>
+          </div>
+
+          <!-- Card Explicativo Din&acirc;mico da Permiss&atilde;o -->
+          <div class="permission-help-card" id="helpTextAcesso">
+            &#129658; <strong>Profissional de Sa&uacute;de:</strong> Acesso a prontu&aacute;rios, agendamentos e evolu&ccedil;&otilde;es cl&iacute;nicas dos pacientes.
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="cfgSendInvite" checked>
+            <label for="cfgSendInvite">Enviar convite com senha provis&oacute;ria por e-mail</label>
+          </div>
+
+        </div>
+        <div class="config-modal-footer">
+          <button type="button" class="btn-cfg-cancel">Cancelar</button>
+          <button type="submit" class="btn-cfg-save">Salvar Colaborador</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Confirma&ccedil;&atilde;o de Inativa&ccedil;&atilde;o -->
+  <div class="config-modal-overlay" id="modalConfirm">
+    <div class="config-modal confirm-modal-box">
+      <div class="confirm-icon-danger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      </div>
+      <h4>Inativar Acesso?</h4>
+      <p>Tem certeza que deseja inativar o acesso de <strong id="confirmUserName">este colaborador</strong> ao sistema ValeClinic?</p>
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button type="button" class="btn-cfg-cancel">Cancelar</button>
+        <button type="button" class="btn-confirm-delete" id="btnConfirmDelete">Sim, Inativar Acesso</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Dedicado -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/store.js"></script>
+  <script src="js/permissions.js"></script>
+  <script src="js/configuracoes.js"></script>
+  <script src="js/modulos.js"></script>
+</body>
+</html>
+
