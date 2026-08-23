@@ -1,0 +1,37 @@
+/* ==========================================
+   ValeClinic - Variáveis de Design System
+   ========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Great+Vibes&display=swap');
+
+:root {
+  /* Cores Principais */
+  --color-primary: #0B1B36;       /* Azul Marinho Primário */
+  --color-secondary: #C5A059;     /* Dourado Secundário */
+  --color-secondary-hover: #B08D46;
+  --color-bg-page: #FDFBF7;       /* Fundo Creme/Bege Suave da Página */
+  --color-card-bg: #FFFFFF;       /* Fundo dos Cards (Branco Puro) */
+  --color-text-primary: #0B1B36;  /* Texto Azul Escuro */
+  --color-text-muted: #64748B;    /* Texto Secundário */
+  --color-border-input: #E2E8F0;  /* Borda dos inputs */
+  --color-input-bg: #F8FAFC;      /* Fundo suave dos inputs */
+
+  /* Tipografia */
+  --font-title: 'Playfair Display', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-handwriting: 'Great Vibes', cursive;
+
+  /* Sombras & Bordas */
+  --radius-card: 24px;
+  --radius-input: 12px;
+  --radius-btn: 28px;
+  --radius-md: 12px;
+  
+  --shadow-wrapper: 0 20px 40px rgba(11, 27, 54, 0.06);
+  --shadow-card: 0 15px 35px rgba(0, 0, 0, 0.06);
+  --shadow-avatar: 0 6px 16px rgba(11, 27, 54, 0.2);
+
+  /* Transição */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
