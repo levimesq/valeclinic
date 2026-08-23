@@ -255,6 +255,36 @@
   margin-top: 6px;
 }
 
+/* Header Direito da Turma (Ocupação + Botão Excluir) */
+.class-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-delete-turma {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #EF4444;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-delete-turma:hover {
+  background: #EF4444;
+  color: #FFFFFF;
+  border-color: #EF4444;
+  transform: translateY(-1px);
+}
+
 /* Barra de Ocupação */
 .class-occupancy {
   width: 220px;
@@ -824,7 +854,7 @@
 @media (max-width: 768px) {
   .pilates-content {
     padding: 16px;
-    gap: 20px;
+    gap: 18px;
   }
 
   .pilates-header-actions {
@@ -835,6 +865,8 @@
 
   .pilates-btn-group {
     flex-direction: column;
+    gap: 10px;
+    width: 100%;
   }
 
   .btn-primary-action, .btn-secondary-action {
@@ -844,11 +876,31 @@
 
   .pilates-kpi-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .class-card {
+    padding: 16px;
+    gap: 16px;
+    border-radius: 12px;
   }
 
   .class-card-header {
     flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .class-title-group h4 {
+    font-size: 1.1rem;
+    flex-wrap: wrap;
+  }
+
+  .class-header-right {
+    flex-direction: column;
+    align-items: stretch;
     gap: 12px;
+    width: 100%;
   }
 
   .class-occupancy {
@@ -856,8 +908,55 @@
     text-align: left;
   }
 
+  .btn-delete-turma {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
   .enrolled-students-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .student-pill {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .student-pill-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+
+  .student-pill-info {
+    width: 100%;
+  }
+
+  .student-pill-actions {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .student-pill-actions .btn-icon-pill {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 6px;
+    font-size: 0.78rem;
+  }
+
+  .empty-slot-btn {
+    width: 100%;
+    min-height: 50px;
+    padding: 12px;
+    font-size: 0.85rem;
+    justify-content: center;
   }
 
   .modal-container {
@@ -880,6 +979,15 @@
   }
 
   .pkpi-value {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .days-tabs {
+    gap: 16px;
+  }
+
+  .day-tab {
+    font-size: 0.88rem;
+    padding: 10px 2px;
   }
 }
