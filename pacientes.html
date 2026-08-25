@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="ValeClinic - Centro de Fisioterapia e ReabilitA&ccedil;&atilde;o. Gest&atilde;o de Pacientes.">
   <title>ValeClinic | Gest&atilde;o de Pacientes</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
 
   <!-- CSS Modular -->
   <link rel="stylesheet" href="css/variables.css">
@@ -108,7 +109,7 @@
 
     <!-- Rodap&eacute; da Sidebar: Logout -->
     <div class="sidebar-footer">
-      <a href="index.html" class="btn-logout" style="text-decoration: none;">
+      <a href="/" class="btn-logout" style="text-decoration: none;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
@@ -420,18 +421,44 @@
         }
       }
 
-      function loadSavedPatients() {
+      // Carrega pacientes direto do Supabase (SSOT) com fallback ao localStorage
+      async function loadSavedPatients() {
         if (typeof ValeStore === 'undefined') return;
         const tbody = patientsTable ? patientsTable.querySelector('#patientsTbody') : null;
         if (!tbody) return;
+
         // Limpa linhas existentes (exceto emptyRow)
         Array.from(tbody.children).forEach(c => { if (c.id !== 'emptyPatientsRow') c.remove(); });
-        const saved = ValeStore.getPacientes() || [];
-        if (saved.length === 0) {
+
+        let patients = [];
+        try {
+          // Tenta buscar diretamente do Supabase
+          const db = ValeStore.getClient();
+          if (db) {
+            const { data, error } = await db
+              .from('pacientes')
+              .select('*')
+              .order('created_at', { ascending: false });
+            if (!error && data) {
+              patients = data;
+              // Atualiza o localStorage com dados frescos
+              localStorage.setItem('valeclinic_pacientes', JSON.stringify(patients));
+            }
+          }
+        } catch(e) {
+          console.warn('[Pacientes] Falha no Supabase, usando cache:', e.message);
+        }
+
+        // Fallback ao localStorage se Supabase não retornou nada
+        if (patients.length === 0) {
+          patients = ValeStore.getPacientes() || [];
+        }
+
+        if (patients.length === 0) {
           if (emptyRow) emptyRow.style.display = 'table-row';
         } else {
           if (emptyRow) emptyRow.style.display = 'none';
-          saved.forEach(p => renderPatientRow(p, false));
+          patients.forEach(p => renderPatientRow(p, false));
         }
         updatePatientCounter();
         fillUserInfo();
@@ -440,8 +467,15 @@
       loadSavedPatients();
 
       // Re-renderizar quando Supabase sincronizar (dados novos chegando da nuvem)
+      // Nota: O evento 'pacientes' acionado pelo addPaciente usa Optimistic UI (linha já na tela)
+      // por isso só re-renderizamos em sincronizações da equipe ou global (sem table).
+      let _initialSyncDone = false;
       document.addEventListener('valeclinic:dataSynced', (e) => {
-        if (!e.detail || e.detail.table === 'pacientes' || e.detail.table === 'equipe') {
+        if (e.detail?.table === 'equipe') {
+          fillUserInfo(); // Apenas atualiza header sem re-listar
+        } else if (!e.detail?.table && !_initialSyncDone) {
+          // Sync global de boot (store.js syncAll) — recarregar lista completa
+          _initialSyncDone = true;
           loadSavedPatients();
         }
       });
@@ -563,6 +597,49 @@
         sidebarOverlay.addEventListener('click', toggleSidebar);
       }
     });
+
+    // Modal de Histórico de Prontuário do Paciente (Supabase)
+    window.openHistoryModal = async function(tr) {
+      const modal = document.getElementById('modalHistoricoProntuario');
+      if (!modal) return;
+
+      const nome = tr.dataset.name || 'Paciente';
+      const histNameEl = document.getElementById('histPatientName');
+      if (histNameEl) histNameEl.textContent = nome;
+
+      const timeline = document.getElementById('histTimeline');
+      if (timeline) timeline.innerHTML = '<div style="padding: 20px; text-align: center;">Carregando histórico do Supabase...</div>';
+      modal.classList.add('active');
+
+      try {
+        const db = (typeof ValeStore !== 'undefined' && ValeStore.getClient()) ? ValeStore.getClient() : (window.supabase?.createClient('https://nzlwmlieznykmlkcfmsp.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56bHdtbGllem55a21sa2NmbXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjExODUsImV4cCI6MjEwMDkzNzE4NX0.SumL1Iu4G9Y1pNb0nsqirC1CqJs8x2gtqke_pFvQhJM'));
+        if (!db) throw new Error('Supabase Client indisponível');
+
+        const { data, error } = await db.from('evolucoes').select('*').eq('paciente', nome).order('data', { ascending: false });
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          if (timeline) timeline.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--color-text-muted);">Nenhuma evolução encontrada para este paciente.</div>';
+          return;
+        }
+
+        if (timeline) {
+          timeline.innerHTML = '';
+          data.forEach(ev => {
+            timeline.innerHTML += `
+              <div style="border-left: 2px solid var(--color-primary); padding-left: 16px; margin-bottom: 20px; position: relative;">
+                <div style="position: absolute; left: -6px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--color-primary);"></div>
+                <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 4px;">${ev.data} - Módulo: ${ev.modulo || 'Geral'}</div>
+                <div style="font-size: 0.95rem; font-weight: 500; margin-bottom: 6px;">${ev.procedimentos || 'Sem descrição'}</div>
+                ${ev.dor ? `<div style="font-size: 0.8rem; background: #fee2e2; color: #991b1b; display: inline-block; padding: 2px 8px; border-radius: 4px;">Dor: ${ev.dor}</div>` : ''}
+              </div>
+            `;
+          });
+        }
+      } catch (err) {
+        if (timeline) timeline.innerHTML = '<div style="padding: 20px; text-align: center; color: #991b1b;">Erro ao carregar histórico: ' + err.message + '</div>';
+      }
+    };
   </script>
 </body>
 </html>
