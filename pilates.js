@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nome: t.nome || 'Pilates Studio',
         dia: t.dia || dia,
         hora: t.hora,
-        profissional: t.profissional || 'Dra. Leonarda Vale',
+        profissional: t.profissional || 'Dra. Katiane',
         capacidade: 4,
         isCustom: true
       });
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
           nome: a.especialidade || 'Pilates Studio',
           dia: dia,
           hora: hora,
-          profissional: a.profissional || 'Dra. Leonarda Vale',
+          profissional: a.profissional || 'Dra. Katiane',
           capacidade: 4,
           isCustom: false
         });
@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const nome = document.getElementById('turmaNomeInput')?.value || 'Pilates Studio';
       const dia = document.getElementById('turmaDiaSelect')?.value || activeDay;
       const hora = document.getElementById('turmaHoraInput')?.value || '08:00';
-      const prof = document.getElementById('turmaProfSelect')?.value || 'Dra. Leonarda Vale';
+      const prof = document.getElementById('turmaProfSelect')?.value || 'Dra. Katiane';
 
       if (!dia) {
         alert('Por favor, selecione o dia da semana.');
@@ -549,7 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const diaDestino = contextEncaixe ? contextEncaixe.dia : activeDay;
       const horaDestino = contextEncaixe ? contextEncaixe.hora : (horaEscolhida || '08:00');
-      const profDestino = contextEncaixe ? contextEncaixe.prof : 'Dra. Leonarda Vale';
+      const profDestino = contextEncaixe ? contextEncaixe.prof : 'Dra. Katiane';
       const dataCalculada = getDateForWeekday(diaDestino);
 
       // Criar agendamento real e enviar ao Supabase

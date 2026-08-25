@@ -11,38 +11,38 @@ const ValePermissions = (() => {
       label: '👑 Admin (Dra. Leonarda)',
       user: 'Dra. Leonarda Vale',
       userRole: 'Diretora Clínica',
-      allowedPages: ['dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'financeiro.html', 'configuracoes.html'],
+      allowedPages: ['dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'financeiro.html', 'financeiro-config.html', 'configuracoes.html'],
       defaultPage: 'dashboard.html'
     },
     RECEPCAO: {
       id: 'recepcao',
-      label: '🛎️ Recepção (Mariana Alves)',
-      user: 'Mariana Alves',
-      userRole: 'Recepcionista Líder',
-      allowedPages: ['dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html'],
+      label: '🛎️ Recepção (Leiriane / Fernanda)',
+      user: 'Leiriane / Fernanda',
+      userRole: 'Recepção & Atendimento',
+      allowedPages: ['dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'financeiro-config.html'],
       defaultPage: 'dashboard.html'
     },
     FONO: {
       id: 'fono',
-      label: '🩺 Fonoaudióloga (Dra. Camila)',
-      user: 'Dra. Camila Nogueira',
-      userRole: 'Fonoaudióloga',
+      label: '🩺 Fonoaudiólogo (Dr. Jorge Linhares)',
+      user: 'Dr. Jorge Linhares',
+      userRole: 'Fonoaudiólogo',
       allowedPages: ['dashboard.html', 'agenda.html', 'fono.html'],
       defaultPage: 'fono.html'
     },
     PILATES: {
       id: 'pilates',
-      label: '🧘 Pilates (Dr. Felipe Rossi)',
-      user: 'Dr. Felipe Rossi',
-      userRole: 'Instrutor de Pilates',
+      label: '🧘 Pilates (Dra. Katiane / Dra. Mirela)',
+      user: 'Dra. Katiane',
+      userRole: 'Instrutora de Pilates',
       allowedPages: ['dashboard.html', 'agenda.html', 'pilates.html'],
       defaultPage: 'pilates.html'
     },
     FISIO: {
       id: 'fisio',
-      label: '💆 Fisioterapeuta (Dr. Gabriel)',
-      user: 'Dr. Gabriel Santos',
-      userRole: 'Fisioterapeuta Sênior',
+      label: '💆 Fisioterapeuta (Dr. Lucas Andrade)',
+      user: 'Dr. Lucas Andrade',
+      userRole: 'Fisioterapeuta',
       allowedPages: ['dashboard.html', 'agenda.html', 'fisio.html'],
       defaultPage: 'fisio.html'
     }
