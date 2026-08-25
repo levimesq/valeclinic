@@ -145,7 +145,11 @@ const ValeStore = (() => {
 
   async function upsertOne(table, record) {
     const db = getClient();
-    if (!db || !record) return;
+    if (!db) {
+      console.warn(`[ValeStore] Supabase client não disponível para ${table}`);
+      return;
+    }
+    if (!record) return;
     try {
       let payload = { ...record };
 
@@ -185,6 +189,21 @@ const ValeStore = (() => {
           justificada: !!record.justificada,
           justificativa: record.justificativa || ''
         };
+      } else if (table === 'financeiro') {
+        const valNum = typeof record.valor === 'number'
+          ? record.valor
+          : parseFloat(String(record.valor || '0').replace('R$', '').replace(/\./g, '').replace(',', '.').trim()) || 0;
+        payload = {
+          id: String(record.id),
+          data: record.data || record.date || new Date().toISOString().split('T')[0],
+          paciente: record.paciente || '',
+          descricao: record.descricao || '',
+          categoria: record.categoria || 'Geral',
+          pagamento: record.pagamento || 'PIX',
+          valor: valNum,
+          tipo: record.tipo || 'receita',
+          status: record.status || 'pago'
+        };
       } else if (table === 'pacientes') {
         payload = {
           id: String(record.id),
@@ -192,26 +211,38 @@ const ValeStore = (() => {
           phone: record.phone || record.telefone || '',
           birth: record.birth || record.nascimento || '',
           notes: record.notes || record.observacoes || '',
-          specialty: record.specialty || record.especialidade || '',
-          status: record.status || 'Ativo'
+          specialty: record.specialty || record.especialidade || ''
         };
       }
 
       const { error } = await db.from(table).upsert(payload, { onConflict: 'id' });
-      if (error) throw error;
+      if (error) {
+        console.error(`[ValeStore] Erro ao salvar em ${table}:`, error);
+        throw error;
+      }
+      console.log(`[ValeStore] Upsert OK em ${table}:`, payload.id);
     } catch (e) {
-      console.warn(`[ValeStore] Falha ao salvar em ${table}:`, e.message);
+      console.error(`[ValeStore] Falha ao salvar em ${table}:`, e.message);
+      throw e;
     }
   }
 
   async function deleteOne(table, id) {
     const db = getClient();
-    if (!db) return;
+    if (!db) {
+      console.warn(`[ValeStore] Supabase client não disponível para delete em ${table}`);
+      return;
+    }
     try {
       const { error } = await db.from(table).delete().eq('id', String(id));
-      if (error) throw error;
+      if (error) {
+        console.error(`[ValeStore] Erro ao deletar de ${table}:`, error);
+        throw error;
+      }
+      console.log(`[ValeStore] Delete OK em ${table}:`, id);
     } catch (e) {
-      console.warn(`[ValeStore] Falha ao deletar de ${table}:`, e.message);
+      console.error(`[ValeStore] Falha ao deletar de ${table}:`, e.message);
+      throw e;
     }
   }
 
@@ -372,7 +403,7 @@ const ValeStore = (() => {
       });
     },
 
-    addPaciente: (r) => {
+    addPaciente: async (r) => {
       const all = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES);
       const nr  = {
         id: String(r.id || ('pac-' + Date.now())),
@@ -380,36 +411,40 @@ const ValeStore = (() => {
         phone: r.phone || r.telefone || '',
         birth: r.birth || r.nascimento || '',
         notes: r.notes || r.observacoes || '',
-        specialty: r.specialty || r.especialidade || '',
-        status: r.status || 'Ativo'
+        specialty: r.specialty || r.especialidade || ''
       };
       all.push(nr);
       localSave(KEYS.PACIENTES, all);
-      upsertOne('pacientes', nr);
+      await upsertOne('pacientes', nr);
       dispatchSync('pacientes');
-      return all;
+      return nr;
     },
 
-    updatePaciente: (id, changes) => {
+    updatePaciente: async (id, changes) => {
       const all = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES);
       const i   = all.findIndex(p => String(p.id) === String(id));
       if (i !== -1) {
         all[i] = { ...all[i], ...changes, id: String(id) };
         localSave(KEYS.PACIENTES, all);
-        upsertOne('pacientes', all[i]);
+        await upsertOne('pacientes', all[i]);
+        dispatchSync('pacientes');
       }
       return all;
     },
 
-    savePacientes: (data) => {
+    savePacientes: async (data) => {
       localSave(KEYS.PACIENTES, data);
-      data.forEach(r => upsertOne('pacientes', r));
+      for (const r of data) {
+        await upsertOne('pacientes', r);
+      }
+      dispatchSync('pacientes');
     },
 
-    deletePaciente: (id) => {
+    deletePaciente: async (id) => {
       const all = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES).filter(p => String(p.id) !== String(id));
       localSave(KEYS.PACIENTES, all);
-      deleteOne('pacientes', id);
+      await deleteOne('pacientes', id);
+      dispatchSync('pacientes');
       return all;
     },
 
