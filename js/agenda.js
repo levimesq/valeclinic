@@ -1,3 +1,9 @@
+/* ==========================================
+   ValeClinic - Gestão da Agenda e Recepção
+   Sincronização com Catálogo de Planos e Profissionais Oficiais
+   Versão 5.0 - Produção
+   ========================================== */
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // Inicializa o date picker com a data de hoje
@@ -35,8 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => toast.classList.remove('show'), 4500);
   }
 
+  function formatarMoeda(num) {
+    const n = parseFloat(num) || 0;
+    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
   // -----------------------------------------------
-  // POPULAR DROPDOWNS DE PACIENTES (EXCLUSIVAMENTE ATIVOS)
+  // POPULAR DROPDOWNS DE PACIENTES
   // -----------------------------------------------
   function populatePatientSelects() {
     if (typeof ValeStore === 'undefined') return;
@@ -68,7 +79,141 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // -----------------------------------------------
+  // POPULAR DROPDOWNS DE PLANOS / SERVIÇOS (Supabase)
+  // -----------------------------------------------
+  function populatePlanSelects(specialty, targetSelectId = 'newPlanService', currentVal = '') {
+    if (typeof ValeStore === 'undefined') return;
+    const planos = ValeStore.getPlanosServicos() || [];
+    const sel = document.getElementById(targetSelectId);
+    if (!sel) return;
+
+    sel.innerHTML = '<option value="">Selecione o plano ou serviço...</option>';
+
+    if (planos.length === 0) {
+      sel.innerHTML = '<option value="">Nenhum plano cadastrado</option>';
+      return;
+    }
+
+    // Filtragem inteligente por especialidade (se houver correspondência)
+    const specLower = (specialty || '').toLowerCase();
+    let filtrados = planos;
+    if (specLower.includes('pilates')) {
+      const match = planos.filter(p => (p.nome_servico || '').toLowerCase().includes('pilates'));
+      if (match.length > 0) filtrados = match;
+    } else if (specLower.includes('fisio')) {
+      const match = planos.filter(p => (p.nome_servico || '').toLowerCase().includes('fisio'));
+      if (match.length > 0) filtrados = match;
+    } else if (specLower.includes('fono')) {
+      const match = planos.filter(p => (p.nome_servico || '').toLowerCase().includes('fono'));
+      if (match.length > 0) filtrados = match;
+    }
+
+    filtrados.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      const sessoesText = p.quantidade_sessoes > 1 ? ` (${p.quantidade_sessoes}x)` : ' (Avulso)';
+      opt.textContent = `${p.nome_servico}${sessoesText} - ${formatarMoeda(p.valor_total)}`;
+      opt.dataset.nome = p.nome_servico;
+      opt.dataset.valorTotal = p.valor_total || 0;
+      opt.dataset.valorClinica = p.valor_clinica || 0;
+      opt.dataset.sessoes = p.quantidade_sessoes || 1;
+      sel.appendChild(opt);
+    });
+
+    if (currentVal) sel.value = currentVal;
+  }
+
+  // -----------------------------------------------
+  // POPULAR DROPDOWNS DE PROFISSIONAIS POR ESPECIALIDADE
+  // -----------------------------------------------
+  function populateDoctorSelects(specialty, targetSelectId = 'newDoctor', currentVal = '') {
+    if (typeof ValeStore === 'undefined') return;
+    const profs = ValeStore.getProfissionaisPorEspecialidade(specialty);
+    const sel = document.getElementById(targetSelectId);
+    if (!sel) return;
+
+    sel.innerHTML = '';
+    profs.forEach(prof => {
+      const opt = document.createElement('option');
+      opt.value = prof;
+      opt.textContent = prof;
+      sel.appendChild(opt);
+    });
+
+    if (currentVal && profs.includes(currentVal)) {
+      sel.value = currentVal;
+    } else if (profs.length > 0) {
+      sel.value = profs[0];
+    }
+  }
+
+  // -----------------------------------------------
+  // PREVIEW DE VALORES DO PLANO SELECIONADO
+  // -----------------------------------------------
+  function updatePlanPricePreview(selectId, previewBoxId, totalId, clinicaId, repasseId) {
+    const sel = document.getElementById(selectId);
+    const box = document.getElementById(previewBoxId);
+    const elTot = document.getElementById(totalId);
+    const elCli = document.getElementById(clinicaId);
+    const elRep = document.getElementById(repasseId);
+
+    if (!sel || !box) return;
+
+    const opt = sel.options[sel.selectedIndex];
+    if (!opt || !opt.value) {
+      box.style.display = 'none';
+      return;
+    }
+
+    const valTot = parseFloat(opt.dataset.valorTotal) || 0;
+    const valCli = parseFloat(opt.dataset.valorClinica) || 0;
+    const valRep = Math.max(0, valTot - valCli);
+
+    if (elTot) elTot.textContent = formatarMoeda(valTot);
+    if (elCli) elCli.textContent = formatarMoeda(valCli);
+    if (elRep) elRep.textContent = formatarMoeda(valRep);
+
+    box.style.display = 'flex';
+  }
+
+  // Listeners de mudança de Especialidade nos Modais
+  const newSpecSel = document.getElementById('newSpecialty');
+  if (newSpecSel) {
+    newSpecSel.addEventListener('change', () => {
+      populatePlanSelects(newSpecSel.value, 'newPlanService');
+      populateDoctorSelects(newSpecSel.value, 'newDoctor');
+      updatePlanPricePreview('newPlanService', 'newPlanPreviewBox', 'newPreviewTotal', 'newPreviewClinica', 'newPreviewRepasse');
+    });
+  }
+
+  const editSpecSel = document.getElementById('editSpecialty');
+  if (editSpecSel) {
+    editSpecSel.addEventListener('change', () => {
+      populatePlanSelects(editSpecSel.value, 'editPlanService');
+      populateDoctorSelects(editSpecSel.value, 'editDoctor');
+      updatePlanPricePreview('editPlanService', 'editPlanPreviewBox', 'editPreviewTotal', 'editPreviewClinica', 'editPreviewRepasse');
+    });
+  }
+
+  const newPlanSel = document.getElementById('newPlanService');
+  if (newPlanSel) {
+    newPlanSel.addEventListener('change', () => {
+      updatePlanPricePreview('newPlanService', 'newPlanPreviewBox', 'newPreviewTotal', 'newPreviewClinica', 'newPreviewRepasse');
+    });
+  }
+
+  const editPlanSel = document.getElementById('editPlanService');
+  if (editPlanSel) {
+    editPlanSel.addEventListener('change', () => {
+      updatePlanPricePreview('editPlanService', 'editPlanPreviewBox', 'editPreviewTotal', 'editPreviewClinica', 'editPreviewRepasse');
+    });
+  }
+
+  // Inicialização dos Selects
   populatePatientSelects();
+  populatePlanSelects('Pilates Studio', 'newPlanService');
+  populateDoctorSelects('Pilates Studio', 'newDoctor');
 
   // -----------------------------------------------
   // MODAL 1: NOVO AGENDAMENTO
@@ -84,6 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newDateInput) {
       newDateInput.value = dp && dp.value ? dp.value : todayStr;
     }
+    const spec = document.getElementById('newSpecialty')?.value || 'Pilates Studio';
+    populatePlanSelects(spec, 'newPlanService');
+    populateDoctorSelects(spec, 'newDoctor');
+    updatePlanPricePreview('newPlanService', 'newPlanPreviewBox', 'newPreviewTotal', 'newPreviewClinica', 'newPreviewRepasse');
+
     appointmentModal.classList.add('active');
   }
 
@@ -113,20 +263,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const hora          = document.getElementById('newTime').value;
       const especialidade = document.getElementById('newSpecialty').value;
       const profissional  = document.getElementById('newDoctor').value;
+      const planSel       = document.getElementById('newPlanService');
 
       if (!paciente) {
         showToast('Por favor, selecione um paciente cadastrado.', 'error');
         return;
       }
 
-      // Validação de data: ano menor que 2026 não permitido
       const selectedYear = new Date(date + 'T12:00:00').getFullYear();
       if (!date || isNaN(selectedYear) || selectedYear < 2026) {
         showToast('Erro: A data do agendamento deve ser a partir do ano de 2026.', 'error');
         return;
       }
 
-      // Verificar conflito de horário no mesmo módulo (ignorar cancelados)
+      // Verificar conflito de horário
       const agendamentos = ValeStore.getAgendamentos() || [];
       const conflito = agendamentos.find(a =>
         a.date === date &&
@@ -140,6 +290,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Dados do Plano Selecionado
+      let planoId = null;
+      let planoNome = '';
+      let valorTotal = 0;
+      let valorClinica = 0;
+
+      if (planSel && planSel.selectedIndex > 0) {
+        const opt = planSel.options[planSel.selectedIndex];
+        planoId = opt.value;
+        planoNome = opt.dataset.nome || opt.textContent;
+        valorTotal = parseFloat(opt.dataset.valorTotal) || 0;
+        valorClinica = parseFloat(opt.dataset.valorClinica) || 0;
+      }
+
       // Salvar via ValeStore (Supabase + LocalStorage)
       const newId = 'slot-' + Date.now();
       const novoRegistro = {
@@ -151,15 +315,40 @@ document.addEventListener('DOMContentLoaded', () => {
         especialidade: especialidade,
         profissional: profissional,
         status: 'Aguardando Chegada',
-        horarioChegada: null
+        horarioChegada: null,
+        plano_id: planoId,
+        plano_nome: planoNome,
+        valor_total: valorTotal,
+        valor_clinica: valorClinica
       };
 
       ValeStore.addAgendamento(novoRegistro);
 
-      closeNewModal();
-      showToast('Agendamento realizado com sucesso!', 'success');
+      // Integração direta com Financeiro (lançamento automático de receita)
+      if (valorTotal > 0) {
+        const categoriaMap = {
+          'Pilates Studio': 'pilates',
+          'Fisioterapia': 'fisio',
+          'Fonoaudiologia': 'fono'
+        };
+        ValeStore.addFinanceiro({
+          id: 'fin-' + Date.now(),
+          data: date,
+          paciente: paciente,
+          descricao: planoNome ? `Agendamento: ${planoNome}` : `Consulta: ${especialidade}`,
+          categoria: categoriaMap[especialidade] || 'geral',
+          pagamento: 'PIX',
+          valor: valorTotal.toFixed(2).replace('.', ','),
+          valor_clinica: valorClinica.toFixed(2).replace('.', ','),
+          tipo: 'receita',
+          status: 'pago',
+          profissional: profissional
+        });
+      }
 
-      // Se a data do agendamento for diferente da visualizada, atualizar o datepicker
+      closeNewModal();
+      showToast('Agendamento e lançamento financeiro concluídos com sucesso!', 'success');
+
       const dp = document.getElementById('agendaDatePicker');
       if (dp) {
         dp.value = date;
@@ -188,11 +377,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const editSpec = document.getElementById('editSpecialty');
     const editDoc  = document.getElementById('editDoctor');
 
+    const curSpec = row.dataset.especialidade || row.dataset.specialty || 'Pilates Studio';
+    const curDoc  = row.dataset.profissional || row.dataset.doctor || '';
+
     if (editPat)  editPat.value  = row.dataset.paciente || row.dataset.patient || '';
     if (editDt)   editDt.value   = row.dataset.date || '';
     if (editTm)   editTm.value   = row.dataset.hora || row.dataset.time || '';
-    if (editSpec) editSpec.value = row.dataset.especialidade || row.dataset.specialty || '';
-    if (editDoc)  editDoc.value  = row.dataset.profissional || row.dataset.doctor || '';
+    if (editSpec) editSpec.value = curSpec;
+
+    populateDoctorSelects(curSpec, 'editDoctor', curDoc);
+    populatePlanSelects(curSpec, 'editPlanService');
+    updatePlanPricePreview('editPlanService', 'editPlanPreviewBox', 'editPreviewTotal', 'editPreviewClinica', 'editPreviewRepasse');
 
     editAppointmentModal.classList.add('active');
   }
@@ -222,6 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const hora          = document.getElementById('editTime').value;
       const especialidade = document.getElementById('editSpecialty').value;
       const profissional  = document.getElementById('editDoctor').value;
+      const planSel       = document.getElementById('editPlanService');
 
       const selectedYear = new Date(date + 'T12:00:00').getFullYear();
       if (!date || isNaN(selectedYear) || selectedYear < 2026) {
@@ -244,13 +440,30 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      let planoId = null;
+      let planoNome = '';
+      let valorTotal = null;
+      let valorClinica = null;
+
+      if (planSel && planSel.selectedIndex > 0) {
+        const opt = planSel.options[planSel.selectedIndex];
+        planoId = opt.value;
+        planoNome = opt.dataset.nome || opt.textContent;
+        valorTotal = parseFloat(opt.dataset.valorTotal) || 0;
+        valorClinica = parseFloat(opt.dataset.valorClinica) || 0;
+      }
+
       ValeStore.updateAgendamento(editingSlotId, {
         date,
         hora,
         time: hora,
         paciente,
         especialidade,
-        profissional
+        profissional,
+        plano_id: planoId,
+        plano_nome: planoNome,
+        valor_total: valorTotal,
+        valor_clinica: valorClinica
       });
 
       closeEditModal();
@@ -309,7 +522,6 @@ document.addEventListener('DOMContentLoaded', () => {
           justificativa: 'Sem justificativa informada'
         });
 
-        // Verificar regra estrita de abandono (2 faltas consecutivas)
         const alertas = ValeStore.getAlertasAbandono() || [];
         const pacienteEmRisco = alertas.find(al => al.nome === activeFaltaPatientName);
 
@@ -340,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // -----------------------------------------------
   // HELPER: CARD HTML DA TIMELINE
   // -----------------------------------------------
-  function buildCardHTML(id, hora, especialidade, paciente, profissional, status, waHref) {
+  function buildCardHTML(id, hora, especialidade, paciente, profissional, status, waHref, planoNome, valorTotal) {
     const initials = (paciente || '?').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
     const specClass = (especialidade || '').toLowerCase().includes('pilates') ? 'pilates' :
                       (especialidade || '').toLowerCase().includes('fisio') ? 'fisio' : 'fono';
@@ -368,6 +580,8 @@ document.addEventListener('DOMContentLoaded', () => {
            Faltou
          </button>`;
 
+    const planoBadge = planoNome ? `<span style="font-size:0.75rem; background: rgba(197,160,89,0.15); color: var(--color-secondary); padding: 2px 6px; border-radius: 4px; font-weight: 600; margin-left: 6px;">${planoNome}</span>` : '';
+
     return `
       <div class="timeline-row"
            data-especialidade="${especialidade}"
@@ -383,8 +597,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="patient-header-group">
               <div class="patient-avatar-badge">${initials}</div>
               <div class="patient-meta-info">
-                <h4>${paciente}</h4>
-                <p>${especialidade} • Prof. ${profissional}</p>
+                <h4>${paciente} ${planoBadge}</h4>
+                <p>${especialidade} • <strong>${profissional}</strong></p>
               </div>
             </div>
             <div class="card-quick-actions">
@@ -419,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentFilter = document.getElementById('specialtyFilter') ? document.getElementById('specialtyFilter').value : 'Todos';
     const allAgendamentos = ValeStore.getAgendamentos() || [];
 
-    // Filtrar por data e excluir cancelados/inválidos
+    // Filtrar por data e excluir cancelados
     let filtrados = allAgendamentos.filter(a => a.date === selectedDate && a.status !== 'Cancelado');
 
     // Filtrar por especialidade se não for 'Todos'
@@ -433,7 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
       scheduleList.innerHTML = `
         <div style="padding: 40px; text-align: center; color: var(--color-text-muted); background: var(--color-card-bg); border-radius: var(--radius-card); border: 1px dashed var(--color-border-input); width: 100%;">
           <h4>Nenhum agendamento para este dia</h4>
-          <p style="font-size: 0.85rem; margin-top: 6px;">Clique em "NOVO AGENDAMENTO" para marcar uma consulta.</p>
+          <p style="font-size: 0.85rem; margin-top: 6px;">Clique em "NOVO AGENDAMENTO" para marcar uma consulta com o profissional.</p>
         </div>
       `;
       return;
@@ -448,15 +662,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const hora = a.hora || a.time || '08:00';
       const paciente = a.paciente || '';
       const especialidade = a.especialidade || 'Pilates Studio';
-      const profissional = a.profissional || 'Dra. Leonarda Vale';
+      const profissional = a.profissional || (especialidade === 'Fonoaudiologia' ? 'Dr. Jorge Linhares' : 'Dra. Katiane');
       const status = a.status || 'Aguardando Chegada';
+      const planoNome = a.plano_nome || '';
+      const valorTotal = a.valor_total || 0;
 
       // Link do WhatsApp
       const pacObj = pacientes.find(p => (p.name || p.nome) === paciente);
       const tel = pacObj && (pacObj.phone || pacObj.telefone) ? (pacObj.phone || pacObj.telefone).replace(/\D/g, '') : '';
       const waHref = tel ? `https://wa.me/55${tel}` : '#';
 
-      const rowHTML = buildCardHTML(a.id, hora, especialidade, paciente, profissional, status, waHref);
+      const rowHTML = buildCardHTML(a.id, hora, especialidade, paciente, profissional, status, waHref, planoNome, valorTotal);
       scheduleList.insertAdjacentHTML('beforeend', rowHTML);
     });
   }
@@ -495,7 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Botão Cancelar / Excluir Horário (DELETE no Supabase e em cascata)
+      // Botão Cancelar / Excluir Horário
       const cancelBtn = e.target.closest('.btn-cancel-appointment');
       if (cancelBtn) {
         const row = cancelBtn.closest('.timeline-row');
@@ -553,6 +769,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof ValeStore !== 'undefined' && ValeStore.syncAgendamentos) {
     ValeStore.syncAgendamentos().then(() => {
       populatePatientSelects();
+      populatePlanSelects('Pilates Studio', 'newPlanService');
       renderTimeline(agendaDP ? agendaDP.value : todayStr);
     });
   } else {
@@ -601,6 +818,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Atualização automática quando Supabase sincronizar
   document.addEventListener('valeclinic:dataSynced', (e) => {
     populatePatientSelects();
+    populatePlanSelects('Pilates Studio', 'newPlanService');
     const dp = document.getElementById('agendaDatePicker');
     renderTimeline(dp ? dp.value : todayStr);
   });

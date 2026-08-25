@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     diaAgendamentos.forEach(a => {
       const hora = a.hora || a.time || '08:00';
       const paciente = a.paciente || '';
-      const profissional = a.profissional || 'Dra. Leonarda Vale';
+      const profissional = a.profissional || 'Dr. Jorge Linhares';
       const status = a.status || 'Aguardando Chegada';
       const initials = paciente.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
 
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="class-card-header">
           <div class="class-title-group">
             <h4>${paciente} <span class="modality-badge">${moduloNome}</span></h4>
-            <p>Profissional: ${profissional}</p>
+            <p>Profissional: <strong>${profissional}</strong></p>
             <p style="font-weight: 600; color: var(--color-primary); margin-top: 4px;">Horário: ${hora} | Data: ${a.date}</p>
           </div>
           <div class="class-occupancy" style="display:flex; align-items:center; gap:8px;">
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const pac = document.getElementById('novoAtdPacienteFono')?.value || '';
       const hora = document.getElementById('novoAtdHorarioFono')?.value || '08:00';
-      const prof = document.getElementById('novoAtdProfFono')?.value || 'Dra. Leonarda Vale';
+      const prof = document.getElementById('novoAtdProfFono')?.value || 'Dr. Jorge Linhares';
 
       if (!pac) {
         alert('Por favor, selecione um paciente cadastrado.');

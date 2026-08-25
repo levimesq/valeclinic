@@ -65,16 +65,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (cleanEmail.includes('recep') || (membro && membro.acesso === 'recepcao')) {
       activeRole = 'recepcao';
-      userName = membro ? membro.nome : 'Mariana Alves (Recepção)';
+      userName = membro ? membro.nome : 'Leiriane / Fernanda (Recepção)';
     } else if (cleanEmail.includes('fono') || (membro && membro.cargo === 'fono')) {
       activeRole = 'fono';
-      userName = membro ? membro.nome : 'Dra. Camila Nogueira (Fono)';
+      userName = membro ? membro.nome : 'Dr. Jorge Linhares (Fono)';
     } else if (cleanEmail.includes('pilates') || (membro && membro.cargo === 'pilates')) {
       activeRole = 'pilates';
-      userName = membro ? membro.nome : 'Dr. Felipe Rossi (Pilates)';
+      userName = membro ? membro.nome : 'Dra. Katiane (Pilates)';
     } else if (cleanEmail.includes('fisio') || (membro && membro.cargo === 'fisio')) {
       activeRole = 'fisio';
-      userName = membro ? membro.nome : 'Dr. Gabriel Santos (Fisio)';
+      userName = membro ? membro.nome : 'Dr. Lucas Andrade (Fisio)';
     } else if (cleanEmail.includes('admin') || cleanEmail.includes('leonarda') || (membro && membro.acesso === 'admin')) {
       activeRole = 'admin';
       userName = membro ? membro.nome : 'Dra. Leonarda Vale (Diretora)';
