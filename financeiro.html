@@ -93,6 +93,15 @@
             Financeiro
           </a>
         </li>
+        <li class="nav-item">
+          <a href="financeiro-config.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+            </svg>
+            Configurar Pre&ccedil;os e Planos
+          </a>
+        </li>
 
       </ul>
     </nav>
@@ -158,10 +167,10 @@
           <p>Controle centralizado de receitas, despesas e automa&ccedil;&atilde;o de recebimentos.</p>
         </div>
         <div class="fin-btn-group">
-          <button class="btn-fin-secondary" id="btnPrecos">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852 1.004 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            Tabela de Pre&ccedil;os
-          </button>
+          <a href="financeiro-config.html" class="btn-fin-secondary" id="btnPrecos" style="text-decoration: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+            Tabela de Pre&ccedil;os &amp; Planos
+          </a>
           <button class="btn-fin-primary" id="btnLancamento">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             Lan&ccedil;amento Manual
@@ -169,45 +178,38 @@
         </div>
       </section>
 
-      <!-- 2. DASHBOARD DE KPIs -->
-      <section class="fin-kpi-grid">
+      <!-- 2. DASHBOARD DE KPIs (100% Dinâmico - Baseado em Presenças Confirmadas) -->
+      <section class="fin-kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
         <div class="fkpi-card kpi-faturamento">
           <div class="fkpi-info">
-            <span class="fkpi-label">&#128176; Faturamento M&ecirc;s</span>
+            <span class="fkpi-label">&#128176; Faturamento Bruto</span>
             <span class="fkpi-value" id="kpiFaturamento">R$ 0,00</span>
+            <div style="font-size:0.80rem; color:var(--color-text-muted); margin-top:4px;">Total de atendimentos confirmados</div>
           </div>
           <div class="fkpi-icon blue">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
           </div>
         </div>
 
+        <div class="fkpi-card kpi-receber" style="border-left: 4px solid var(--color-secondary);">
+          <div class="fkpi-info">
+            <span class="fkpi-label">&#127973; Caixa L&iacute;quido da Cl&iacute;nica</span>
+            <span class="fkpi-value gold" id="kpiCaixaLiquido" style="color: #D97706;">R$ 0,00</span>
+            <div style="font-size:0.80rem; color:var(--color-text-muted); margin-top:4px;">Fatia l&iacute;quida retida no caixa</div>
+          </div>
+          <div class="fkpi-icon gold">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          </div>
+        </div>
+
         <div class="fkpi-card kpi-recebido" id="cardRecebido" style="cursor: pointer;">
           <div class="fkpi-info">
-            <span class="fkpi-label">&#9989; Total Recebido</span>
+            <span class="fkpi-label">&#9989; Total Recebido (Entradas)</span>
             <span class="fkpi-value green" id="kpiRecebido">R$ 0,00</span>
+            <div style="font-size:0.80rem; color:var(--color-text-muted); margin-top:4px;"><span id="kpiTotalConfirmados">0</span> atendimentos realizados</div>
           </div>
           <div class="fkpi-icon green">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-          </div>
-        </div>
-
-        <div class="fkpi-card kpi-receber" id="cardAReceber" style="cursor: pointer;">
-          <div class="fkpi-info">
-            <span class="fkpi-label">&#9888; ï¸ A Receber</span>
-            <span class="fkpi-value orange" id="kpiAReceber">R$ 0,00</span>
-          </div>
-          <div class="fkpi-icon gold">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          </div>
-        </div>
-
-        <div class="fkpi-card kpi-despesas" id="cardDespesas" style="cursor: pointer;">
-          <div class="fkpi-info">
-            <span class="fkpi-label">&#128315; Despesas</span>
-            <span class="fkpi-value red" id="kpiDespesas">R$ 0,00</span>
-          </div>
-          <div class="fkpi-icon red">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
           </div>
         </div>
       </section>
@@ -215,15 +217,14 @@
       <!-- 3. GR&Aacute;FICOS (2 Colunas) -->
       <section class="fin-charts-grid">
 
-        <!-- Gr&aacute;fico Esquerdo: Receitas x Despesas -->
+        <!-- Gr&aacute;fico Esquerdo: Evolução Mensal de Receitas -->
         <div class="fin-chart-card">
-          <h3>Evolu&ccedil;&atilde;o Mensal <span>Receitas vs. Despesas</span></h3>
+          <h3>Evolu&ccedil;&atilde;o Mensal <span>Receitas Efetivadas</span></h3>
           <div class="chart-bar-group" id="chartEvolucao">
-            <!-- Renderizado via financeiro.js -->
+            <!-- Renderizado dinamicamente via financeiro.js -->
           </div>
           <div class="chart-legend">
-            <div class="chart-legend-item"><div class="legend-dot receita"></div> Receitas</div>
-            <div class="chart-legend-item"><div class="legend-dot despesa"></div> Despesas</div>
+            <div class="chart-legend-item"><div class="legend-dot receita"></div> Receita Bruta Confirmada</div>
           </div>
         </div>
 
@@ -231,14 +232,11 @@
         <div class="fin-chart-card">
           <h3>Receita por Especialidade <span>Distribui&ccedil;&atilde;o %</span></h3>
           <div class="specialty-bars" id="chartEspecialidade">
-            <!-- Renderizado via financeiro.js -->
+            <!-- Renderizado dinamicamente via financeiro.js -->
           </div>
         </div>
 
       </section>
-
-
-
 
     </main>
   </div>
@@ -256,12 +254,11 @@
     </div>
   </div>
 
-
   <!-- Modal: Detalhes Total Recebido -->
   <div class="fin-modal-overlay" id="modalRecebidos">
-    <div class="fin-modal" style="max-width: 700px;">
+    <div class="fin-modal" style="max-width: 800px;">
       <div class="fin-modal-header">
-        <h3>&#128176; hist&oacute;rico de Recebimentos</h3>
+        <h3>&#128176; Hist&oacute;rico de Atendimentos &amp; Recebimentos</h3>
         <button class="fin-modal-close">&times;</button>
       </div>
       <div class="fin-modal-body">
@@ -271,15 +268,16 @@
               <tr>
                 <th>Data</th>
                 <th>Paciente</th>
-                <th>Descri&ccedil;&atilde;o</th>
-                <th>Pagamento</th>
+                <th>Especialidade / Plano</th>
+                <th>Profissional</th>
+                <th>Status / Pagamento</th>
                 <th>Valor (R$)</th>
               </tr>
             </thead>
             <tbody id="tbodyRecebidos"></tbody>
           </table>
         </div>
-        <p id="emptyRecebidos" style="display:none; text-align:center; color:#94A3B8; padding:24px;">Nenhum recebimento registrado ainda.</p>
+        <p id="emptyRecebidos" style="display:none; text-align:center; color:#94A3B8; padding:32px 16px;">Nenhum atendimento confirmado ou recebimento registrado ainda.</p>
       </div>
       <div class="fin-modal-footer">
         <button type="button" class="btn-fin-cancel">Fechar</button>
@@ -287,87 +285,27 @@
     </div>
   </div>
 
-  <!-- Modal: Detalhes A Receber -->
-  <div class="fin-modal-overlay" id="modalAReceber">
-    <div class="fin-modal" style="max-width: 750px;">
-      <div class="fin-modal-header">
-        <h3>&#9888; ï¸ Clientes com Pagamento Pendente</h3>
-        <button class="fin-modal-close">&times;</button>
-      </div>
-      <div class="fin-modal-body">
-        <div class="fin-table-wrapper">
-          <table class="fin-table">
-            <thead>
-              <tr>
-                <th>Data da Consulta</th>
-                <th>Paciente</th>
-                <th>Descri&ccedil;&atilde;o</th>
-                <th>Valor (R$)</th>
-                <th>Status</th>
-                <th>A&ccedil;&atilde;o</th>
-              </tr>
-            </thead>
-            <tbody id="tbodyAReceber"></tbody>
-          </table>
-        </div>
-        <p id="emptyAReceber" style="display:none; text-align:center; color:#94A3B8; padding:24px;">Nenhum pagamento pendente. &#127881;</p>
-      </div>
-      <div class="fin-modal-footer">
-        <button type="button" class="btn-fin-cancel">Fechar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Detalhes Despesas -->
-  <div class="fin-modal-overlay" id="modalDespesas">
-    <div class="fin-modal" style="max-width: 700px;">
-      <div class="fin-modal-header">
-        <h3>&#128315; Registro de Despesas</h3>
-        <button class="fin-modal-close">&times;</button>
-      </div>
-      <div class="fin-modal-body">
-        <div class="fin-table-wrapper">
-          <table class="fin-table">
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Fornecedor / Descri&ccedil;&atilde;o</th>
-                <th>Categoria</th>
-                <th>Valor (R$)</th>
-              </tr>
-            </thead>
-            <tbody id="tbodyDespesas"></tbody>
-          </table>
-        </div>
-        <p id="emptyDespesas" style="display:none; text-align:center; color:#94A3B8; padding:24px;">Nenhuma despesa registrada ainda.</p>
-      </div>
-      <div class="fin-modal-footer">
-        <button type="button" class="btn-fin-cancel">Fechar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 5. MODAIS -->
-
-  <!-- Modal: Novo Lan&ccedil;amento Manual -->
+  <!-- Modal: Novo Lan&ccedil;amento de Receita -->
   <div class="fin-modal-overlay" id="modalLancamento">
     <div class="fin-modal">
       <div class="fin-modal-header">
-        <h3>Novo Lan&ccedil;amento Manual</h3>
+        <h3>Novo Lan&ccedil;amento de Receita</h3>
         <button class="fin-modal-close">&times;</button>
       </div>
       <form id="formLancamento">
         <div class="fin-modal-body">
           <div class="fin-form-row">
             <div class="fin-form-group">
-              <label class="fin-form-label">Tipo *</label>
-              <select class="fin-form-select" id="lancTipo" required>
-                <option value="receita">Receita</option>
-                <option value="despesa">Despesa</option>
+              <label class="fin-form-label">Especialidade / Categoria *</label>
+              <select class="fin-form-select" id="lancCategoria" required>
+                <option value="Pilates Studio">Pilates Studio</option>
+                <option value="Fisioterapia">Fisioterapia</option>
+                <option value="Fonoaudiologia">Fonoaudiologia</option>
+                <option value="Consulta Geral">Consulta Geral / Outros</option>
               </select>
             </div>
             <div class="fin-form-group">
-              <label class="fin-form-label">Valor (R$) *</label>
+              <label class="fin-form-label">Valor Total Pago (R$) *</label>
               <input type="number" class="fin-form-input" id="lancValor" placeholder="0,00" step="0.01" min="0.01" required>
             </div>
           </div>
@@ -378,119 +316,27 @@
               <input type="date" class="fin-form-input" id="lancData" required>
             </div>
             <div class="fin-form-group">
-              <label class="fin-form-label">Categoria *</label>
-              <select class="fin-form-select" id="lancCategoria" required>
-                <option value="fisio">Fisioterapia</option>
-                <option value="pilates">Pilates</option>
-                <option value="fono">Fonoaudiologia</option>
-                <option value="despesa">Despesa Operacional</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="fin-form-row">
-            <div class="fin-form-group">
               <label class="fin-form-label">Forma de Pagamento</label>
               <select class="fin-form-select" id="lancPagamento">
                 <option>PIX</option>
                 <option>Cart&atilde;o Cr&eacute;dito</option>
                 <option>Cart&atilde;o D&eacute;bito</option>
-                <option>Conv&ecirc;nio</option>
-                <option>Boleto</option>
                 <option>Dinheiro</option>
-              </select>
-            </div>
-            <div class="fin-form-group">
-              <label class="fin-form-label">Status</label>
-              <select class="fin-form-select" id="lancStatus">
-                <option value="pendente">Pendente</option>
-                <option value="pago">Pago</option>
+                <option>Transfer&ecirc;ncia</option>
               </select>
             </div>
           </div>
 
           <div class="fin-form-group full">
-            <label class="fin-form-label">Descri&ccedil;&atilde;o</label>
-            <input type="text" class="fin-form-input" id="lancDescricao" placeholder="Ex: Pacote Fono Infantil (5 Sess&otilde;es)">
+            <label class="fin-form-label">Descri&ccedil;&atilde;o / Paciente *</label>
+            <input type="text" class="fin-form-input" id="lancDescricao" placeholder="Ex: Pacote Pilates Mensal - Paciente João Silva" required>
           </div>
         </div>
         <div class="fin-modal-footer">
           <button type="button" class="btn-fin-cancel">Cancelar</button>
-          <button type="submit" class="btn-fin-save">Salvar Lan&ccedil;amento</button>
+          <button type="submit" class="btn-fin-save">Registrar Receita</button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <!-- Modal: Tabela de Pre&ccedil;os -->
-  <div class="fin-modal-overlay" id="modalPrecos">
-    <div class="fin-modal">
-      <div class="fin-modal-header">
-        <h3>Tabela de Pre&ccedil;os por Especialidade</h3>
-        <button class="fin-modal-close">&times;</button>
-      </div>
-      <div class="fin-modal-body">
-        <div class="price-table-list">
-          <div class="price-row">
-            <div class="price-row-info">
-              <h5>Fisioterapia &mdash; Sess&atilde;o Avulsa</h5>
-              <p>Atendimento individual (50 min)</p>
-            </div>
-            <span class="price-row-value">R$ 180,00</span>
-          </div>
-
-          <div class="price-row">
-            <div class="price-row-info">
-              <h5>Fisioterapia &mdash; Avalia&ccedil;&atilde;o Inicial</h5>
-              <p>Primeira consulta com exame cl&iacute;nico</p>
-            </div>
-            <span class="price-row-value">R$ 220,00</span>
-          </div>
-
-          <div class="price-row">
-            <div class="price-row-info">
-              <h5>Pilates &mdash; Mensalidade 2x/sem</h5>
-              <p>8 sess&otilde;es mensais em grupo</p>
-            </div>
-            <span class="price-row-value">R$ 320,00</span>
-          </div>
-
-          <div class="price-row">
-            <div class="price-row-info">
-              <h5>Pilates &mdash; Mensalidade 3x/sem</h5>
-              <p>12 sess&otilde;es mensais em grupo</p>
-            </div>
-            <span class="price-row-value">R$ 420,00</span>
-          </div>
-
-          <div class="price-row">
-            <div class="price-row-info">
-              <h5>Fonoaudiologia &mdash; Sess&atilde;o Avulsa</h5>
-              <p>Atendimento individual (45 min)</p>
-            </div>
-            <span class="price-row-value">R$ 150,00</span>
-          </div>
-
-          <div class="price-row">
-            <div class="price-row-info">
-              <h5>Fonoaudiologia &mdash; Pacote 5 Sess&otilde;es</h5>
-              <p>Desconto de 10% incluso</p>
-            </div>
-            <span class="price-row-value">R$ 550,00</span>
-          </div>
-
-          <div class="price-row">
-            <div class="price-row-info">
-              <h5>Fonoaudiologia &mdash; Pacote 10 Sess&otilde;es</h5>
-              <p>Desconto de 20% incluso</p>
-            </div>
-            <span class="price-row-value">R$ 1.100,00</span>
-          </div>
-        </div>
-      </div>
-      <div class="fin-modal-footer">
-        <button type="button" class="btn-fin-cancel">Fechar</button>
-      </div>
     </div>
   </div>
 
@@ -502,4 +348,3 @@
   <script src="js/modulos.js"></script>
 </body>
 </html>
-
