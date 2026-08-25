@@ -185,6 +185,21 @@ const ValeStore = (() => {
           justificada: !!record.justificada,
           justificativa: record.justificativa || ''
         };
+      } else if (table === 'financeiro') {
+        const valNum = typeof record.valor === 'number'
+          ? record.valor
+          : parseFloat(String(record.valor || '0').replace('R$', '').replace(/\./g, '').replace(',', '.').trim()) || 0;
+        payload = {
+          id: String(record.id),
+          data: record.data || record.date || new Date().toISOString().split('T')[0],
+          paciente: record.paciente || '',
+          descricao: record.descricao || '',
+          categoria: record.categoria || 'Geral',
+          pagamento: record.pagamento || 'PIX',
+          valor: valNum,
+          tipo: record.tipo || 'receita',
+          status: record.status || 'pago'
+        };
       } else if (table === 'pacientes') {
         payload = {
           id: String(record.id),
@@ -192,8 +207,7 @@ const ValeStore = (() => {
           phone: record.phone || record.telefone || '',
           birth: record.birth || record.nascimento || '',
           notes: record.notes || record.observacoes || '',
-          specialty: record.specialty || record.especialidade || '',
-          status: record.status || 'Ativo'
+          specialty: record.specialty || record.especialidade || ''
         };
       }
 
@@ -386,6 +400,7 @@ const ValeStore = (() => {
       all.push(nr);
       localSave(KEYS.PACIENTES, all);
       upsertOne('pacientes', nr);
+      dispatchSync('pacientes');
       return all;
     },
 
@@ -396,6 +411,7 @@ const ValeStore = (() => {
         all[i] = { ...all[i], ...changes, id: String(id) };
         localSave(KEYS.PACIENTES, all);
         upsertOne('pacientes', all[i]);
+        dispatchSync('pacientes');
       }
       return all;
     },
@@ -403,12 +419,14 @@ const ValeStore = (() => {
     savePacientes: (data) => {
       localSave(KEYS.PACIENTES, data);
       data.forEach(r => upsertOne('pacientes', r));
+      dispatchSync('pacientes');
     },
 
     deletePaciente: (id) => {
       const all = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES).filter(p => String(p.id) !== String(id));
       localSave(KEYS.PACIENTES, all);
       deleteOne('pacientes', id);
+      dispatchSync('pacientes');
       return all;
     },
 
@@ -553,7 +571,7 @@ const ValeStore = (() => {
         dia: t.dia || 'Segunda',
         hora: t.hora || '08:00',
         profissional: t.profissional || 'Dra. Katiane',
-        capacidade: parseInt(t.capacidade || '4', 10) || 4
+        capacidade: parseInt(t.capacidade || '6', 10) || 6
       };
       const existIdx = all.findIndex(item => item.dia === nt.dia && item.hora === nt.hora);
       if (existIdx !== -1) {

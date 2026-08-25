@@ -1,6 +1,6 @@
 /* ==========================================
    ValeClinic - Módulo Pilates Studio
-   Sincronização Supabase + Gestão Inteligente de 4 Vagas (Encaixes)
+   Sincronização Supabase + Gestão Inteligente de 6 Vagas (Encaixes)
    Versão 5.0 - Produção / Soft Launch
    ========================================== */
 
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         (a.hora || a.time || '08:00') === t.hora
       ).length;
 
-      const vagasLivres = Math.max(0, 4 - enrolledCount);
+      const vagasLivres = Math.max(0, 6 - enrolledCount);
       const opt = document.createElement('option');
       opt.value = t.hora;
       opt.textContent = `${activeDay} às ${t.hora} (${t.nome}) — ${vagasLivres} vaga(s) livre(s)`;
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dia: t.dia || dia,
         hora: t.hora,
         profissional: t.profissional || 'Dra. Katiane',
-        capacidade: 4,
+        capacidade: 6,
         isCustom: true
       });
     });
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
           dia: dia,
           hora: hora,
           profissional: a.profissional || 'Dra. Katiane',
-          capacidade: 4,
+          capacidade: 6,
           isCustom: false
         });
       }
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return Array.from(turmasMap.values()).sort((a, b) => a.hora.localeCompare(b.hora));
   }
 
-  // 5. Renderização dos Cards do Pilates com 4 Slots Fixos (Lógica de Encaixe)
+  // 5. Renderização dos Cards do Pilates com 6 Slots Fixos (Lógica de Encaixe)
   function renderPilatesCards() {
     if (typeof ValeStore === 'undefined') return;
     const container = document.getElementById('pilatesClassesList');
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     turmasDoDia.forEach(t => {
       const enrolled = diaAgendamentos.filter(a => (a.hora || a.time || '08:00') === t.hora);
-      totalVagasLivresDia += Math.max(0, 4 - enrolled.length);
+      totalVagasLivresDia += Math.max(0, 6 - enrolled.length);
     });
 
     const elAlunos = document.getElementById('kpiPilatesAlunos');
@@ -272,30 +272,30 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="padding: 48px 24px; text-align: center; color: var(--color-text-muted); background: var(--color-card-bg); border-radius: var(--radius-card); border: 1px dashed var(--color-border-input); width: 100%;">
           <div style="font-size: 2.2rem; margin-bottom: 8px;">🧘</div>
           <h4 style="color: var(--color-primary); font-size: 1.1rem;">Nenhuma turma de Pilates cadastrada para ${activeDay}</h4>
-          <p style="font-size: 0.88rem; margin-top: 6px;">Clique no botão "+ Nova Turma" acima para abrir um novo horário de 4 vagas.</p>
+          <p style="font-size: 0.88rem; margin-top: 6px;">Clique no botão "+ Nova Turma" acima para abrir um novo horário de 6 vagas.</p>
         </div>
       `;
       return;
     }
 
-    // Renderizar cada Turma com 4 Slots
+    // Renderizar cada Turma com 6 Slots
     turmasDoDia.forEach(turma => {
       const enrolled = diaAgendamentos.filter(a => (a.hora || a.time || '08:00') === turma.hora);
       const totalAlunos = enrolled.length;
-      const vagasLivres = Math.max(0, 4 - totalAlunos);
-      const ocupacaoPct = Math.min(100, Math.round((totalAlunos / 4) * 100));
+      const vagasLivres = Math.max(0, 6 - totalAlunos);
+      const ocupacaoPct = Math.min(100, Math.round((totalAlunos / 6) * 100));
 
       let occupancyColor = 'green';
-      let occupancyText = `${totalAlunos}/4 Vagas Preenchidas (${vagasLivres} livre${vagasLivres === 1 ? '' : 's'})`;
+      let occupancyText = `${totalAlunos}/6 Vagas Preenchidas (${vagasLivres} livre${vagasLivres === 1 ? '' : 's'})`;
 
-      if (totalAlunos === 3) {
+      if (totalAlunos === 5) {
         occupancyColor = 'orange';
-        occupancyText = `3/4 Vagas Preenchidas (1 Vaga Livre para Encaixe!)`;
-      } else if (totalAlunos >= 4) {
+        occupancyText = `5/6 Vagas Preenchidas (1 Vaga Livre para Encaixe!)`;
+      } else if (totalAlunos >= 6) {
         occupancyColor = 'red';
-        occupancyText = `4/4 Turma Lotada (100%)`;
+        occupancyText = `6/6 Turma Lotada (100%)`;
       } else if (totalAlunos === 0) {
-        occupancyText = `0/4 Vagas Preenchidas (4 Vagas Livres)`;
+        occupancyText = `0/6 Vagas Preenchidas (6 Vagas Livres)`;
       }
 
       const card = document.createElement('article');
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.dataset.day = activeDay;
       card.dataset.hora = turma.hora;
 
-      // Montar slots: sempre exatamente 4 slots
+      // Montar slots: sempre exatamente 6 slots
       let slotsHTML = '';
 
       // 1. Slots preenchidos por alunos
@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dia: dia,
         hora: hora,
         profissional: prof,
-        capacidade: 4
+        capacidade: 6
       });
 
       // Mudar para a aba do dia criado
@@ -528,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
       formNovaTurma.reset();
       renderPilatesCards();
 
-      alert(`✅ Turma de Pilates (${nome}) criada para ${dia} às ${hora} com 4 vagas livres!`);
+      alert(`✅ Turma de Pilates (${nome}) criada para ${dia} às ${hora} com 6 vagas livres!`);
     });
   }
 
