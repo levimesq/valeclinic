@@ -11,7 +11,7 @@ const ValePermissions = (() => {
       label: '👑 Admin (Dra. Leonarda)',
       user: 'Dra. Leonarda Vale',
       userRole: 'Diretora Clínica',
-      allowedPages: ['dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'financeiro.html', 'financeiro-config.html', 'configuracoes.html'],
+      allowedPages: ['dashboard', 'pacientes', 'agenda', 'fisio', 'pilates', 'fono', 'financeiro', 'financeiro-config', 'configuracoes', 'dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'financeiro.html', 'financeiro-config.html', 'configuracoes.html'],
       defaultPage: 'dashboard.html'
     },
     RECEPCAO: {
@@ -19,7 +19,7 @@ const ValePermissions = (() => {
       label: '🛎️ Recepção (Leiriane / Fernanda)',
       user: 'Leiriane / Fernanda',
       userRole: 'Recepção & Atendimento',
-      allowedPages: ['dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'financeiro-config.html'],
+      allowedPages: ['dashboard', 'pacientes', 'agenda', 'fisio', 'pilates', 'fono', 'financeiro-config', 'dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'financeiro-config.html'],
       defaultPage: 'dashboard.html'
     },
     FONO: {
@@ -27,7 +27,7 @@ const ValePermissions = (() => {
       label: '🩺 Fonoaudiólogo (Dr. Jorge Linhares)',
       user: 'Dr. Jorge Linhares',
       userRole: 'Fonoaudiólogo',
-      allowedPages: ['dashboard.html', 'agenda.html', 'fono.html'],
+      allowedPages: ['dashboard', 'agenda', 'fono', 'dashboard.html', 'agenda.html', 'fono.html'],
       defaultPage: 'fono.html'
     },
     PILATES: {
@@ -35,7 +35,7 @@ const ValePermissions = (() => {
       label: '🧘 Pilates (Dra. Katiane / Dra. Mirela)',
       user: 'Dra. Katiane',
       userRole: 'Instrutora de Pilates',
-      allowedPages: ['dashboard.html', 'agenda.html', 'pilates.html'],
+      allowedPages: ['dashboard', 'agenda', 'pilates', 'dashboard.html', 'agenda.html', 'pilates.html'],
       defaultPage: 'pilates.html'
     },
     FISIO: {
@@ -43,7 +43,7 @@ const ValePermissions = (() => {
       label: '💆 Fisioterapeuta (Dr. Lucas Andrade)',
       user: 'Dr. Lucas Andrade',
       userRole: 'Fisioterapeuta',
-      allowedPages: ['dashboard.html', 'agenda.html', 'fisio.html'],
+      allowedPages: ['dashboard', 'agenda', 'fisio', 'dashboard.html', 'agenda.html', 'fisio.html'],
       defaultPage: 'fisio.html'
     }
   };
@@ -68,11 +68,12 @@ const ValePermissions = (() => {
     return roleConfig;
   }
 
-  // Obter nome do arquivo da página atual
+  // Obter nome da página atual (normalizado sem .html)
   function getCurrentPageName() {
     const path = window.location.pathname;
-    const page = path.substring(path.lastIndexOf('/') + 1);
-    return page || 'dashboard.html';
+    let page = path.substring(path.lastIndexOf('/') + 1);
+    page = page.replace(/\.html$/, '');
+    return page || 'index';
   }
 
   // Guard de Navegação (Verifica se está logado e se tem permissão)
@@ -80,13 +81,13 @@ const ValePermissions = (() => {
     const currentPage = getCurrentPageName();
 
     // Se estiver na tela de login, ignora verificação
-    if (currentPage === 'index.html' || currentPage === '') return;
+    if (currentPage === 'index' || currentPage === '' || currentPage === '/') return;
 
     // Se não houver e-mail/sessão salva, obriga a fazer login
     const userEmail = localStorage.getItem('valeclinic_user_email');
     const activeRole = localStorage.getItem('valeclinic_active_role');
     if (!userEmail && !activeRole) {
-      window.location.href = 'index.html';
+      window.location.href = '/';
       return;
     }
 
@@ -109,9 +110,9 @@ const ValePermissions = (() => {
       if (!link) return;
       
       const href = link.getAttribute('href');
-      if (!href || href === '#') return;
+      if (!href || href === '#' || href === '/' || href === 'index' || href === 'index.html') return;
 
-      const pageName = href.substring(href.lastIndexOf('/') + 1);
+      const pageName = href.substring(href.lastIndexOf('/') + 1).replace(/\.html$/, '');
       if (roleConfig.allowedPages.includes(pageName)) {
         item.style.display = '';
       } else {
@@ -123,7 +124,7 @@ const ValePermissions = (() => {
   // Restrição do Financeiro no Dashboard (Esconde métricas financeiras se não for Admin)
   function restrictDashboardFinancials() {
     const currentPage = getCurrentPageName();
-    if (currentPage !== 'dashboard.html') return;
+    if (currentPage !== 'dashboard') return;
 
     const roleId = getActiveRoleId();
     const isMasterAdmin = (roleId === 'admin');
@@ -192,7 +193,7 @@ const ValePermissions = (() => {
           ) : null;
           if (db) await db.auth.signOut();
         } catch (e) {}
-        window.location.href = 'index.html';
+        window.location.href = '/';
       }
     });
 

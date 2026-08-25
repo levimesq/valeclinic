@@ -386,6 +386,7 @@ const ValeStore = (() => {
       all.push(nr);
       localSave(KEYS.PACIENTES, all);
       upsertOne('pacientes', nr);
+      dispatchSync('pacientes');
       return all;
     },
 
@@ -553,7 +554,7 @@ const ValeStore = (() => {
         dia: t.dia || 'Segunda',
         hora: t.hora || '08:00',
         profissional: t.profissional || 'Dra. Katiane',
-        capacidade: parseInt(t.capacidade || '4', 10) || 4
+        capacidade: parseInt(t.capacidade || '6', 10) || 6
       };
       const existIdx = all.findIndex(item => item.dia === nt.dia && item.hora === nt.hora);
       if (existIdx !== -1) {
