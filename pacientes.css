@@ -313,6 +313,13 @@ body {
   background-color: rgba(197, 160, 89, 0.1);
 }
 
+.btn-action-icon.btn-delete-patient:hover {
+  border-color: #EF4444;
+  color: #EF4444;
+  background-color: rgba(239, 68, 68, 0.12);
+  transform: scale(1.08);
+}
+
 .btn-whatsapp-sm {
   width: 34px;
   height: 34px;

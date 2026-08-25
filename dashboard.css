@@ -40,11 +40,12 @@ body {
 }
 
 /* ------------------------------------------
-   1. SIDEBAR (Menu Lateral Fixo - Light Luxury Theme)
+   1. SIDEBAR (Menu Lateral Fixo com Scroll Independente)
    ------------------------------------------ */
 .sidebar {
   width: 270px;
   height: 100vh;
+  max-height: 100vh;
   background-color: #FFFFFF;
   color: var(--color-primary);
   position: fixed;
@@ -53,10 +54,24 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 32px 20px;
+  padding: 24px 18px 20px 18px;
   z-index: 100;
   box-shadow: 4px 0 25px rgba(11, 27, 54, 0.04);
   border-right: 1px solid rgba(197, 160, 89, 0.25);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(197, 160, 89, 0.3) transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(197, 160, 89, 0.3);
+  border-radius: 4px;
 }
 
 .sidebar-header {
@@ -64,14 +79,15 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding-bottom: 24px;
+  padding-bottom: 16px;
   border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  flex-shrink: 0;
 }
 
 .sidebar-logo {
-  max-width: 180px;
+  max-width: 160px;
   height: auto;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.04));
   transition: transform var(--transition-fast);
 }
@@ -82,7 +98,7 @@ body {
 
 .sidebar-brand-name {
   font-family: var(--font-title);
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   letter-spacing: 2px;
   color: var(--color-primary);
   font-weight: 700;
@@ -93,33 +109,40 @@ body {
 }
 
 .sidebar-nav {
-  margin-top: 24px;
+  margin-top: 14px;
+  margin-bottom: 14px;
   flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .nav-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .nav-item a {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 10px 14px;
   color: #334155;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
 }
 
 .nav-item a svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   color: #64748B;
   transition: color var(--transition-fast), transform var(--transition-fast);
 }
@@ -149,8 +172,38 @@ body {
 }
 
 .sidebar-footer {
-  padding-top: 20px;
+  padding-top: 14px;
   border-top: 1px solid rgba(226, 232, 240, 0.8);
+  flex-shrink: 0;
+}
+
+/* Responsividade de Altura para Telas Compactas / Notebooks */
+@media (max-height: 800px) {
+  .sidebar {
+    padding: 14px 12px 14px 12px;
+  }
+  .sidebar-header {
+    padding-bottom: 10px;
+  }
+  .sidebar-logo {
+    max-width: 130px;
+    margin-bottom: 4px;
+  }
+  .sidebar-brand-name {
+    font-size: 1.1rem;
+  }
+  .sidebar-nav {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  .nav-item a {
+    padding: 8px 12px;
+    font-size: 0.84rem;
+    gap: 10px;
+  }
+  .sidebar-footer {
+    padding-top: 10px;
+  }
 }
 
 .btn-logout {
