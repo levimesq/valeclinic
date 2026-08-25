@@ -132,8 +132,6 @@
       </button>
 
       <div class="header-greeting">
-        <h1>Gestão de Pacientes</h1>
-        <p id="patientCounter">Carregando pacientes...</p>
       </div>
 
       <div class="header-actions">
@@ -161,28 +159,35 @@
     </header>
 
     <!-- Conteúdo da Página -->
-    <main class="dashboard-content">
+    <main class="patients-content">
 
-      <!-- Barra de Ações: Busca + Botão Cadastrar -->
-      <section class="actions-bar">
-        <div class="search-input-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="searchInput" class="search-input" placeholder="Buscar paciente por nome, CPF ou telefone...">
+      <!-- Cabeçalho da Página: Título, Contador, Busca e Botão + Novo Paciente -->
+      <section class="page-header-flex">
+        <div class="page-title-block">
+          <h2>Gestão de Pacientes</h2>
+          <p id="patientCounter">Carregando pacientes...</p>
         </div>
 
-        <button class="btn-primary-action" id="openModalBtn">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          <span>Novo Paciente</span>
-        </button>
+        <div class="header-controls">
+          <div class="search-box">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar paciente por nome, CPF ou telefone...">
+          </div>
+
+          <button class="btn-add-patient" id="openModalBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>+ Novo Paciente</span>
+          </button>
+        </div>
       </section>
 
-      <!-- Tabela de Pacientes -->
+      <!-- Tabela Moderna de Pacientes -->
       <section class="table-card">
         <table class="patients-table" id="patientsTable">
           <thead>
@@ -217,7 +222,7 @@
 
       <form id="newPatientForm">
         <div class="modal-body">
-          <div class="form-grid">
+          <div class="modal-form-grid">
 
             <div class="form-group-full">
               <label class="modal-label" for="fullName">Nome Completo *</label>
