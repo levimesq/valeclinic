@@ -1,0 +1,579 @@
+/* ==========================================
+   ValeClinic - Estilos da Agenda Geral (Timeline Redesign)
+   ========================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg-page);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================
+   POPOVER DE NOTIFICAÇÕES (position: fixed)
+   ========================================== */
+.notifications-popover {
+  position: fixed;
+  width: 320px;
+  background: #FFFFFF;
+  border-radius: var(--radius-card);
+  box-shadow: 0 15px 35px rgba(11, 27, 54, 0.15);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  z-index: 1100;
+  padding: 20px;
+  display: none;
+  animation: fadeInDown 0.2s ease;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* CONTEÚDO DA AGENDA */
+.agenda-content {
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* 1. CABEÇALHO E FILTROS DA AGENDA */
+.agenda-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.agenda-title-block h2 {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.agenda-title-block p {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+.agenda-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.date-picker-input, .filter-select {
+  height: 46px;
+  padding: 0 16px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-btn);
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: all var(--transition-fast);
+}
+
+.date-picker-input:focus, .filter-select:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.2);
+}
+
+.btn-new-appointment {
+  height: 46px;
+  padding: 0 24px;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(11, 27, 54, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.btn-new-appointment svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-secondary);
+}
+
+.btn-new-appointment:hover {
+  background-color: #081427;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(11, 27, 54, 0.3);
+}
+
+/* ------------------------------------------
+   2. TIMELINE MODERNA DE AGENDAMENTOS (REDESIGN)
+   ------------------------------------------ */
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  margin-top: 10px;
+}
+
+/* Linha vertical contínua da Timeline */
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 78px;
+  bottom: 15px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--color-secondary), rgba(197, 160, 89, 0.2));
+  z-index: 1;
+}
+
+.timeline-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Marcador da Hora à Esquerda */
+.timeline-time-block {
+  width: 70px;
+  text-align: right;
+  padding-top: 16px;
+}
+
+.time-display {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* Marcador Ponto na Linha */
+.timeline-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 3px solid var(--color-secondary);
+  box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.15);
+  margin-top: 20px;
+  flex-shrink: 0;
+}
+
+/* Card Flutuante de Agendamento à Direita */
+.timeline-card {
+  flex: 1;
+  background-color: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  padding: 22px 28px;
+  box-shadow: 0 10px 25px rgba(11, 27, 54, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.timeline-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(11, 27, 54, 0.09);
+}
+
+/* Bordas Esquerda Coloridas por Especialidade */
+.timeline-card.pilates { border-left: 6px solid var(--color-secondary); }
+.timeline-card.fisio { border-left: 6px solid #10B981; }
+.timeline-card.fono { border-left: 6px solid var(--color-primary); }
+
+/* Header do Card com Ações Rápidas */
+.card-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.patient-header-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.patient-avatar-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #F8FAFC;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--color-border-input);
+}
+
+.patient-meta-info h4 {
+  font-size: 1.05rem;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.patient-meta-info p {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Ícones de Ações Rápidas no Canto Superior */
+.card-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-icon-quick {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-input);
+  background: #FFFFFF;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.btn-icon-quick svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-icon-quick:hover {
+  border-color: var(--color-secondary);
+  color: var(--color-primary);
+  background-color: rgba(197, 160, 89, 0.1);
+}
+
+.btn-icon-quick.whatsapp {
+  background-color: #25D366;
+  color: #FFFFFF;
+  border: none;
+}
+
+.btn-icon-quick.whatsapp svg { fill: currentColor; }
+.btn-icon-quick.whatsapp:hover { background-color: #20ba5a; }
+
+.btn-icon-quick.cancel:hover {
+  border-color: #EF4444;
+  color: #EF4444;
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+/* Rodapé do Card com Status e Botão de Check-in */
+.card-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid rgba(241, 245, 249, 0.9);
+}
+
+/* Status Badges */
+.slot-status {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.slot-status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.slot-status.waiting {
+  background-color: rgba(245, 158, 11, 0.12);
+  color: #D97706;
+}
+.slot-status.waiting::before { background-color: #F59E0B; }
+
+.slot-status.checked-in {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+.slot-status.checked-in::before { background-color: #10B981; }
+
+.slot-status.absent {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #EF4444;
+}
+.slot-status.absent::before { background-color: #EF4444; }
+
+.btn-faltou {
+  height: 40px;
+  padding: 0 20px;
+  background-color: #EF4444;
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.btn-faltou:hover {
+  background-color: #DC2626;
+  transform: translateY(-1px);
+}
+
+.btn-checkin {
+  height: 40px;
+  padding: 0 20px;
+  background-color: #10B981;
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.btn-checkin svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.btn-checkin:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-checkin.done {
+  background-color: #E2E8F0;
+  color: #64748B;
+  box-shadow: none;
+  cursor: default;
+}
+
+/* ------------------------------------------
+   3. TOAST / SNACKBAR DE NOTIFICAÇÃO (CONFLITO)
+   ------------------------------------------ */
+.toast-notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #FFFFFF;
+  padding: 16px 24px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 15px 35px rgba(11, 27, 54, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 2000;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 5px solid #EF4444;
+}
+
+.toast-notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-notification.success {
+  border-left-color: #10B981;
+}
+
+.toast-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toast-notification.error .toast-icon { color: #EF4444; }
+.toast-notification.success .toast-icon { color: #10B981; }
+
+.toast-message {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* ------------------------------------------
+   RESPONSIVIDADE
+   ------------------------------------------ */
+@media (max-width: 1200px) {
+  .agenda-header-flex {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .agenda-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .agenda-content {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .agenda-header-flex {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .agenda-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .date-picker-input, .filter-select {
+    width: 100%;
+  }
+
+  .btn-new-appointment {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .timeline-container::before {
+    display: none;
+  }
+
+  .timeline-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .timeline-time-block {
+    width: 100%;
+    text-align: left;
+    padding-top: 0;
+  }
+
+  .timeline-dot {
+    display: none;
+  }
+
+  .timeline-card {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .card-top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-quick-actions {
+    align-self: flex-end;
+  }
+
+  .card-bottom-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-checkin {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Toast na mobile */
+  .toast-notification {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    max-width: none;
+  }
+
+  .toast-message {
+    font-size: 0.8rem;
+  }
+
+  /* Modal na mobile */
+  .modal-container {
+    max-width: 95vw;
+    margin: 10px;
+  }
+
+  .modal-body {
+    padding: 20px 16px;
+  }
+
+  .modal-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group-full {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .agenda-title-block h2 {
+    font-size: 1.4rem;
+  }
+
+  .patient-meta-info h4 {
+    font-size: 0.92rem;
+  }
+
+  .patient-avatar-badge {
+    width: 38px;
+    height: 38px;
+    font-size: 0.82rem;
+  }
+}

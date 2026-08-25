@@ -1,0 +1,474 @@
+/* ==========================================
+   ValeClinic - Estilos da Tela de Login Full Screen (100vh / 100vw)
+   Fiel à Referência Visual
+   ========================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: var(--font-body);
+  background-color: var(--color-bg-page);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Container Principal ocupando 100vw e 100vh de ponta a ponta */
+.login-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ------------------------------------------
+   Lado Esquerdo (Branding & Curva): 50% da Tela
+   ------------------------------------------ */
+.brand-section {
+  width: 50%;
+  height: 100vh;
+  background-color: #FAF6F0;
+  background-image: 
+    linear-gradient(to bottom, rgba(253, 251, 247, 0.45), rgba(253, 251, 247, 0.75)),
+    url('../assets/clinic_bg.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Onda azul marinho na parte inferior da coluna esquerda */
+.brand-bottom-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 220px;
+  background: var(--color-primary);
+  border-top-right-radius: 100% 160px;
+  z-index: 1;
+}
+
+.brand-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 480px;
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#clinic-logo {
+  max-width: 280px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  margin: 0 auto 20px auto;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.06));
+}
+
+.brand-text-block {
+  margin-top: 10px;
+}
+
+.brand-name {
+  font-family: var(--font-title);
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--color-primary);
+  line-height: 1.1;
+}
+
+.brand-name span {
+  color: var(--color-secondary);
+}
+
+.brand-tagline {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  margin-top: 8px;
+  margin-bottom: 28px;
+}
+
+.brand-slogan {
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 1.45rem;
+  color: var(--color-primary);
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+/* Divisória Curva Elegante / SVG de ponta a ponta na transição */
+.curve-divider {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  height: 100vh;
+  width: 90px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ------------------------------------------
+   Lado Direito (Formulário): 50% da Tela
+   ------------------------------------------ */
+.form-section {
+  width: 50%;
+  height: 100vh;
+  background-color: var(--color-bg-page);
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 5;
+}
+
+/* Card Branco Flutuante Centralizado */
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  box-shadow: 0 20px 40px rgba(11, 27, 54, 0.07);
+  padding: 44px 40px 36px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+/* Avatar de Usuário no Topo do Card */
+.avatar-header {
+  width: 72px;
+  height: 72px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-avatar);
+  border: 2px solid var(--color-secondary);
+}
+
+.avatar-header svg {
+  width: 34px;
+  height: 34px;
+  color: var(--color-secondary);
+}
+
+.card-title {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.card-subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 30px;
+}
+
+/* Formulário e Inputs */
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.input-field {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon-left {
+  position: absolute;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+  color: var(--color-secondary);
+  pointer-events: none;
+}
+
+.custom-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 44px 0 48px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-input);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.custom-input::placeholder {
+  color: #94A3B8;
+}
+
+.custom-input:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3.5px rgba(197, 160, 89, 0.25);
+}
+
+.btn-toggle-eye {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.btn-toggle-eye:hover {
+  color: var(--color-primary);
+}
+
+/* Opções (Lembrar-me & Esqueci a Senha) */
+.options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  user-select: none;
+}
+
+.remember-label input[type="checkbox"] {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.forgot-link {
+  color: var(--color-secondary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.forgot-link:hover {
+  color: var(--color-secondary-hover);
+  text-decoration: underline;
+}
+
+/* Botão Entrar */
+.btn-submit {
+  width: 100%;
+  height: 50px;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 14px rgba(11, 27, 54, 0.25);
+}
+
+.btn-submit svg {
+  width: 20px;
+  height: 20px;
+  color: var(--color-secondary);
+  transition: transform var(--transition-fast);
+}
+
+.btn-submit:hover {
+  background-color: #081427;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(11, 27, 54, 0.35);
+}
+
+.btn-submit:hover svg {
+  transform: translateX(3px);
+}
+
+/* Mensagem de Erro de Login */
+.login-error-msg {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: var(--radius-input);
+  color: #991B1B;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Botão Google Login */
+.btn-google {
+  width: 100%;
+  height: 48px;
+  background-color: #FFFFFF;
+  color: #374151;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1px solid #D1D5DB;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all var(--transition-fast);
+  margin-top: 4px;
+}
+
+.btn-google:hover {
+  background-color: #F9FAFB;
+  border-color: #9CA3AF;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.btn-google img, .btn-google svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Divisória 'ou' */
+.login-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #94A3B8;
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin: 4px 0;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.login-divider span {
+  padding: 0 12px;
+}
+
+/* Estado de carregamento do Botão Submit */
+.btn-submit.loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.card-copyright {
+  margin-top: 26px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+/* ------------------------------------------
+   RESPONSIVIDADE MOBILE (< 768px)
+   ------------------------------------------ */
+@media (max-width: 768px) {
+  html, body {
+    overflow-y: auto;
+  }
+
+  .login-container {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .curve-divider {
+    display: none;
+  }
+
+  .brand-section {
+    width: 100%;
+    height: auto;
+    min-height: 380px;
+    padding: 40px 20px 30px 20px;
+  }
+
+  .brand-bottom-wave {
+    display: none;
+  }
+
+  #clinic-logo {
+    max-width: 220px;
+  }
+
+  .brand-name {
+    font-size: 2rem;
+  }
+
+  .form-section {
+    width: 100%;
+    height: auto;
+    padding: 30px 16px 40px 16px;
+  }
+
+  .login-card {
+    padding: 32px 24px;
+  }
+}

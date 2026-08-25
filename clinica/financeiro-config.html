@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="ValeClinic - Catálogo de Serviços, Planos e Regras de Repasse.">
+  <title>ValeClinic | Configura&ccedil;&atilde;o de Servi&ccedil;os &amp; Planos</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+
+  <!-- CSS Modular -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/pacientes.css">
+  <link rel="stylesheet" href="css/financeiro.css">
+
+  <style>
+    /* Estilos Específicos para a tela de Configuração de Serviços */
+    .config-grid-kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .config-kpi-card {
+      background: var(--color-card-bg);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--color-border-table);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .config-kpi-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(197, 160, 89, 0.12);
+      color: var(--color-secondary);
+    }
+
+    .config-kpi-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .config-kpi-info h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .config-kpi-info p {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .type-badge.avulso {
+      background: #EFF6FF;
+      color: #2563EB;
+      border: 1px solid #BFDBFE;
+    }
+
+    .type-badge.pacote {
+      background: #FDF4E3;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+
+    .action-btn-group {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .btn-action-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border-input);
+      background: white;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-action-icon:hover {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    .btn-action-icon.delete:hover {
+      background: #EF4444;
+      color: white;
+      border-color: #EF4444;
+    }
+
+    .btn-action-icon svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .preview-repasse-box {
+      background: #F8FAFC;
+      border-radius: 8px;
+      padding: 12px 16px;
+      border: 1px dashed var(--color-border-input);
+      margin-top: 12px;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .preview-repasse-box span.val {
+      font-weight: 700;
+      color: #10B981;
+      font-size: 1rem;
+    }
+
+    /* Toast Notification (Oculto por padrão para não vazar no canto da tela) */
+    .toast-notification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--color-primary);
+      color: #FFFFFF;
+      padding: 14px 20px;
+      border-radius: var(--radius-card);
+      display: none;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      z-index: 9999;
+      font-size: 0.9rem;
+    }
+
+    .toast-notification.show {
+      display: flex;
+      animation: fadeInToast 0.3s ease;
+    }
+
+    .toast-notification.success {
+      background: #10B981;
+    }
+
+    .toast-notification.error {
+      background: #EF4444;
+    }
+
+    .toast-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    @keyframes fadeInToast {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Overlay Mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- 1. SIDEBAR (Menu Lateral) -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img class="sidebar-logo" src="assets/logo.png" alt="ValeClinic Logo">
+      <h2 class="sidebar-brand-name">VALE<span>CLINIC</span></h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="dashboard.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="pacientes.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Pacientes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="agenda.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Agenda
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="fisio.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            Fisioterapia
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="pilates.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+            Pilates Studio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="fono.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="22"></line>
+            </svg>
+            Fonoaudiologia
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="financeiro.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Financeiro
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a href="financeiro-config.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+            </svg>
+            Configurar Pre&ccedil;os e Planos
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="/" class="btn-logout" style="text-decoration: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Sair do Sistema
+      </a>
+    </div>
+  </aside>
+
+  <!-- 2. CONTEÚDO PRINCIPAL -->
+  <div class="main-wrapper">
+    <!-- Header Superior -->
+    <header class="header-top">
+      <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="header-greeting">
+        <h1>Cat&aacute;logo de Servi&ccedil;os &amp; Planos</h1>
+        <p>Par&acirc;metros de cobran&ccedil;a, sess&otilde;es e regras de repasse da cl&iacute;nica</p>
+      </div>
+
+      <div class="header-actions">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name">Dra. Leonarda Vale</span>
+            <span class="user-role">Diretora Cl&iacute;nica</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="financeiro-content">
+
+      <!-- Cabeçalho de Ações -->
+      <section class="fin-header-actions">
+        <div class="fin-header-titles">
+          <h2>Tabela de Pre&ccedil;os &amp; Servi&ccedil;os</h2>
+          <p>Cadastre pacotes, consultas avulsas e defina a reten&ccedil;&atilde;o financeira da cl&iacute;nica.</p>
+        </div>
+        <div class="fin-btn-group">
+          <a href="financeiro.html" class="btn-fin-secondary" style="text-decoration: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Voltar ao Financeiro
+          </a>
+          <button type="button" class="btn-fin-primary" id="btnOpenNewService">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Novo Servi&ccedil;o / Plano
+          </button>
+        </div>
+      </section>
+
+      <!-- KPIs Resumo -->
+      <section class="config-grid-kpis">
+        <div class="config-kpi-card">
+          <div class="config-kpi-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <div class="config-kpi-info">
+            <h3 id="kpiTotalServicos">0</h3>
+            <p>Servi&ccedil;os Cadastrados</p>
+          </div>
+        </div>
+
+        <div class="config-kpi-card">
+          <div class="config-kpi-icon" style="color: #2563EB; background: rgba(37, 99, 235, 0.12);">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 14 14"></polyline>
+            </svg>
+          </div>
+          <div class="config-kpi-info">
+            <h3 id="kpiAvulsos">0</h3>
+            <p>Servi&ccedil;os Avulsos</p>
+          </div>
+        </div>
+
+        <div class="config-kpi-card">
+          <div class="config-kpi-icon" style="color: #B45309; background: rgba(180, 83, 9, 0.12);">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
+          <div class="config-kpi-info">
+            <h3 id="kpiPacotes">0</h3>
+            <p>Pacotes &amp; Mensalidades</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Barra de Filtros e Busca -->
+      <section class="card-pacientes" style="padding: 16px 20px; margin-bottom: 0;">
+        <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+          <div style="flex: 1; min-width: 250px; position: relative;">
+            <input type="text" id="inputSearchServico" class="modal-input" placeholder="Buscar por nome do servi&ccedil;o..." style="padding-left: 36px;">
+            <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--color-text-muted);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <select id="filterTipo" class="modal-select" style="min-width: 170px;">
+              <option value="todos">Todos os Tipos</option>
+              <option value="avulso">Apenas Avulsos</option>
+              <option value="pacote">Apenas Pacotes</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabela de Listagem -->
+      <section class="card-pacientes" style="padding: 0; overflow: hidden;">
+        <div style="overflow-x: auto;">
+          <table class="tabela-pacientes" style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th style="padding: 16px 20px; text-align: left;">Nome do Servi&ccedil;o</th>
+                <th style="padding: 16px 20px; text-align: center;">Tipo de Cobran&ccedil;a</th>
+                <th style="padding: 16px 20px; text-align: center;">Qtd. Sess&otilde;es</th>
+                <th style="padding: 16px 20px; text-align: right;">Valor Total (Paciente)</th>
+                <th style="padding: 16px 20px; text-align: right;">Fatia da Cl&iacute;nica</th>
+                <th style="padding: 16px 20px; text-align: right;">Repasse Profissional</th>
+                <th style="padding: 16px 20px; text-align: center;">A&ccedil;&otilde;es</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaServicosBody">
+              <tr>
+                <td colspan="7" style="padding: 40px; text-align: center; color: var(--color-text-muted);">
+                  Carregando cat&aacute;logo de servi&ccedil;os...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- =====================================================
+       MODAL: NOVO / EDITAR SERVIÇO OU PLANO
+       ===================================================== -->
+  <div class="modal-overlay" id="modalServico">
+    <div class="modal-container" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 id="modalTitle">Novo Servi&ccedil;o / Plano</h3>
+        <button class="btn-close-modal" id="btnCloseModal">&times;</button>
+      </div>
+      <form id="formServico">
+        <input type="hidden" id="serviceId">
+        <div class="modal-body">
+          <div class="modal-form-grid">
+
+            <div class="form-group-full">
+              <label class="modal-label" for="nomeServico">Nome do Servi&ccedil;o / Plano *</label>
+              <input type="text" id="nomeServico" class="modal-input" placeholder="Ex: Sess&atilde;o Fisioterapia Avulsa, Pacote Pilates 10x" required>
+            </div>
+
+            <div>
+              <label class="modal-label" for="tipoCobranca">Tipo de Cobran&ccedil;a *</label>
+              <select id="tipoCobranca" class="modal-select" required>
+                <option value="avulso">Avulso (Pagamento por sess&atilde;o)</option>
+                <option value="pacote">Pacote / Mensalidade (Multi-sess&otilde;es)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="modal-label" for="qtdSessoes">Quantidade de Sess&otilde;es *</label>
+              <input type="number" id="qtdSessoes" class="modal-input" min="1" max="100" value="1" required>
+            </div>
+
+            <div>
+              <label class="modal-label" for="valorTotal">Valor Total Pago pelo Paciente (R$) *</label>
+              <input type="text" id="valorTotal" class="modal-input" placeholder="0,00" required>
+            </div>
+
+            <div>
+              <label class="modal-label" for="valorClinica">Fatia Retida pela Cl&iacute;nica (R$) *</label>
+              <input type="text" id="valorClinica" class="modal-input" placeholder="0,00" required>
+            </div>
+
+            <div class="form-group-full">
+              <div class="preview-repasse-box">
+                <span>Repasse estimado ao Profissional:</span>
+                <span class="val" id="previewRepasse">R$ 0,00</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-modal-cancel" id="btnCancelModal">Cancelar</button>
+          <button type="submit" class="btn-modal-save" id="btnSaveService">Salvar Servi&ccedil;o</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST / NOTIFICAÇÃO -->
+  <div id="toastNotification" class="toast-notification">
+    <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span class="toast-message" id="toastMessage">Mensagem</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/store.js"></script>
+  <script src="js/financeiro-config.js"></script>
+</body>
+</html>

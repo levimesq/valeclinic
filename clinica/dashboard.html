@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="ValeClinic - Centro de Fisioterapia e Reabilita&ccedil;&atilde;o. Painel Geral do Sistema.">
+  <title>ValeClinic | Dashboard</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img class="sidebar-logo" src="assets/logo.png" alt="ValeClinic Logo">
+      <h2 class="sidebar-brand-name">VALE<span>CLINIC</span></h2>
+    </div>
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li class="nav-item active">
+          <a href="dashboard.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="pacientes.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Pacientes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="agenda.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Agenda
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="fisio.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            Fisioterapia
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="pilates.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+            Pilates Studio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="fono.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+            Fonoaudiologia
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="financeiro.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Financeiro
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="financeiro-config.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+            </svg>
+            Configurar Pre&ccedil;os e Planos
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/" class="btn-logout" style="text-decoration: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        Sair do Sistema
+      </a>
+    </div>
+  </aside>
+
+  <!-- Overlay Mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- CONTE&Uacute;DO PRINCIPAL -->
+  <div class="main-wrapper">
+
+    <header class="header-top">
+      <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+
+      <div class="header-greeting">
+        <h1 id="header-greeting-text">Bom dia!</h1>
+        <p id="current-date">Carregando...</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-notification" id="btnNotification" aria-label="Notifica&ccedil;&otilde;es">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="notification-badge" id="notifBadgeCount" style="display:none;"></span>
+        </button>
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashUserName">Carregando...</span>
+            <span class="user-role" id="dashUserRole">-</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-content">
+
+      <!-- KPIs OPERACIONAIS - valores preenchidos via JS -->
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-info-block">
+            <span class="kpi-label">Agendados Hoje</span>
+            <span class="kpi-value" id="kpiAgendados">0</span>
+            <span class="kpi-subtext" id="kpiAgendadosSub">Nenhum agendamento</span>
+          </div>
+          <div class="kpi-icon-container blue">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-info-block">
+            <span class="kpi-label">Atendidos / Presentes</span>
+            <span class="kpi-value success" id="kpiPresentes">0</span>
+            <span class="kpi-subtext" id="kpiPresentesSub">0% da agenda do dia</span>
+          </div>
+          <div class="kpi-icon-container green">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-info-block">
+            <span class="kpi-label">Faltas n&atilde;o justificadas</span>
+            <span class="kpi-value danger" id="kpiFaltas">0</span>
+            <span class="kpi-subtext" id="kpiFaltasSub">Sem faltas registradas</span>
+          </div>
+          <div class="kpi-icon-container red">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-info-block">
+            <span class="kpi-label">Faturamento do Dia</span>
+            <span class="kpi-value gold" id="kpiFaturamento">R$ 0,00</span>
+            <span class="kpi-subtext" id="kpiFaturamentoSub">Baseado nos lan&ccedil;amentos</span>
+          </div>
+          <div class="kpi-icon-container gold">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          </div>
+        </article>
+      </section>
+
+      <!-- ALERTAS DE EVASO + GR&Aacute;FICO SEMANAL -->
+      <div class="dashboard-grid-two-columns">
+
+        <!-- ALERTAS DE ABANDONO -->
+        <section class="dashboard-card">
+          <div class="card-header-flex">
+            <div class="card-title-group">
+              <h3>Alertas de Abandono (Reten&ccedil;&atilde;o)</h3>
+              <span class="badge-alert" id="badgeAlertas">0 Pacientes</span>
+            </div>
+          </div>
+          <table class="retention-table">
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>Motivo do Alerta</th>
+                <th style="text-align: right;">A&ccedil;&atilde;o R&aacute;pida</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyAlertas">
+              <tr id="emptyAlertas">
+                <td colspan="3" style="text-align:center;padding:32px 16px;color:var(--color-text-muted);">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.3;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <span style="font-weight:600;font-size:0.9rem;">Sem alertas de abandono</span>
+                    <span style="font-size:0.78rem;">Pacientes com faltas repetidas aparecer&atilde;o aqui</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- GR&Aacute;FICO SEMANAL -->
+        <section class="dashboard-card">
+          <div class="card-header-flex">
+            <div class="card-title-group">
+              <h3>Fluxo de Atendimentos Semanal</h3>
+            </div>
+          </div>
+          <div class="chart-container">
+            <div class="chart-bars" id="chartBarsSemanal">
+              <!-- Barras renderizadas via JS -->
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <span class="legend-color blue"></span>
+                <span>Atendimentos por dia</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- POPOVER DE NOTIFICA&Ccedil;&Otilde;ES -->
+  <div id="notificationsPopover" class="notifications-popover">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #E2E8F0;margin-bottom:12px;">
+      <h4 style="font-family:var(--font-title);color:var(--color-primary);font-size:1rem;">Notifica&ccedil;&otilde;es</h4>
+      <span id="notifPopoverBadge" style="font-size:0.75rem;background:#E2E8F0;color:#64748B;padding:2px 8px;border-radius:10px;font-weight:700;">0 Novas</span>
+    </div>
+    <div id="notifPopoverList" style="display:flex;flex-direction:column;gap:10px;font-size:0.82rem;">
+      <div style="padding:10px;background:#F8FAFC;border-radius:8px;border-left:3px solid #CBD5E1;color:#94A3B8;text-align:center;">
+        Nenhuma notifica&ccedil;&atilde;o no momento
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/store.js"></script>
+  <script src="js/permissions.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // &mdash;&mdash; Data e saudA&ccedil;&atilde;o din&acirc;mica &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
+      const now = new Date();
+      const hour = now.getHours();
+      const greeting = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
+      const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateStr = now.toLocaleDateString('pt-BR', opts);
+      const dateEl = document.getElementById('current-date');
+      if (dateEl) dateEl.textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+
+      // Preencher nome do Usu&aacute;rio via permissions
+      const greetEl = document.getElementById('header-greeting-text');
+      const nameEl  = document.getElementById('dashUserName');
+      const roleEl  = document.getElementById('dashUserRole');
+      if (typeof ValeStore !== 'undefined') {
+        const equipe = ValeStore.getEquipe() || [];
+        // permissions.js j&aacute; deve ter definido o Usu&aacute;rio logado
+        const emailLogado = localStorage.getItem('valeclinic_user_email') || '';
+        const membro = equipe.find(m => m.email === emailLogado);
+        if (membro) {
+          const firstName = membro.nome.split(' ')[1] || membro.nome.split(' ')[0];
+          if (greetEl) greetEl.textContent = greeting + ', ' + firstName + '!';
+          if (nameEl)  nameEl.textContent  = membro.nome;
+          if (roleEl)  roleEl.textContent  = membro.cargoLabel || membro.cargo;
+        } else {
+          if (greetEl) greetEl.textContent = greeting + '!';
+        }
+      }
+
+      // &mdash;&mdash; Sidebar Mobile &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
+      const btnHamburger   = document.getElementById('btnHamburger');
+      const sidebar        = document.querySelector('.sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      if (btnHamburger && sidebar && sidebarOverlay) {
+        function toggleSidebar() {
+          sidebar.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        }
+        btnHamburger.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+      }
+
+      // &mdash;&mdash; Popover de NotificA&ccedil;&otilde;es &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
+      const btnNotification    = document.getElementById('btnNotification');
+      const notificationsPopover = document.getElementById('notificationsPopover');
+      if (btnNotification && notificationsPopover) {
+        btnNotification.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isVisible = notificationsPopover.style.display === 'block';
+          if (!isVisible) {
+            const rect = btnNotification.getBoundingClientRect();
+            notificationsPopover.style.top      = (rect.bottom + 10) + 'px';
+            notificationsPopover.style.right    = (window.innerWidth - rect.right) + 'px';
+            notificationsPopover.style.position = 'fixed';
+            notificationsPopover.style.zIndex   = '9999';
+          }
+          notificationsPopover.style.display = isVisible ? 'none' : 'block';
+        });
+        document.addEventListener('click', (e) => {
+          if (!notificationsPopover.contains(e.target) && !btnNotification.contains(e.target)) {
+            notificationsPopover.style.display = 'none';
+          }
+        });
+      }
+
+      // —— KPIs e Gráfico ——————————————————————————————————————————————
+      function renderDashboard() {
+        if (typeof ValeStore === 'undefined') { setTimeout(renderDashboard, 300); return; }
+
+        const todayStr     = now.toISOString().split('T')[0];
+        const agendamentos = ValeStore.getAgendamentos() || [];
+        const transacoes   = ValeStore.getFinanceiro()  || [];
+        const alertas      = ValeStore.getAlertasAbandono() || [];
+
+        // Agendamentos de hoje
+        const hoje = agendamentos.filter(a => a.date === todayStr);
+        const presentes  = hoje.filter(a => a.status && (a.status.toLowerCase().includes('presente') || a.status.toLowerCase().includes('check')));
+        const totalHoje  = hoje.length;
+        const totalPres  = presentes.length;
+        const pctPres    = totalHoje > 0 ? Math.round((totalPres / totalHoje) * 100) : 0;
+
+        document.getElementById('kpiAgendados').textContent    = totalHoje;
+        document.getElementById('kpiAgendadosSub').textContent = totalHoje > 0 ? 'Consultas marcadas para hoje' : 'Nenhum agendamento hoje';
+        document.getElementById('kpiPresentes').textContent    = totalPres;
+        document.getElementById('kpiPresentesSub').textContent = pctPres + '% da agenda do dia';
+
+        // Alerta de Abandono (Regra Estrita de 2 faltas consecutivas sem justificativa)
+        const totalAlertas = alertas.length;
+        document.getElementById('kpiFaltas').textContent    = totalAlertas;
+        document.getElementById('kpiFaltasSub').textContent = totalAlertas > 0 ? totalAlertas + ' paciente(s) com 2 faltas consecutivas' : 'Nenhum paciente em risco de abandono';
+
+        // Faturamento de hoje
+        const fatHoje = transacoes
+          .filter(t => {
+            if (!t.data && !t.date) return false;
+            const raw = t.data || t.date;
+            let iso = raw;
+            if (raw.includes('/')) {
+              const [d, m, y] = raw.split('/');
+              iso = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+            }
+            return iso === todayStr && t.tipo === 'receita' && (t.status === 'pago' || !t.status);
+          })
+          .reduce((acc, t) => acc + (parseFloat(t.valor) || 0), 0);
+        document.getElementById('kpiFaturamento').textContent    = 'R$ ' + fatHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+        document.getElementById('kpiFaturamentoSub').textContent = fatHoje > 0 ? 'Receita confirmada hoje' : 'Nenhum lan\u00e7amento hoje';
+
+        // Gráfico semanal — Últimos 7 dias
+        const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'S\u00e1b'];
+        const barContainer = document.getElementById('chartBarsSemanal');
+        if (barContainer) {
+          barContainer.innerHTML = '';
+          const semana = [];
+          for (let i = 6; i >= 0; i--) {
+            const d = new Date(now);
+            d.setDate(d.getDate() - i);
+            semana.push({ iso: d.toISOString().split('T')[0], label: diasSemana[d.getDay()] });
+          }
+          const maxAg = Math.max(...semana.map(s => agendamentos.filter(a => a.date === s.iso).length), 1);
+          semana.forEach(s => {
+            const count = agendamentos.filter(a => a.date === s.iso).length;
+            const pct   = Math.round((count / maxAg) * 100);
+            const isHoje = s.iso === todayStr;
+            barContainer.innerHTML += `
+              <div class="bar-column">
+                <div class="bar-track">
+                  <div class="bar-fill ${isHoje ? 'highlight' : ''}" style="height:${pct > 0 ? pct : 4}%;" title="${count} atendimento(s)"></div>
+                </div>
+                <span class="bar-label">${s.label}</span>
+              </div>`;
+          });
+        }
+
+        // Renderizar tabela de alertas
+        renderAlertas(alertas);
+      }
+
+      function renderAlertas(alertas) {
+        const emptyRow = document.getElementById('emptyAlertas');
+        const tbody    = document.getElementById('tbodyAlertas');
+        const badge    = document.getElementById('badgeAlertas');
+
+        // Limpa linhas antigas (mantém emptyAlertas)
+        Array.from(tbody.children).forEach(c => { if (c.id !== 'emptyAlertas') c.remove(); });
+
+        if (alertas.length === 0) {
+          if (emptyRow) emptyRow.style.display = 'table-row';
+          if (badge) badge.textContent = '0 Pacientes';
+        } else {
+          if (emptyRow) emptyRow.style.display = 'none';
+          if (badge) badge.textContent = alertas.length + ' Paciente(s)';
+
+          const pacientes = ValeStore.getPacientes() || [];
+          alertas.forEach(a => {
+            const initials = a.nome.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+            const pac   = pacientes.find(p => (p.name || p.nome) === a.nome);
+            const phone = pac && (pac.phone || pac.telefone) ? (pac.phone || pac.telefone).replace(/\D/g, '') : '';
+            const waHref = phone ? `https://wa.me/55${phone}?text=Ol%C3%A1%20${encodeURIComponent(a.nome.split(' ')[0])},%20notamos%20sua%20aus%C3%AAncia%20nas%20%C3%BAltimas%20sess%C3%B5es...` : '#';
+            const tr    = document.createElement('tr');
+            tr.innerHTML = `
+              <td><div class="patient-cell">
+                <div class="patient-avatar-sm" style="background:linear-gradient(135deg,#EF4444,#DC2626);">${initials}</div>
+                <div class="patient-name-info"><strong>${a.nome}</strong><span>${a.modulo}</span></div>
+              </div></td>
+              <td><span class="reason-tag high-risk">&#9888;&#65039; Faltou 2 sess&otilde;es seguidas sem justificativa</span></td>
+              <td style="text-align:right;">
+                <a href="${waHref}" target="_blank" class="btn-whatsapp">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="14" height="14" style="margin-right:4px;"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                  WhatsApp
+                </a>
+              </td>`;
+            tbody.appendChild(tr);
+          });
+
+          // Atualizar popover
+          const notifList  = document.getElementById('notifPopoverList');
+          const notifBadge = document.getElementById('notifPopoverBadge');
+          const notifCount = document.getElementById('notifBadgeCount');
+          if (notifList) {
+            notifList.innerHTML = '';
+            alertas.forEach(a => {
+              const div = document.createElement('div');
+              div.style.cssText = 'padding:10px;background:#FEF2F2;border-radius:8px;border-left:3px solid #EF4444;font-size:0.82rem;';
+              div.innerHTML = `<strong>&#9888;&#65039; Alerta de Abandono:</strong> ${a.nome} faltou 2 sess&otilde;es seguidas sem justificativa (${a.modulo}).`;
+              notifList.appendChild(div);
+            });
+          }
+          if (notifBadge) { notifBadge.textContent = alertas.length + ' Novas'; notifBadge.style.background = 'rgba(239,68,68,0.1)'; notifBadge.style.color = '#EF4444'; }
+          if (notifCount) { notifCount.style.display = 'flex'; notifCount.textContent = alertas.length; }
+        }
+      }
+
+      renderDashboard();
+
+      // Reatualizar se o store sincronizar com Supabase
+      document.addEventListener('valeclinic:dataSynced', renderDashboard);
+    });
+  </script>
+</body>
+</html>
