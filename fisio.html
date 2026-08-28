@@ -88,6 +88,16 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="psicopedagogia.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            Psicopedagogia
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="financeiro.html">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="1" x2="12" y2="23"></line>
@@ -422,7 +432,7 @@
   <div class="modal-overlay" id="modalNovaTurma">
     <div class="modal-container" style="max-width: 580px;">
       <div class="modal-header">
-        <h3>Novo Atendimento &mdash;” Fisioterapia</h3>
+        <h3>Novo Atendimento &mdash; Fisioterapia</h3>
         <button class="btn-close-modal">&times;</button>
       </div>
       <form id="formNovoAtendimento">
@@ -435,12 +445,17 @@
               </select>
             </div>
             <div>
+              <label class="modal-label" for="novoAtdDataFisio">Data do Atendimento *</label>
+              <input type="date" id="novoAtdDataFisio" class="modal-input" required>
+            </div>
+            <div>
               <label class="modal-label" for="novoAtdHorario">Hor&aacute;rio *</label>
               <input type="time" id="novoAtdHorario" class="modal-input" required>
             </div>
             <div>
               <label class="modal-label" for="novoAtdTipo">Tipo de Atendimento *</label>
               <select id="novoAtdTipo" class="modal-select" required>
+                <option value="Fisioterapia - Avaliação / Consulta">Fisioterapia - Avaliação / Consulta</option>
                 <option value="ReabilitA&ccedil;&atilde;o P&oacute;s-Operat&oacute;ria">Reabilita&ccedil;&atilde;o P&oacute;s-Operat&oacute;ria</option>
                 <option value="Terapia Manual">Terapia Manual</option>
                 <option value="Fisioterapia Desportiva">Fisioterapia Desportiva</option>
