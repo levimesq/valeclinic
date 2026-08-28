@@ -11,7 +11,7 @@ const ValePermissions = (() => {
       label: '👑 Admin (Dra. Leonarda)',
       user: 'Dra. Leonarda Vale',
       userRole: 'Diretora Clínica',
-      allowedPages: ['dashboard', 'pacientes', 'agenda', 'fisio', 'pilates', 'fono', 'financeiro', 'financeiro-config', 'configuracoes', 'dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'financeiro.html', 'financeiro-config.html', 'configuracoes.html'],
+      allowedPages: ['dashboard', 'pacientes', 'agenda', 'fisio', 'pilates', 'fono', 'psicopedagogia', 'financeiro', 'financeiro-config', 'configuracoes', 'dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'psicopedagogia.html', 'financeiro.html', 'financeiro-config.html', 'configuracoes.html'],
       defaultPage: 'dashboard.html'
     },
     RECEPCAO: {
@@ -19,8 +19,16 @@ const ValePermissions = (() => {
       label: '🛎️ Recepção (Leiriane / Fernanda)',
       user: 'Leiriane / Fernanda',
       userRole: 'Recepção & Atendimento',
-      allowedPages: ['dashboard', 'pacientes', 'agenda', 'fisio', 'pilates', 'fono', 'financeiro-config', 'dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'financeiro-config.html'],
+      allowedPages: ['dashboard', 'pacientes', 'agenda', 'fisio', 'pilates', 'fono', 'psicopedagogia', 'financeiro-config', 'dashboard.html', 'pacientes.html', 'agenda.html', 'fisio.html', 'pilates.html', 'fono.html', 'psicopedagogia.html', 'financeiro-config.html'],
       defaultPage: 'dashboard.html'
+    },
+    PSICO: {
+      id: 'psico',
+      label: '🧠 Psicopedagoga (Dra. Cleópatra)',
+      user: 'Dra. Cleópatra',
+      userRole: 'Psicopedagoga / Neuropsicopedagoga',
+      allowedPages: ['dashboard', 'agenda', 'psicopedagogia', 'dashboard.html', 'agenda.html', 'psicopedagogia.html'],
+      defaultPage: 'psicopedagogia.html'
     },
     FONO: {
       id: 'fono',

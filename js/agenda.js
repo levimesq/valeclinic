@@ -6,8 +6,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Inicializa o date picker com a data de hoje
-  const todayStr = new Date().toISOString().split('T')[0];
+  // Inicializa o date picker com a data de hoje (fuso local seguro)
+  const todayStr = (typeof ValeStore !== 'undefined' && ValeStore.getTodayDate) ? ValeStore.getTodayDate() : new Date().toLocaleDateString('en-CA');
   const agendaDP = document.getElementById('agendaDatePicker');
   if (agendaDP) {
     agendaDP.value = todayStr;
@@ -44,6 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatarMoeda(num) {
     const n = parseFloat(num) || 0;
     return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  function formatarDataBR(dateStr) {
+    if (!dateStr) return '';
+    if (dateStr.includes('/')) return dateStr;
+    const parts = dateStr.split('-');
+    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    return dateStr;
   }
 
   // -----------------------------------------------
@@ -106,6 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (match.length > 0) filtrados = match;
     } else if (specLower.includes('fono')) {
       const match = planos.filter(p => (p.nome_servico || '').toLowerCase().includes('fono'));
+      if (match.length > 0) filtrados = match;
+    } else if (specLower.includes('psico') || specLower.includes('neuro')) {
+      const match = planos.filter(p => {
+        const n = (p.nome_servico || '').toLowerCase();
+        return n.includes('psico') || n.includes('neuro');
+      });
       if (match.length > 0) filtrados = match;
     }
 
@@ -324,30 +338,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       ValeStore.addAgendamento(novoRegistro);
 
-      // Integração direta com Financeiro (lançamento automático de receita)
-      if (valorTotal > 0) {
-        const categoriaMap = {
-          'Pilates Studio': 'pilates',
-          'Fisioterapia': 'fisio',
-          'Fonoaudiologia': 'fono'
-        };
-        ValeStore.addFinanceiro({
-          id: 'fin-' + Date.now(),
-          data: date,
-          paciente: paciente,
-          descricao: planoNome ? `Agendamento: ${planoNome}` : `Consulta: ${especialidade}`,
-          categoria: categoriaMap[especialidade] || 'geral',
-          pagamento: 'PIX',
-          valor: valorTotal.toFixed(2).replace('.', ','),
-          valor_clinica: valorClinica.toFixed(2).replace('.', ','),
-          tipo: 'receita',
-          status: 'pago',
-          profissional: profissional
-        });
-      }
-
       closeNewModal();
-      showToast('Agendamento e lançamento financeiro concluídos com sucesso!', 'success');
+      showToast('Agendamento registrado com sucesso! Presença aguardada na recepção.', 'success');
 
       const dp = document.getElementById('agendaDatePicker');
       if (dp) {
@@ -644,10 +636,31 @@ document.addEventListener('DOMContentLoaded', () => {
     scheduleList.innerHTML = '';
 
     if (filtrados.length === 0) {
+      const outrasDatas = [...new Set(allAgendamentos.filter(a => a.status !== 'Cancelado' && a.date !== selectedDate).map(a => a.date))].filter(Boolean).sort();
+      let outrasDatasHtml = '';
+
+      if (outrasDatas.length > 0) {
+        outrasDatasHtml = `
+          <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--color-border-input);">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-primary); margin-bottom: 8px;">
+              💡 Foram encontrados agendamentos ativos em outras datas:
+            </div>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+              ${outrasDatas.map(dt => {
+                const count = allAgendamentos.filter(a => a.date === dt && a.status !== 'Cancelado').length;
+                const diaSem = ValeStore.getDiaSemana(dt);
+                return `<button type="button" class="btn-jump-agenda-date" data-date="${dt}" style="background: var(--color-primary); color: #FFF; border: none; padding: 7px 14px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">📅 Ver ${diaSem} (${formatarDataBR(dt)}) &mdash; <strong>${count} paciente(s)</strong></button>`;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }
+
       scheduleList.innerHTML = `
-        <div style="padding: 40px; text-align: center; color: var(--color-text-muted); background: var(--color-card-bg); border-radius: var(--radius-card); border: 1px dashed var(--color-border-input); width: 100%;">
-          <h4>Nenhum agendamento para este dia</h4>
+        <div style="padding: 40px 20px; text-align: center; color: var(--color-text-muted); background: var(--color-card-bg); border-radius: var(--radius-card); border: 1px dashed var(--color-border-input); width: 100%;">
+          <h4 style="color: var(--color-primary); font-size: 1.05rem;">Nenhum agendamento para ${formatarDataBR(selectedDate)} (${ValeStore.getDiaSemana(selectedDate)})</h4>
           <p style="font-size: 0.85rem; margin-top: 6px;">Clique em "NOVO AGENDAMENTO" para marcar uma consulta com o profissional.</p>
+          ${outrasDatasHtml}
         </div>
       `;
       return;
@@ -694,7 +707,58 @@ document.addEventListener('DOMContentLoaded', () => {
         const newStatus = `Presente (${hh}:${mm}h)`;
 
         ValeStore.updateAgendamento(slotId, { status: newStatus, horarioChegada: `${hh}:${mm}` });
-        showToast('Presença do paciente confirmada no sistema!', 'success');
+
+        // Lançamento financeiro automático SOMENTE na confirmação de presença
+        const agendamentos = ValeStore.getAgendamentos() || [];
+        const agConfirmado = agendamentos.find(a => String(a.id) === String(slotId));
+        if (agConfirmado) {
+          const planos = ValeStore.getPlanosServicos() || [];
+          let valTotal = parseFloat(agConfirmado.valor_total) || 0;
+          let valClinica = parseFloat(agConfirmado.valor_clinica) || 0;
+          let planoNome = agConfirmado.plano_nome || '';
+
+          // Se não tem valores no agendamento, buscar no catálogo de planos
+          if (valTotal === 0) {
+            const esp = (agConfirmado.especialidade || '').toLowerCase();
+            const matchPlano = planos.find(p => {
+              const n = (p.nome_servico || '').toLowerCase();
+              if (esp.includes('pilates') && n.includes('pilates')) return true;
+              if (esp.includes('fisio') && n.includes('fisio')) return true;
+              if (esp.includes('fono') && n.includes('fono')) return true;
+              if (esp.includes('psico') && n.includes('psico')) return true;
+              return false;
+            });
+            if (matchPlano) {
+              valTotal = parseFloat(matchPlano.valor_total) || 0;
+              valClinica = parseFloat(matchPlano.valor_clinica) || 0;
+              planoNome = planoNome || matchPlano.nome_servico;
+            }
+          }
+
+          if (valTotal > 0) {
+            const categoriaMap = {
+              'Pilates Studio': 'pilates',
+              'Fisioterapia': 'fisio',
+              'Fonoaudiologia': 'fono',
+              'Psicopedagogia': 'psico'
+            };
+            ValeStore.addFinanceiro({
+              id: 'fin-' + Date.now(),
+              data: agConfirmado.date || new Date().toISOString().split('T')[0],
+              paciente: agConfirmado.paciente,
+              descricao: planoNome ? `Consulta: ${planoNome}` : `Consulta: ${agConfirmado.especialidade}`,
+              categoria: categoriaMap[agConfirmado.especialidade] || 'geral',
+              pagamento: 'PIX',
+              valor: valTotal,
+              valor_clinica: valClinica,
+              tipo: 'receita',
+              status: 'pago',
+              profissional: agConfirmado.profissional
+            });
+          }
+        }
+
+        showToast('Presença confirmada! Receita lançada no financeiro.', 'success');
 
         const dp = document.getElementById('agendaDatePicker');
         renderTimeline(dp ? dp.value : todayStr);
@@ -734,6 +798,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (editBtn) {
         const row = editBtn.closest('.timeline-row');
         openEditModal(row);
+        return;
+      }
+
+      // Botão Navegação Rápida para outra Data com Agendamentos
+      const jumpBtn = e.target.closest('.btn-jump-agenda-date');
+      if (jumpBtn) {
+        const targetDate = jumpBtn.dataset.date;
+        if (targetDate) {
+          const dp = document.getElementById('agendaDatePicker');
+          if (dp) dp.value = targetDate;
+          updateDateDisplay(targetDate);
+          renderTimeline(targetDate);
+          showToast(`Exibindo agendamentos para ${formatarDataBR(targetDate)}`, 'success');
+        }
         return;
       }
     });

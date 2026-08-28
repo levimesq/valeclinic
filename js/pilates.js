@@ -9,11 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const moduloNome = 'Pilates Studio';
   let activeDay = 'Segunda';
 
-  // 1. Determinar dia atual com blindagem de fuso local
-  const hojeDateStr = new Date().toISOString().split('T')[0];
-  const hojeDiaSemana = typeof ValeStore !== 'undefined' ? ValeStore.getDiaSemana(hojeDateStr) : 'Segunda';
-  if (hojeDiaSemana && hojeDiaSemana !== 'Domingo') {
-    activeDay = hojeDiaSemana;
+  // 1. Determinar dia atual com persistência de sessão ou fuso local
+  const savedDay = sessionStorage.getItem('valeclinic_pilates_active_day');
+  if (savedDay) {
+    activeDay = savedDay;
+  } else {
+    const hojeDateStr = typeof ValeStore !== 'undefined' ? ValeStore.getTodayDate() : new Date().toLocaleDateString('en-CA');
+    const hojeDiaSemana = typeof ValeStore !== 'undefined' ? ValeStore.getDiaSemana(hojeDateStr) : 'Segunda';
+    if (hojeDiaSemana && hojeDiaSemana !== 'Domingo') {
+      activeDay = hojeDiaSemana;
+    }
   }
 
   // 2. Configurar abas de dias da semana
@@ -29,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       dayTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       activeDay = tab.textContent.trim().replace('-feira', '');
+      sessionStorage.setItem('valeclinic_pilates_active_day', activeDay);
       renderPilatesCards();
     });
   });
@@ -103,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Helper para calcular a data ISO correspondente ao dia da semana selecionado
+  // Helper para calcular a data local correspondente ao dia da semana selecionado
   function getDateForWeekday(weekdayName) {
     const diasMap = { 'Domingo': 0, 'Segunda': 1, 'Terça': 2, 'Quarta': 3, 'Quinta': 4, 'Sexta': 5, 'Sábado': 6 };
     const targetDayIndex = diasMap[weekdayName] ?? 1;
@@ -112,9 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentDayIndex = now.getDay();
     let diff = targetDayIndex - currentDayIndex;
 
-    const targetDate = new Date(now);
-    targetDate.setDate(now.getDate() + diff);
-    return targetDate.toISOString().split('T')[0];
+    const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff);
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const day = String(targetDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   // Popular seletor de pacientes ativos (100% Supabase / Store)
@@ -184,35 +192,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const customTurmas = ValeStore.getPilatesTurmas() || [];
     const allAg = ValeStore.getAgendamentos() || [];
 
-    const pilatesAg = allAg.filter(a =>
-      (a.especialidade === moduloNome || a.especialidade === 'Pilates') &&
-      a.status !== 'Cancelado'
-    );
+    const pilatesAg = allAg.filter(a => {
+      const esp = (a.especialidade || '').toLowerCase();
+      return (esp.includes('pilates') || (a.profissional || '').toLowerCase().includes('katiane')) && a.status !== 'Cancelado';
+    });
 
-    const diaAg = pilatesAg.filter(a => ValeStore.getDiaSemana(a.date) === dia);
+    const diaAg = pilatesAg.filter(a => {
+      const d = ValeStore.getDiaSemana(a.date);
+      return d === dia || d.startsWith(dia);
+    });
 
     const turmasMap = new Map();
 
-    // 1. Adicionar turmas criadas explicitamente
-    customTurmas.filter(t => t.dia === dia).forEach(t => {
+    // 1. Adicionar turmas salvas
+    customTurmas.filter(t => t.dia === dia || (t.dia && t.dia.startsWith(dia))).forEach(t => {
       turmasMap.set(t.hora, {
         id: t.id,
         nome: t.nome || 'Pilates Studio',
         dia: t.dia || dia,
         hora: t.hora,
         profissional: t.profissional || 'Dra. Katiane',
-        capacidade: 6,
+        capacidade: parseInt(t.capacidade || 6, 10) || 6,
         isCustom: true
       });
     });
 
-    // 2. Adicionar turmas derivadas de agendamentos
+    // 2. Adicionar turmas derivadas de agendamentos existentes
     diaAg.forEach(a => {
       const hora = a.hora || a.time || '08:00';
       if (!turmasMap.has(hora)) {
         turmasMap.set(hora, {
           id: 'turma-slot-' + hora,
-          nome: a.especialidade || 'Pilates Studio',
+          nome: a.plano_nome || 'Pilates Studio',
           dia: dia,
           hora: hora,
           profissional: a.profissional || 'Dra. Katiane',
@@ -235,14 +246,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const allAgendamentos = ValeStore.getAgendamentos() || [];
 
     // Filtrar por especialidade Pilates e status ativo
-    const pilatesAgendamentos = allAgendamentos.filter(a =>
-      (a.especialidade === moduloNome || a.especialidade === 'Pilates') &&
-      a.status !== 'Cancelado'
-    );
+    const pilatesAgendamentos = allAgendamentos.filter(a => {
+      const esp = (a.especialidade || '').toLowerCase();
+      return (esp.includes('pilates') || (a.profissional || '').toLowerCase().includes('katiane')) && a.status !== 'Cancelado';
+    });
 
-    const diaAgendamentos = pilatesAgendamentos.filter(a =>
-      ValeStore.getDiaSemana(a.date) === activeDay
-    );
+    const diaAgendamentos = pilatesAgendamentos.filter(a => {
+      const d = ValeStore.getDiaSemana(a.date);
+      return d === activeDay || d.startsWith(activeDay);
+    });
 
     const turmasDoDia = getTurmasDoDia(activeDay);
 
@@ -552,6 +564,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const profDestino = contextEncaixe ? contextEncaixe.prof : 'Dra. Katiane';
       const dataCalculada = getDateForWeekday(diaDestino);
 
+      // Buscar plano correspondente no catálogo do Supabase
+      const planos = (typeof ValeStore !== 'undefined' ? ValeStore.getPlanosServicos() : []) || [];
+      const planoPilates = planos.find(p => (p.nome_servico || '').toLowerCase().includes('pilates'));
+      const valTot = planoPilates ? planoPilates.valor_total : 100;
+      const valCli = planoPilates ? planoPilates.valor_clinica : 60;
+
       // Criar agendamento real e enviar ao Supabase
       const novoAgendamento = {
         id: 'slot-' + Date.now(),
@@ -562,7 +580,11 @@ document.addEventListener('DOMContentLoaded', () => {
         especialidade: moduloNome,
         profissional: profDestino,
         status: 'Aguardando Chegada',
-        horarioChegada: null
+        horarioChegada: null,
+        plano_id: planoPilates ? planoPilates.id : null,
+        plano_nome: planoPilates ? planoPilates.nome_servico : plano,
+        valor_total: valTot,
+        valor_clinica: valCli
       };
 
       ValeStore.addAgendamento(novoAgendamento);
@@ -572,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
       contextEncaixe = null;
       renderPilatesCards();
 
-      alert(`✅ Paciente ${pac} encaixado com sucesso na turma de ${diaDestino} às ${horaDestino}!`);
+      alert(`✅ Paciente ${pac} matriculado com sucesso na turma de ${diaDestino} às ${horaDestino}!`);
     });
   }
 
@@ -635,17 +657,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 11. Boot inicial e sincronização ativa com o Supabase
-  populatePatientSelects();
-  if (typeof ValeStore !== 'undefined' && ValeStore.syncAgendamentos) {
-    ValeStore.syncAgendamentos().then(() => {
+  // 11. FETCH ASSÍNCRONO & SINGLE SOURCE OF TRUTH (Supabase)
+  async function fetchDados() {
+    try {
+      if (typeof ValeStore !== 'undefined') {
+        if (ValeStore.syncAgendamentos) await ValeStore.syncAgendamentos();
+      }
       populatePatientSelects();
       renderPilatesCards();
-    });
-  } else {
-    renderPilatesCards();
+    } catch (err) {
+      console.error('[Pilates] Erro ao sincronizar dados do Supabase:', err);
+      populatePatientSelects();
+      renderPilatesCards();
+    }
   }
 
+  // Executar fetch inicial
+  fetchDados();
+
+  // Reagir a sincronizações em tempo real
   document.addEventListener('valeclinic:dataSynced', () => {
     populatePatientSelects();
     renderPilatesCards();

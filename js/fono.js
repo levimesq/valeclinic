@@ -1,19 +1,24 @@
 /* ==========================================
    ValeClinic - Módulo Fonoaudiologia
    Sincronização Supabase + Agenda Geral + Blindagem de Timezone
-   Versão 4.0
+   Versão 5.0 - SSOT & Persistência Permanente
    ========================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
   const moduloNome = 'Fonoaudiologia';
   let activeDay = 'Segunda';
 
-  // Determinar dia atual com blindagem de fuso local
-  const hojeDateStr = new Date().toISOString().split('T')[0];
-  const hojeDiaSemana = typeof ValeStore !== 'undefined' ? ValeStore.getDiaSemana(hojeDateStr) : 'Segunda';
-  if (hojeDiaSemana && hojeDiaSemana !== 'Domingo') {
-    activeDay = hojeDiaSemana;
+  // Determinar dia atual com persistência de sessão ou fuso local
+  const savedDay = sessionStorage.getItem('valeclinic_fono_active_day');
+  if (savedDay) {
+    activeDay = savedDay;
+  } else {
+    const hojeDateStr = typeof ValeStore !== 'undefined' ? ValeStore.getTodayDate() : new Date().toLocaleDateString('en-CA');
+    const hojeDiaSemana = typeof ValeStore !== 'undefined' ? ValeStore.getDiaSemana(hojeDateStr) : 'Segunda';
+    if (hojeDiaSemana && hojeDiaSemana !== 'Domingo') {
+      activeDay = hojeDiaSemana;
+    }
   }
 
   // 1. Configurar abas de dias da semana
@@ -29,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       dayTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       activeDay = tab.textContent.trim().replace('-feira', '');
+      sessionStorage.setItem('valeclinic_fono_active_day', activeDay);
       renderFonoCards();
     });
   });
@@ -70,6 +76,22 @@ document.addEventListener('DOMContentLoaded', () => {
     sidebarOverlay.addEventListener('click', toggleSidebar);
   }
 
+  // Helper para calcular a data local correspondente ao dia da semana selecionado
+  function getDateForWeekday(weekdayName) {
+    const diasMap = { 'Domingo': 0, 'Segunda': 1, 'Terça': 2, 'Quarta': 3, 'Quinta': 4, 'Sexta': 5, 'Sábado': 6 };
+    const targetDayIndex = diasMap[weekdayName] ?? 1;
+
+    const now = new Date();
+    const currentDayIndex = now.getDay();
+    let diff = targetDayIndex - currentDayIndex;
+
+    const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff);
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const day = String(targetDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   // 3. Modais
   const modalNovoAtendimento = document.getElementById('modalNovaTurma');
   const modalVincular = document.getElementById('modalMatricular');
@@ -83,6 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnNovoAtendimento && modalNovoAtendimento) {
     btnNovoAtendimento.addEventListener('click', () => {
       populatePatientSelects();
+      const inputData = document.getElementById('novoAtdDataFono');
+      if (inputData) inputData.value = getDateForWeekday(activeDay);
       modalNovoAtendimento.classList.add('active');
     });
   }
@@ -265,27 +289,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const pac = document.getElementById('novoAtdPacienteFono')?.value || '';
       const hora = document.getElementById('novoAtdHorarioFono')?.value || '08:00';
+      const tipo = document.getElementById('novoAtdTipoFono')?.value || 'Sessão Fonoaudiológica';
       const prof = document.getElementById('novoAtdProfFono')?.value || 'Dr. Jorge Linhares';
+      const dataEscolhida = document.getElementById('novoAtdDataFono')?.value || getDateForWeekday(activeDay);
 
       if (!pac) {
         alert('Por favor, selecione um paciente cadastrado.');
         return;
       }
 
+      // Buscar plano correspondente no catálogo do Supabase
+      const planos = (typeof ValeStore !== 'undefined' ? ValeStore.getPlanosServicos() : []) || [];
+      const planoFono = planos.find(p => (p.nome_servico || '').toLowerCase().includes('fono'));
+      const valTot = planoFono ? planoFono.valor_total : 130;
+      const valCli = planoFono ? planoFono.valor_clinica : 26;
+
       const novoRegistro = {
         id: 'slot-' + Date.now(),
-        date: hojeDateStr,
+        date: dataEscolhida,
         hora: hora,
         time: hora,
         paciente: pac,
         especialidade: moduloNome,
         profissional: prof,
         status: 'Aguardando Chegada',
-        horarioChegada: null
+        horarioChegada: null,
+        plano_id: planoFono ? planoFono.id : null,
+        plano_nome: planoFono ? planoFono.nome_servico : tipo,
+        valor_total: valTot,
+        valor_clinica: valCli
       };
 
       ValeStore.addAgendamento(novoRegistro);
-      alert(`✅ Atendimento de ${pac} criado e registrado no sistema!`);
+      alert(`✅ Atendimento de ${pac} agendado para ${dataEscolhida} às ${hora}! Sincronizado com a Agenda Geral.`);
       if (modalNovoAtendimento) modalNovoAtendimento.classList.remove('active');
       formNovoFono.reset();
       renderFonoCards();
@@ -376,17 +412,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 12. Boot inicial e re-render ao sincronizar
-  populatePatientSelects();
-  if (typeof ValeStore !== 'undefined' && ValeStore.syncAgendamentos) {
-    ValeStore.syncAgendamentos().then(() => {
+  // 12. FETCH ASSÍNCRONO & SINGLE SOURCE OF TRUTH (Supabase)
+  async function fetchDados() {
+    try {
+      if (typeof ValeStore !== 'undefined' && ValeStore.syncAgendamentos) {
+        await ValeStore.syncAgendamentos();
+      }
       populatePatientSelects();
       renderFonoCards();
-    });
-  } else {
-    renderFonoCards();
+    } catch (err) {
+      console.error('[Fonoaudiologia] Erro ao sincronizar dados do Supabase:', err);
+      populatePatientSelects();
+      renderFonoCards();
+    }
   }
 
+  // Boot inicial com await
+  await fetchDados();
+
+  // Reagir a sincronizações em tempo real
   document.addEventListener('valeclinic:dataSynced', () => {
     populatePatientSelects();
     renderFonoCards();

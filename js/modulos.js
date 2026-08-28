@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let moduloAtual = null;
   if (path.includes('fisio'))    moduloAtual = 'Fisioterapia';
   if (path.includes('fono'))     moduloAtual = 'Fonoaudiologia';
+  if (path.includes('psico'))    moduloAtual = 'Psicopedagogia';
   if (path.includes('pilates'))  moduloAtual = 'Pilates Studio';
 
   // ── Buscar agendamentos de hoje para este módulo ─────────────────────────
