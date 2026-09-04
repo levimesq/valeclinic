@@ -120,7 +120,7 @@
     </nav>
 
     <div class="sidebar-footer">
-      <a href="/" class="btn-logout" style="text-decoration: none;">
+      <a href="index.html" class="btn-logout" style="text-decoration: none;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
@@ -438,10 +438,9 @@
         <div class="modal-body">
           <div class="modal-form-grid">
             <div class="form-group-full">
-              <label class="modal-label" for="novoAtdPacienteFono">Paciente *</label>
-              <select id="novoAtdPacienteFono" class="modal-select" required>
-                <option value="">Selecione o paciente cadastrado...</option>
-              </select>
+              <label class="modal-label" for="novoAtdPacienteFono">Paciente * (Digite para buscar)</label>
+              <input type="text" id="novoAtdPacienteFono" list="fonoPacientesDatalist" class="modal-input" placeholder="Digite o nome do paciente..." required autocomplete="off">
+              <datalist id="fonoPacientesDatalist"></datalist>
             </div>
             <div>
               <label class="modal-label" for="novoAtdDataFono">Data do Atendimento *</label>
@@ -490,10 +489,8 @@
         <div class="modal-body">
           <div class="modal-form-grid">
             <div class="form-group-full">
-              <label class="modal-label" for="vincPacienteFono">Paciente Cadastrado *</label>
-              <select id="vincPacienteFono" class="modal-select" required>
-                <option value="">Selecione o paciente cadastrado...</option>
-              </select>
+              <label class="modal-label" for="vincPacienteFono">Paciente Cadastrado * (Digite para buscar)</label>
+              <input type="text" id="vincPacienteFono" list="fonoPacientesDatalist" class="modal-input" placeholder="Digite o nome do paciente..." required autocomplete="off">
             </div>
             <div class="form-group-full">
               <label class="modal-label" for="vincObsFono">Observa&ccedil;&otilde;es</label>

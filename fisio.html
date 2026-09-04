@@ -120,7 +120,7 @@
     </nav>
 
     <div class="sidebar-footer">
-      <a href="/" class="btn-logout" style="text-decoration: none;">
+      <a href="index.html" class="btn-logout" style="text-decoration: none;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
@@ -439,10 +439,9 @@
         <div class="modal-body">
           <div class="modal-form-grid">
             <div class="form-group-full">
-              <label class="modal-label" for="novoAtdPaciente">Paciente *</label>
-              <select id="novoAtdPaciente" class="modal-select" required>
-                <option value="">Selecione o paciente cadastrado...</option>
-              </select>
+              <label class="modal-label" for="novoAtdPaciente">Paciente * (Digite para buscar)</label>
+              <input type="text" id="novoAtdPaciente" list="fisioPacientesDatalist" class="modal-input" placeholder="Digite o nome do paciente..." required autocomplete="off">
+              <datalist id="fisioPacientesDatalist"></datalist>
             </div>
             <div>
               <label class="modal-label" for="novoAtdDataFisio">Data do Atendimento *</label>
@@ -467,7 +466,6 @@
               <label class="modal-label" for="novoAtdProf">Profissional Respons&aacute;vel *</label>
               <select id="novoAtdProf" class="modal-select" required>
                 <option value="Dra. Leonarda Vale">Dra. Leonarda Vale</option>
-                <option value="Dr. Lucas Andrade">Dr. Lucas Andrade</option>
               </select>
             </div>
           </div>
@@ -491,10 +489,8 @@
         <div class="modal-body">
           <div class="modal-form-grid">
             <div class="form-group-full">
-              <label class="modal-label" for="vincPaciente">Paciente Cadastrado *</label>
-              <select id="vincPaciente" class="modal-select" required>
-                <option value="">Selecione o paciente cadastrado...</option>
-              </select>
+              <label class="modal-label" for="vincPaciente">Paciente Cadastrado * (Digite para buscar)</label>
+              <input type="text" id="vincPaciente" list="fisioPacientesDatalist" class="modal-input" placeholder="Digite o nome do paciente..." required autocomplete="off">
             </div>
             <div class="form-group-full">
               <label class="modal-label" for="vincObs">Observa&ccedil;&otilde;es</label>
