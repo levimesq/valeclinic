@@ -371,7 +371,7 @@ const ValeStore = (() => {
         return ['Dra. Katiane', 'Dra. Mirela'];
       }
       if (esp.includes('fisio')) {
-        return ['Dra. Leonarda Vale', 'Dr. Lucas Andrade'];
+        return ['Dra. Leonarda Vale'];
       }
       if (esp.includes('fono')) {
         return ['Dr. Jorge Linhares'];
@@ -379,7 +379,7 @@ const ValeStore = (() => {
       if (esp.includes('psico') || esp.includes('neuro')) {
         return ['Dra. Cleópatra'];
       }
-      return ['Dra. Leonarda Vale', 'Dr. Lucas Andrade', 'Dr. Jorge Linhares', 'Dra. Cleópatra', 'Dra. Katiane', 'Dra. Mirela'];
+      return ['Dra. Leonarda Vale', 'Dr. Jorge Linhares', 'Dra. Cleópatra', 'Dra. Katiane', 'Dra. Mirela'];
     },
 
     getEquipeRecepcao: () => ['Leiriane', 'Fernanda'],

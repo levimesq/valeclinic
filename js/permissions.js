@@ -48,8 +48,8 @@ const ValePermissions = (() => {
     },
     FISIO: {
       id: 'fisio',
-      label: '💆 Fisioterapeuta (Dr. Lucas Andrade)',
-      user: 'Dr. Lucas Andrade',
+      label: '💆 Fisioterapeuta (Dra. Leonarda Vale)',
+      user: 'Dra. Leonarda Vale',
       userRole: 'Fisioterapeuta',
       allowedPages: ['dashboard', 'agenda', 'fisio', 'dashboard.html', 'agenda.html', 'fisio.html'],
       defaultPage: 'fisio.html'
@@ -95,7 +95,7 @@ const ValePermissions = (() => {
     const userEmail = localStorage.getItem('valeclinic_user_email');
     const activeRole = localStorage.getItem('valeclinic_active_role');
     if (!userEmail && !activeRole) {
-      window.location.href = '/';
+      window.location.href = 'index.html';
       return;
     }
 
@@ -106,6 +106,38 @@ const ValePermissions = (() => {
       alert(`⚠️ Acesso Restrito!\n\nO perfil "${roleConfig.label}" não possui acesso à tela "${currentPage}". Redirecionando para sua página inicial.`);
       window.location.href = roleConfig.defaultPage;
     }
+  }
+
+  // Função centralizada de Logout Seguro
+  async function performLogout() {
+    if (confirm('Deseja realmente sair do ValeClinic?')) {
+      localStorage.removeItem('valeclinic_active_role');
+      localStorage.removeItem('valeclinic_user_email');
+      localStorage.removeItem('valeclinic_user_name');
+      localStorage.removeItem('valeclinic_user_role');
+      try {
+        const db = window.supabase ? window.supabase.createClient(
+          'https://nzlwmlieznykmlkcfmsp.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56bHdtbGllem55a21sa2NmbXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjExODUsImV4cCI6MjEwMDkzNzE4NX0.SumL1Iu4G9Y1pNb0nsqirC1CqJs8x2gtqke_pFvQhJM'
+        ) : null;
+        if (db) await db.auth.signOut();
+      } catch (e) {
+        console.warn('[Logout Supabase]', e);
+      }
+      window.location.href = 'index.html';
+    }
+  }
+
+  // Configura todos os botões de logout da Sidebar e da página
+  function setupLogoutButtons() {
+    document.querySelectorAll('.btn-logout').forEach(btn => {
+      btn.setAttribute('href', 'index.html');
+      // Remove listeners duplicados se houver
+      btn.onclick = async (e) => {
+        e.preventDefault();
+        await performLogout();
+      };
+    });
   }
 
   // Atualiza a Sidebar mostrando apenas os links permitidos
@@ -189,20 +221,9 @@ const ValePermissions = (() => {
       btnLogout.style.borderColor = 'var(--color-border-input, #E2E8F0)';
     });
 
-    btnLogout.addEventListener('click', async () => {
-      if (confirm('Deseja realmente sair do ValeClinic?')) {
-        localStorage.removeItem('valeclinic_active_role');
-        localStorage.removeItem('valeclinic_user_email');
-        localStorage.removeItem('valeclinic_user_name');
-        try {
-          const db = window.supabase ? window.supabase.createClient(
-            'https://nzlwmlieznykmlkcfmsp.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56bHdtbGllem55a21sa2NmbXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjExODUsImV4cCI6MjEwMDkzNzE4NX0.SumL1Iu4G9Y1pNb0nsqirC1CqJs8x2gtqke_pFvQhJM'
-          ) : null;
-          if (db) await db.auth.signOut();
-        } catch (e) {}
-        window.location.href = '/';
-      }
+    btnLogout.addEventListener('click', async (e) => {
+      e.preventDefault();
+      await performLogout();
     });
 
     headerActions.appendChild(btnLogout);
@@ -237,6 +258,7 @@ const ValePermissions = (() => {
   // Inicialização Automática ao carregar o script
   document.addEventListener('DOMContentLoaded', () => {
     checkPageAccess();
+    setupLogoutButtons();
     updateSidebarNavigation();
     updateHeaderUserProfile();
     restrictDashboardFinancials();
@@ -245,7 +267,8 @@ const ValePermissions = (() => {
   return {
     getActiveRole: getActiveRoleConfig,
     setActiveRole: setActiveRoleId,
-    checkAccess: checkPageAccess
+    checkAccess: checkPageAccess,
+    logout: performLogout
   };
 
 })();

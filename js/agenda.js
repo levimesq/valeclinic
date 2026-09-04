@@ -61,11 +61,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof ValeStore === 'undefined') return;
     const pacientesAtivos = ValeStore.getPacientesAtivos() || [];
 
+    const datalist = document.getElementById('pacientesDatalist');
+    if (datalist) {
+      datalist.innerHTML = '';
+      pacientesAtivos.forEach(p => {
+        const nome = p.name || p.nome || '';
+        const tel  = p.phone || p.telefone || '';
+        const opt  = document.createElement('option');
+        opt.value = nome;
+        if (tel) opt.label = `${nome} (${tel})`;
+        datalist.appendChild(opt);
+      });
+    }
+
     const newSel  = document.getElementById('newPatient');
     const editSel = document.getElementById('editPatient');
 
     [newSel, editSel].forEach(sel => {
-      if (!sel) return;
+      if (!sel || sel.tagName !== 'SELECT') return;
       const currVal = sel.value;
       sel.innerHTML = '<option value="">Selecione o paciente cadastrado...</option>';
 
@@ -541,38 +554,74 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // -----------------------------------------------
-  // HELPER: CARD HTML DA TIMELINE
-  // -----------------------------------------------
-  function buildCardHTML(id, hora, especialidade, paciente, profissional, status, waHref, planoNome, valorTotal) {
-    const initials = (paciente || '?').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-    const specClass = (especialidade || '').toLowerCase().includes('pilates') ? 'pilates' :
-                      (especialidade || '').toLowerCase().includes('fisio') ? 'fisio' : 'fono';
-    const statusId = 'status-' + id;
+  // Helper para construir link de confirmação do WhatsApp
+  function buildWhatsAppConfirmationLink(paciente, dataStr, hora) {
+    const pacientes = (typeof ValeStore !== 'undefined' ? ValeStore.getPacientes() : []) || [];
+    const pacClean = (paciente || '').trim().toLowerCase();
 
-    let statusClass = 'waiting';
-    let statusText  = 'Aguardando Chegada';
+    const pacObj = pacientes.find(p => {
+      const n = (p.name || p.nome || '').trim().toLowerCase();
+      return n === pacClean || (n && pacClean && (n.includes(pacClean) || pacClean.includes(n)));
+    });
 
-    if (status.includes('Presente')) {
-      statusClass = 'checked-in';
-      statusText = status;
-    } else if (status.includes('Faltoso') || status.includes('Ausente') || status.includes('Faltou')) {
-      statusClass = 'absent';
-      statusText = status;
+    const rawPhone = pacObj && (pacObj.phone || pacObj.telefone) ? String(pacObj.phone || pacObj.telefone) : '';
+    let cleanTel = rawPhone.replace(/\D/g, '');
+
+    const dataFormatada = formatarDataBR(dataStr);
+    const msg = `Olá, ${paciente}! Passando para confirmar seu agendamento no dia ${dataFormatada} às ${hora}.`;
+
+    if (cleanTel) {
+      if (cleanTel.length >= 10 && !cleanTel.startsWith('55')) {
+        cleanTel = '55' + cleanTel;
+      }
+      return {
+        url: `https://api.whatsapp.com/send?phone=${cleanTel}&text=${encodeURIComponent(msg)}`,
+        hasPhone: true,
+        phone: cleanTel,
+        message: msg
+      };
     }
 
-    const isDone = status.includes('Presente') || status.includes('Faltoso') || status.includes('Ausente') || status.includes('Faltou');
+    return {
+      url: `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`,
+      hasPhone: false,
+      phone: '',
+      message: msg
+    };
+  }
 
-    const buttonsHtml = isDone
-      ? `<button type="button" class="btn-checkin done" disabled>${statusText}</button>`
-      : `<button type="button" class="btn-checkin btn-do-checkin" data-status-id="${statusId}" data-slot-id="${id}">
-           <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Confirmar Chegada
+  // -----------------------------------------------
+  // CONSTRUTOR DO HTML DO CARD DE AGENDAMENTO
+  // -----------------------------------------------
+  function buildCardHTML(id, hora, especialidade, paciente, profissional, status, waData, planoNome, valorTotal) {
+    const initials = paciente.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || 'VC';
+    const statusId = 'status-slot-' + id;
+    const isPresente = status.includes('Presente');
+    const isFaltou   = status.includes('Faltou') || status.includes('Faltoso');
+
+    const statusClass = isPresente ? 'checked-in' : isFaltou ? 'absent' : 'waiting';
+    const statusText  = status;
+
+    const specClass = especialidade === 'Pilates Studio' ? 'spec-pilates' :
+                      especialidade === 'Fisioterapia'   ? 'spec-fisio' :
+                      especialidade === 'Fonoaudiologia' ? 'spec-fono' : 'spec-psico';
+
+    const buttonsHtml = isPresente
+      ? `<button type="button" class="btn-checkin done btn-presenca-ok" disabled style="cursor: default;">
+           ✓ Chegada Confirmada
+         </button>`
+      : `<button type="button" class="btn-checkin btn-do-checkin" data-status-id="${statusId}" data-slot-id="${id}" data-paciente="${paciente}" data-especialidade="${especialidade}">
+           Confirmar Chegada
          </button>
          <button type="button" class="btn-faltou btn-do-faltou" data-status-id="${statusId}" data-slot-id="${id}" data-paciente="${paciente}" data-especialidade="${especialidade}">
            Faltou
          </button>`;
 
     const planoBadge = planoNome ? `<span style="font-size:0.75rem; background: rgba(197,160,89,0.15); color: var(--color-secondary); padding: 2px 6px; border-radius: 4px; font-weight: 600; margin-left: 6px;">${planoNome}</span>` : '';
+
+    const waHref = waData ? waData.url : '#';
+    const hasPhone = waData ? waData.hasPhone : false;
+    const waMsg = waData ? waData.message : '';
 
     return `
       <div class="timeline-row"
@@ -600,7 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <button class="btn-icon-quick cancel btn-cancel-appointment" title="Cancelar Horário">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
-              <a href="${waHref}" target="_blank" class="btn-icon-quick whatsapp" title="WhatsApp">
+              <a href="${waHref}" target="_blank" class="btn-icon-quick whatsapp btn-whatsapp-action" data-has-phone="${hasPhone}" data-paciente="${paciente}" data-msg="${waMsg}" title="Confirmar Agendamento via WhatsApp">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="16" height="16"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
               </a>
             </div>
@@ -628,9 +677,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filtrar por data e excluir cancelados
     let filtrados = allAgendamentos.filter(a => a.date === selectedDate && a.status !== 'Cancelado');
 
-    // Filtrar por especialidade se não for 'Todos'
     if (currentFilter !== 'Todos') {
-      filtrados = filtrados.filter(a => a.especialidade === currentFilter);
+      filtrados = filtrados.filter(a => {
+        const spec = (a.especialidade || '').toLowerCase();
+        const filt = currentFilter.toLowerCase();
+        return spec.includes(filt) || filt.includes(spec);
+      });
     }
 
     scheduleList.innerHTML = '';
@@ -669,8 +721,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ordenar por hora
     filtrados.sort((a, b) => (a.hora || a.time || '').localeCompare(b.hora || b.time || ''));
 
-    const pacientes = ValeStore.getPacientes() || [];
-
     filtrados.forEach(a => {
       const hora = a.hora || a.time || '08:00';
       const paciente = a.paciente || '';
@@ -680,12 +730,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const planoNome = a.plano_nome || '';
       const valorTotal = a.valor_total || 0;
 
-      // Link do WhatsApp
-      const pacObj = pacientes.find(p => (p.name || p.nome) === paciente);
-      const tel = pacObj && (pacObj.phone || pacObj.telefone) ? (pacObj.phone || pacObj.telefone).replace(/\D/g, '') : '';
-      const waHref = tel ? `https://wa.me/55${tel}` : '#';
+      // Link dinâmico com API oficial do WhatsApp
+      const waData = buildWhatsAppConfirmationLink(paciente, a.date, hora);
 
-      const rowHTML = buildCardHTML(a.id, hora, especialidade, paciente, profissional, status, waHref, planoNome, valorTotal);
+      const rowHTML = buildCardHTML(a.id, hora, especialidade, paciente, profissional, status, waData, planoNome, valorTotal);
       scheduleList.insertAdjacentHTML('beforeend', rowHTML);
     });
   }
@@ -696,6 +744,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const scheduleList = document.getElementById('scheduleList');
   if (scheduleList) {
     scheduleList.addEventListener('click', function(e) {
+
+      // Clique no botão WhatsApp com verificação de telefone
+      const waBtn = e.target.closest('.btn-whatsapp-action');
+      if (waBtn) {
+        const hasPhone = waBtn.dataset.hasPhone === 'true';
+        const pacNome = waBtn.dataset.paciente;
+        const msg = waBtn.dataset.msg;
+
+        if (!hasPhone) {
+          e.preventDefault();
+          const telInput = prompt(`⚠️ O paciente "${pacNome}" não possui telefone cadastrado.\n\nDigite o número de WhatsApp com DDD (Ex: 88999998888) para enviar a confirmação agora:`);
+          if (telInput && telInput.trim()) {
+            let clean = telInput.replace(/\D/g, '');
+            if (clean.length >= 10 && !clean.startsWith('55')) clean = '55' + clean;
+            window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(msg)}`, '_blank');
+          }
+        }
+      }
 
       // Botão Confirmar Chegada
       const checkinBtn = e.target.closest('.btn-do-checkin');

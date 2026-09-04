@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const especialidades = [
-      { key: 'fisio',   label: 'Fisioterapia (Dra. Leonarda / Dr. Lucas)',   css: 'fisio'   },
+      { key: 'fisio',   label: 'Fisioterapia (Dra. Leonarda Vale)',          css: 'fisio'   },
       { key: 'pilates', label: 'Pilates Studio (Dra. Katiane / Dra. Mirela)', css: 'pilates' },
       { key: 'fono',    label: 'Fonoaudiologia (Dr. Jorge Linhares)',        css: 'fono'    },
       { key: 'psico',   label: 'Psicopedagogia (Dra. Cleópatra)',            css: 'fono'    },
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       let cat = (d.especialidade || '').toLowerCase();
       let prof = (d.profissional || '').toLowerCase();
 
-      if (cat.includes('fisio') || prof.includes('leonarda') || prof.includes('lucas')) {
+      if (cat.includes('fisio') || prof.includes('leonarda')) {
         totais.fisio += d.valor_total;
         clinicaTotais.fisio += d.valor_clinica;
       } else if (cat.includes('pilates') || prof.includes('katiane') || prof.includes('mirela')) {

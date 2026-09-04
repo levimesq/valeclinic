@@ -125,13 +125,37 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${year}-${month}-${day}`;
   }
 
+  // Helper para somar dias a uma data YYYY-MM-DD
+  function addDaysToDate(dateStr, days = 7) {
+    if (!dateStr) return dateStr;
+    const parts = dateStr.split('-').map(Number);
+    const target = new Date(parts[0], parts[1] - 1, parts[2] + days, 12, 0, 0);
+    const y = target.getFullYear();
+    const m = String(target.getMonth() + 1).padStart(2, '0');
+    const d = String(target.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
   // Popular seletor de pacientes ativos (100% Supabase / Store)
   function populatePatientSelects() {
     if (typeof ValeStore === 'undefined') return;
     const pacientesAtivos = ValeStore.getPacientesAtivos() || [];
 
+    const datalist = document.getElementById('pilatesPacientesDatalist');
+    if (datalist) {
+      datalist.innerHTML = '';
+      pacientesAtivos.forEach(p => {
+        const nome = p.name || p.nome || '';
+        const tel  = p.phone || p.telefone || '';
+        const opt  = document.createElement('option');
+        opt.value = nome;
+        if (tel) opt.label = `${nome} (${tel})`;
+        datalist.appendChild(opt);
+      });
+    }
+
     const pacSelect = document.getElementById('matricularPacienteSelect');
-    if (pacSelect) {
+    if (pacSelect && pacSelect.tagName === 'SELECT') {
       const currentVal = pacSelect.value;
       pacSelect.innerHTML = '<option value="">Selecione o paciente cadastrado...</option>';
 
@@ -334,6 +358,21 @@ document.addEventListener('DOMContentLoaded', () => {
           statusText = status;
         }
 
+        // Link dinâmico do WhatsApp
+        const pacientes = (typeof ValeStore !== 'undefined' ? ValeStore.getPacientes() : []) || [];
+        const pacClean = (pacienteNome || '').trim().toLowerCase();
+        const pacObj = pacientes.find(p => {
+          const n = (p.name || p.nome || '').trim().toLowerCase();
+          return n === pacClean || (n && pacClean && (n.includes(pacClean) || pacClean.includes(n)));
+        });
+        const rawPhone = pacObj && (pacObj.phone || pacObj.telefone) ? String(pacObj.phone || pacObj.telefone) : '';
+        let cleanTel = rawPhone.replace(/\D/g, '');
+        if (cleanTel.length >= 10 && !cleanTel.startsWith('55')) cleanTel = '55' + cleanTel;
+
+        const dataFormatada = aluno.date ? aluno.date.split('-').reverse().join('/') : '';
+        const msg = `Olá, ${pacienteNome}! Passando para confirmar sua aula de Pilates no dia ${dataFormatada} às ${turma.hora}.`;
+        const waHref = cleanTel ? `https://api.whatsapp.com/send?phone=${cleanTel}&text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+
         slotsHTML += `
           <div class="student-pill" data-slot-id="${aluno.id}">
             <div class="student-pill-avatar">${initials}</div>
@@ -342,6 +381,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="student-pill-status ${statusClass}">● ${statusText}</span>
             </div>
             <div class="student-pill-actions">
+              <a href="${waHref}" target="_blank" class="btn-icon-pill btn-whatsapp-pill" title="Confirmar via WhatsApp" style="background: rgba(16,185,129,0.12); color: #10B981; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="11" height="11"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+              </a>
               <button type="button" class="btn-icon-pill btn-evoluir-pill" data-paciente="${pacienteNome}" data-data="${aluno.date}" data-hora="${turma.hora}" data-prof="${turma.profissional}" title="Evoluir Prontuário" style="background: rgba(11,27,54,0.06); color: var(--color-primary);">
                 📝 Evoluir
               </button>
@@ -379,6 +421,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="occupancy-bar-fill ${occupancyColor}" style="width: ${ocupacaoPct}%;"></div>
               </div>
             </div>
+            <button type="button" class="btn-renovar-turma" data-turma-id="${turma.id}" data-hora="${turma.hora}" data-dia="${activeDay}" title="Renovar agendamentos desta turma para a próxima semana (+7 dias)" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px; padding: 5px 10px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span>Renovar (+7 dias)</span>
+            </button>
             <button type="button" class="btn-delete-turma" data-turma-id="${turma.id}" data-hora="${turma.hora}" data-dia="${activeDay}" title="Excluir Turma">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
               <span>Excluir Turma</span>
@@ -417,6 +463,50 @@ document.addEventListener('DOMContentLoaded', () => {
               ValeStore.deleteAgendamento(aluno.id);
             });
             // Re-renderizar
+            renderPilatesCards();
+          }
+        });
+      }
+
+      // 0.1) Botão Renovar Turma (+7 dias no Supabase)
+      const btnRenovarTurma = card.querySelector('.btn-renovar-turma');
+      if (btnRenovarTurma) {
+        btnRenovarTurma.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (enrolled.length === 0) {
+            alert(`A Turma das ${turma.hora} não possui alunos matriculados nesta semana para renovar.\n\nMatricule ou encaixe alunos na turma antes de renovar.`);
+            return;
+          }
+
+          const baseDate = enrolled[0].date || getDateForWeekday(activeDay);
+          const nextDate = addDaysToDate(baseDate, 7);
+          const nextDataFormatada = nextDate.split('-').reverse().join('/');
+
+          if (confirm(`Deseja renovar a Turma das ${turma.hora} (${activeDay}) para a próxima semana (${nextDataFormatada})?\n\n${enrolled.length} aluno(s) serão agendados automaticamente com +7 dias no Supabase.`)) {
+            let renovados = 0;
+            enrolled.forEach(aluno => {
+              const novoAg = {
+                id: 'slot-' + Date.now() + '-' + Math.floor(Math.random() * 10000),
+                date: addDaysToDate(aluno.date || baseDate, 7),
+                hora: turma.hora,
+                time: turma.hora,
+                paciente: aluno.paciente,
+                especialidade: moduloNome,
+                profissional: turma.profissional || aluno.profissional || 'Dra. Katiane',
+                status: 'Aguardando Chegada',
+                horarioChegada: null,
+                plano_id: aluno.plano_id || null,
+                plano_nome: aluno.plano_nome || 'Pilates Studio',
+                valor_total: aluno.valor_total || 100,
+                valor_clinica: aluno.valor_clinica || 60
+              };
+              ValeStore.addAgendamento(novoAg);
+              renovados++;
+            });
+
+            alert(`✅ Sucesso! ${renovados} aluno(s) da Turma das ${turma.hora} foram renovados para ${nextDataFormatada} e sincronizados com a Agenda Geral!`);
             renderPilatesCards();
           }
         });
@@ -517,13 +607,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      const recorrente = document.getElementById('turmaRecorrenteInput')?.checked ?? true;
+
       // Salvar turma no Store
       ValeStore.addPilatesTurma({
         nome: nome,
         dia: dia,
         hora: hora,
         profissional: prof,
-        capacidade: 6
+        capacidade: 6,
+        recorrente: recorrente
       });
 
       // Mudar para a aba do dia criado
