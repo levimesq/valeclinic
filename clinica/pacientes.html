@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="ValeClinic - Centro de Fisioterapia e ReabilitA&ccedil;&atilde;o. Gest&atilde;o de Pacientes.">
-  <title>ValeClinic | Gest&atilde;o de Pacientes</title>
+  <meta name="description" content="ValeClinic - Centro de Fisioterapia e Reabilitação. Gestão de Pacientes.">
+  <title>ValeClinic | Gestão de Pacientes</title>
   <link rel="icon" type="image/png" href="assets/logo.png">
 
   <!-- CSS Modular -->
@@ -14,7 +14,7 @@
 </head>
 <body>
 
-  <!-- 1. SIDEBAR (Menu Lateral Fixo - Tema Claro) -->
+  <!-- 1. SIDEBAR (Menu Lateral Fixo) -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <img class="sidebar-logo" src="assets/logo.png" alt="ValeClinic Logo">
@@ -25,7 +25,6 @@
       <ul class="nav-list">
         <li class="nav-item">
           <a href="dashboard.html">
-            <!-- cone Dashboard -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="7" height="7"></rect>
               <rect x="14" y="3" width="7" height="7"></rect>
@@ -37,7 +36,6 @@
         </li>
         <li class="nav-item active">
           <a href="pacientes.html">
-            <!-- cone Pacientes -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
               <circle cx="9" cy="7" r="4"></circle>
@@ -49,7 +47,6 @@
         </li>
         <li class="nav-item">
           <a href="agenda.html">
-            <!-- cone Agenda -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -86,8 +83,17 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="psicopedagogia.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            Psicopedagogia
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="financeiro.html">
-            <!--  cone Financeiro -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="1" x2="12" y2="23"></line>
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
@@ -101,15 +107,14 @@
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
               <line x1="7" y1="7" x2="7.01" y2="7"></line>
             </svg>
-            Configurar Pre&ccedil;os e Planos
+            Configurar Preços e Planos
           </a>
         </li>
       </ul>
     </nav>
 
-    <!-- Rodap&eacute; da Sidebar: Logout -->
     <div class="sidebar-footer">
-      <a href="/" class="btn-logout" style="text-decoration: none;">
+      <a href="index.html" class="btn-logout" style="text-decoration: none;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
@@ -123,10 +128,10 @@
   <!-- Overlay Mobile -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- 2. CONTEUDO PRINCIPAL -->
+  <!-- 2. CONTEÚDO PRINCIPAL -->
   <div class="main-wrapper">
-    
-    <!-- Header Superior -->
+
+    <!-- Topbar / Header -->
     <header class="header-top">
       <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -137,21 +142,17 @@
       </button>
 
       <div class="header-greeting">
-        <h1>Gest&atilde;o de Pacientes</h1>
-        <p id="current-date">Consulte, cadastre e acompanhe o hist&oacute;rico dos clientes</p>
       </div>
 
       <div class="header-actions">
-        <!-- Notifica&ccedil;&otilde;es -->
-        <button class="btn-notification" aria-label="Notifica&ccedil;&otilde;es">
+        <button class="btn-notification" id="btnNotification" aria-label="Notificações">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
-          <span class="notification-badge"></span>
+          <span class="notification-badge" id="notifBadgeCount" style="display:none;"></span>
         </button>
 
-        <!-- Perfil do Usu&aacute;rio -->
         <div class="user-profile">
           <div class="user-avatar">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -167,69 +168,61 @@
       </div>
     </header>
 
-    <!-- Conte&uacute;do Espec&iacute;fico de Pacientes -->
+    <!-- Conteúdo da Página -->
     <main class="patients-content">
 
-      <!-- 1. CABEƒ&mdash;¡ALHO DA PGINA (PESQUISA E Aƒ&mdash;¡ƒÆ’O) -->
+      <!-- Cabeçalho da Página: Título, Contador, Busca e Botão + Novo Paciente -->
       <section class="page-header-flex">
         <div class="page-title-block">
-          <h2>Lista de Pacientes</h2>
-          <p id="patientCounter">Total de 0 pacientes cadastrados</p>
+          <h2>Gestão de Pacientes</h2>
+          <p id="patientCounter">Carregando pacientes...</p>
         </div>
 
         <div class="header-controls">
-          <!-- Pesquisa R&aacute;pida com L&oacute;gica JS -->
           <div class="search-box">
             <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" id="searchInput" class="search-input" placeholder="Buscar por Nome, CPF ou Telefone...">
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar paciente por nome, CPF ou telefone...">
           </div>
 
-          <!-- Bot&atilde;o NOVO PACIENTE -->
-          <button type="button" class="btn-add-patient" id="openModalBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-add-patient" id="openModalBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
-            NOVO PACIENTE
+            <span>+ Novo Paciente</span>
           </button>
         </div>
       </section>
 
-      <!-- 2. TABELA MODERNA DE PACIENTES -->
+      <!-- Tabela Moderna de Pacientes -->
       <section class="table-card">
-        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-          <table class="patients-table" id="patientsTable">
-            <thead>
-              <tr>
-                <th>Paciente</th>
-                <th>Contato / WhatsApp</th>
-                <th>Especialidade</th>
-                <th>Status</th>
-                <th style="text-align: right;">A&ccedil;&otilde;es</th>
-              </tr>
-            </thead>
-            <tbody id="patientsTbody">
-              <tr id="emptyPatientsRow" style="display: table-row;">
-                <td colspan="5" style="text-align:center; padding: 48px 24px; color: var(--color-text-muted);">
-                  <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.35;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-                    <span style="font-weight:600; font-size:0.95rem;">Nenhum paciente cadastrado</span>
-                    <span style="font-size:0.82rem;">Clique em "+ Novo Paciente" para come&ccedil;ar</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="patients-table" id="patientsTable">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th>Contato</th>
+              <th>Especialidade</th>
+              <th>Status</th>
+              <th style="text-align: right;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="patientsTbody">
+            <tr id="emptyPatientsRow" style="display: none;">
+              <td colspan="5" style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+                Nenhum paciente cadastrado ainda. Clique em "+ Novo Paciente" para começar.
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
     </main>
   </div>
 
-  <!-- 3. MODAL FLUTUANTE DE CADASTRO / EDIƒ&mdash;¡ƒÆ’O -->
+  <!-- 3. MODAL DE CADASTRO / EDIÇÃO DE PACIENTE -->
   <div class="modal-overlay" id="patientModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -237,32 +230,28 @@
         <button class="btn-close-modal" id="closeModalBtn">&times;</button>
       </div>
 
-      <form action="#" method="POST" id="newPatientForm">
+      <form id="newPatientForm">
         <div class="modal-body">
           <div class="modal-form-grid">
-            
-            <!-- Campo 1: Nome Completo -->
+
             <div class="form-group-full">
               <label class="modal-label" for="fullName">Nome Completo *</label>
-              <input type="text" id="fullName" class="modal-input" placeholder="Ex: Ana Maria Silva" required>
+              <input type="text" id="fullName" class="modal-input" placeholder="Ex: Maria da Silva" required>
             </div>
 
-            <!-- Campo 2: Data de Nascimento -->
             <div>
               <label class="modal-label" for="birthDate">Data de Nascimento</label>
               <input type="text" id="birthDate" class="modal-input" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10">
             </div>
 
-            <!-- Campo 3: Telefone / WhatsApp -->
             <div>
               <label class="modal-label" for="phone">Telefone / WhatsApp *</label>
               <input type="tel" id="phone" class="modal-input" placeholder="(00) 00000-0000" required>
             </div>
 
-            <!-- ObservA&ccedil;&otilde;es Cl&iacute;nicas -->
             <div class="form-group-full">
-              <label class="modal-label" for="notes">ObservA&ccedil;&otilde;es Cl&iacute;nicas / Restri&ccedil;&otilde;es</label>
-              <textarea id="notes" class="modal-textarea" placeholder="Diagn&oacute;sticos pr&eacute;vios, les&otilde;es ou alergias..."></textarea>
+              <label class="modal-label" for="notes">Observações Clínicas / Restrições</label>
+              <textarea id="notes" class="modal-textarea" placeholder="Diagnósticos prévios, lesões ou alergias..."></textarea>
             </div>
 
           </div>
@@ -276,13 +265,11 @@
     </div>
   </div>
 
-  </div>
-
-  <!-- 4. MODAL FLUTUANTE DE HIST&Oacute;RICO DE PRONTUARIO -->
+  <!-- 4. MODAL FLUTUANTE DE HISTÓRICO DE PRONTUÁRIO -->
   <div class="modal-overlay" id="modalHistoricoProntuario">
     <div class="modal-container">
       <div class="modal-header">
-        <h3>hist&oacute;rico Cl&iacute;nico: <span id="histPatientName" style="color: var(--color-primary);"></span></h3>
+        <h3>Histórico Clínico: <span id="histPatientName" style="color: var(--color-primary);"></span></h3>
         <button class="btn-close-modal" onclick="document.getElementById('modalHistoricoProntuario').classList.remove('active')">&times;</button>
       </div>
       <div class="modal-body" style="background: #f8fafc; padding: 20px;">
@@ -296,75 +283,79 @@
     </div>
   </div>
 
-  <!-- POPUP DE NOTIFICA&Ccedil;&Otilde;ES -->
+  <!-- POPUP DE NOTIFICAÇÕES -->
   <div id="notificationsPopover" class="notifications-popover">
     <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #E2E8F0;margin-bottom:12px;">
-      <h4 style="font-family:var(--font-title);color:var(--color-primary);font-size:1rem;">NotificA&ccedil;&otilde;es</h4>
+      <h4 style="font-family:var(--font-title);color:var(--color-primary);font-size:1rem;">Notificações</h4>
       <span style="font-size:0.75rem;background:#E2E8F0;color:#64748B;padding:2px 8px;border-radius:10px;font-weight:700;">0 Novas</span>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px;font-size:0.82rem;">
       <div style="padding:10px;background:#F8FAFC;border-radius:8px;border-left:3px solid #CBD5E1;color:#94A3B8;text-align:center;">
-        Nenhuma notificA&ccedil;&atilde;o no momento
+        Nenhuma notificação no momento
       </div>
     </div>
   </div>
 
-
-
-  <!-- Scripts: ordem correta - supabase e store primeiro, depois inline -->
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/store.js"></script>
   <script src="js/permissions.js"></script>
   <script src="js/modulos.js"></script>
   <script>
-    // &mdash;&mdash;&mdash; InicializA&ccedil;&atilde;o ap&oacute;s store.js estar carregado &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
     document.addEventListener('DOMContentLoaded', () => {
-      const openModalBtn       = document.getElementById('openModalBtn');
-      const closeModalBtn      = document.getElementById('closeModalBtn');
-      const cancelModalBtn     = document.getElementById('cancelModalBtn');
-      const patientModal       = document.getElementById('patientModal');
-      const modalTitle         = document.getElementById('modalTitle');
-      const saveModalBtn       = document.getElementById('saveModalBtn');
-      const searchInput        = document.getElementById('searchInput');
-      const patientsTable      = document.getElementById('patientsTable');
-      const fullNameInput      = document.getElementById('fullName');
-      const birthDateInput     = document.getElementById('birthDate');
-      const phoneInput         = document.getElementById('phone');
-      const notesInput         = document.getElementById('notes');
-      const btnNotification    = document.querySelector('.btn-notification');
+      const openModalBtn         = document.getElementById('openModalBtn');
+      const closeModalBtn        = document.getElementById('closeModalBtn');
+      const cancelModalBtn       = document.getElementById('cancelModalBtn');
+      const patientModal         = document.getElementById('patientModal');
+      const modalTitle           = document.getElementById('modalTitle');
+      const saveModalBtn         = document.getElementById('saveModalBtn');
+      const searchInput          = document.getElementById('searchInput');
+      const patientsTable        = document.getElementById('patientsTable');
+      const fullNameInput        = document.getElementById('fullName');
+      const birthDateInput       = document.getElementById('birthDate');
+      const phoneInput           = document.getElementById('phone');
+      const notesInput           = document.getElementById('notes');
+      const btnNotification      = document.querySelector('.btn-notification');
       const notificationsPopover = document.getElementById('notificationsPopover');
-      const emptyRow           = document.getElementById('emptyPatientsRow');
+      const emptyRow             = document.getElementById('emptyPatientsRow');
 
-      // &mdash;&mdash; Carrega pacientes salvos do localStorage na tabela &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
+      // ── Renderiza linha do paciente ──────────────────────────────────
       function renderPatientRow(p, prepend = false) {
         const tbody = patientsTable ? patientsTable.querySelector('#patientsTbody') : null;
         if (!tbody) return;
 
-        const initials = (p.name || '?').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-        const phoneClean = (p.phone || '').replace(/\D/g, '');
+        const nome = (p.name || p.nome || 'Paciente').trim();
+        const tel  = p.phone || p.telefone || '';
+        const nasc = p.birth || p.nascimento || '';
+        const obs  = p.notes || p.observacoes || '';
+        const esp  = p.specialty || p.especialidade || 'Paciente Ativo';
+        const id   = String(p.id || ('pac-' + Date.now()));
+
+        const initials = nome.split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || 'P';
+        const phoneClean = tel.replace(/\D/g, '');
         const newRow = document.createElement('tr');
-        newRow.dataset.name  = p.name || '';
-        newRow.dataset.phone = p.phone || '';
-        newRow.dataset.birth = p.birth || '';
-        newRow.dataset.notes = p.notes || '';
-        newRow.dataset.id    = p.id || '';
+        newRow.dataset.name  = nome;
+        newRow.dataset.phone = tel;
+        newRow.dataset.birth = nasc;
+        newRow.dataset.notes = obs;
+        newRow.dataset.id    = id;
 
         newRow.innerHTML = `
           <td>
             <div class="patient-profile-cell">
               <div class="patient-avatar-lg">${initials}</div>
               <div class="patient-details-text">
-                <span class="patient-name-title">${p.name}</span>
-                <span class="patient-cpf-subtext">${p.phone || 'Sem telefone'}</span>
+                <span class="patient-name-title">${nome}</span>
+                <span class="patient-cpf-subtext">${tel || 'Sem telefone'}</span>
               </div>
             </div>
           </td>
-          <td class="contact-text">${p.phone || 'N/A'}</td>
-          <td><span class="specialty-badge">${p.specialty || 'Novo Paciente'}</span></td>
+          <td class="contact-text">${tel || 'N/A'}</td>
+          <td><span class="specialty-badge">${esp}</span></td>
           <td><span class="status-badge active">Ativo</span></td>
           <td>
             <div class="action-buttons-group" style="justify-content: flex-end;">
-              <button class="btn-action-icon btn-history-patient" title="hist&oacute;rico de Prontu&aacute;rio">
+              <button class="btn-action-icon btn-history-patient" title="Histórico de Prontuário">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
               </button>
               <button class="btn-action-icon btn-edit-patient" title="Editar Cadastro">
@@ -373,12 +364,46 @@
               <a href="https://wa.me/55${phoneClean || '0'}" target="_blank" class="btn-whatsapp-sm" title="WhatsApp">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="16" height="16" style="margin-right:4px;"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
               </a>
+              <button class="btn-action-icon btn-delete-patient" title="Excluir Paciente" style="color: #EF4444;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </button>
             </div>
           </td>
         `;
 
         newRow.querySelector('.btn-edit-patient').addEventListener('click', () => openEditModal(newRow));
         newRow.querySelector('.btn-history-patient').addEventListener('click', () => { if(window.openHistoryModal) window.openHistoryModal(newRow); });
+
+        const btnDel = newRow.querySelector('.btn-delete-patient');
+        if (btnDel) {
+          btnDel.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const confirmed = confirm(`Tem certeza que deseja excluir o cadastro do paciente "${nome}"?\n\nEsta ação removerá o paciente permanentemente do sistema e do banco de dados.`);
+            if (!confirmed) return;
+
+            newRow.remove();
+            updatePatientCounter();
+
+            const remaining = tbody.querySelectorAll('tr:not(#emptyPatientsRow)').length;
+            if (remaining === 0 && emptyRow) {
+              emptyRow.style.display = 'table-row';
+            }
+
+            if (typeof ValeStore !== 'undefined') {
+              try {
+                await ValeStore.deletePaciente(id);
+              } catch(err) {
+                console.error('Erro ao deletar paciente:', err);
+              }
+            }
+          });
+        }
 
         if (prepend) {
           tbody.insertBefore(newRow, tbody.firstChild);
@@ -388,7 +413,7 @@
         if (emptyRow) emptyRow.style.display = 'none';
       }
 
-      // M&aacute;scara DD/MM/AAAA no campo de nascimento
+      // Máscara DD/MM/AAAA no campo de nascimento
       if (birthDateInput) {
         birthDateInput.addEventListener('input', function() {
           let v = this.value.replace(/\D/g, '');
@@ -398,7 +423,7 @@
         });
       }
 
-      // Atualizar contador din&acirc;mico
+      // ── Atualizar contador dinâmico ───────────────────────────────────
       function updatePatientCounter() {
         const counter = document.getElementById('patientCounter');
         if (!counter) return;
@@ -407,8 +432,6 @@
         const count = tbody.querySelectorAll('tr:not(#emptyPatientsRow)').length;
         counter.textContent = 'Total de ' + count + ' paciente(s) cadastrado(s)';
       }
-
-      // Preencher nome do Usu&aacute;rio logado
       function fillUserInfo() {
         const emailLogado = localStorage.getItem('valeclinic_user_email') || '';
         const equipe = (typeof ValeStore !== 'undefined') ? (ValeStore.getEquipe() || []) : [];
@@ -421,38 +444,34 @@
         }
       }
 
-      // Carrega pacientes direto do Supabase (SSOT) com fallback ao localStorage
       async function loadSavedPatients() {
-        if (typeof ValeStore === 'undefined') return;
         const tbody = patientsTable ? patientsTable.querySelector('#patientsTbody') : null;
         if (!tbody) return;
 
-        // Limpa linhas existentes (exceto emptyRow)
-        Array.from(tbody.children).forEach(c => { if (c.id !== 'emptyPatientsRow') c.remove(); });
-
         let patients = [];
         try {
-          // Tenta buscar diretamente do Supabase
-          const db = ValeStore.getClient();
-          if (db) {
-            const { data, error } = await db
-              .from('pacientes')
-              .select('*')
-              .order('created_at', { ascending: false });
-            if (!error && data) {
-              patients = data;
-              // Atualiza o localStorage com dados frescos
-              localStorage.setItem('valeclinic_pacientes', JSON.stringify(patients));
+          if (typeof ValeStore !== 'undefined') {
+            const db = ValeStore.getClient();
+            if (db) {
+              const { data, error } = await db
+                .from('pacientes')
+                .select('*')
+                .order('created_at', { ascending: false });
+              if (!error && data) {
+                patients = data;
+                localStorage.setItem('valeclinic_pacientes', JSON.stringify(patients));
+              }
             }
           }
         } catch(e) {
-          console.warn('[Pacientes] Falha no Supabase, usando cache:', e.message);
+          console.warn('[Pacientes] Falha ao carregar do Supabase:', e.message);
         }
 
-        // Fallback ao localStorage se Supabase não retornou nada
-        if (patients.length === 0) {
+        if (patients.length === 0 && typeof ValeStore !== 'undefined') {
           patients = ValeStore.getPacientes() || [];
         }
+
+        Array.from(tbody.children).forEach(c => { if (c.id !== 'emptyPatientsRow') c.remove(); });
 
         if (patients.length === 0) {
           if (emptyRow) emptyRow.style.display = 'table-row';
@@ -466,21 +485,14 @@
 
       loadSavedPatients();
 
-      // Re-renderizar quando Supabase sincronizar (dados novos chegando da nuvem)
-      // Nota: O evento 'pacientes' acionado pelo addPaciente usa Optimistic UI (linha já na tela)
-      // por isso só re-renderizamos em sincronizações da equipe ou global (sem table).
-      let _initialSyncDone = false;
       document.addEventListener('valeclinic:dataSynced', (e) => {
         if (e.detail?.table === 'equipe') {
-          fillUserInfo(); // Apenas atualiza header sem re-listar
-        } else if (!e.detail?.table && !_initialSyncDone) {
-          // Sync global de boot (store.js syncAll) — recarregar lista completa
-          _initialSyncDone = true;
+          fillUserInfo();
+        } else if (!e.detail?.table || e.detail?.table === 'pacientes') {
           loadSavedPatients();
         }
       });
 
-      // &mdash;&mdash; Modal Abrir / Fechar &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
       function openNewModal() {
         modalTitle.textContent = 'Cadastrar Novo Paciente';
         saveModalBtn.textContent = 'Salvar Paciente';
@@ -511,10 +523,9 @@
       if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
       patientModal.addEventListener('click', (e) => { if (e.target === patientModal) closeModal(); });
 
-      // &mdash;&mdash; Salvar / Atualizar Paciente &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
       const newPatientForm = document.getElementById('newPatientForm');
       if (newPatientForm) {
-        newPatientForm.addEventListener('submit', (e) => {
+        newPatientForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           const name     = fullNameInput ? fullNameInput.value.trim() : '';
           const phoneVal = phoneInput ? phoneInput.value.trim() : '';
@@ -523,34 +534,44 @@
 
           if (!name) { alert('Por favor, informe o nome completo do paciente.'); return; }
 
-          if (editingRow) {
-            // Editar
-            editingRow.dataset.name  = name;
-            editingRow.dataset.phone = phoneVal;
-            editingRow.dataset.birth = birth;
-            editingRow.dataset.notes = notes;
-            const nameEl = editingRow.querySelector('.patient-name-title');
-            const phoneEl = editingRow.querySelector('.patient-cpf-subtext');
-            if (nameEl) nameEl.textContent = name;
-            if (phoneEl) phoneEl.textContent = phoneVal || 'Sem telefone';
-            // Update store
-            if (typeof ValeStore !== 'undefined' && editingRow.dataset.id) {
-              ValeStore.updatePaciente(editingRow.dataset.id, { name, phone: phoneVal, birth, notes });
+          const originalBtnText = saveModalBtn.textContent;
+          saveModalBtn.disabled = true;
+          saveModalBtn.textContent = 'Salvando no banco...';
+
+          try {
+            if (editingRow) {
+              const id = editingRow.dataset.id;
+              editingRow.dataset.name  = name;
+              editingRow.dataset.phone = phoneVal;
+              editingRow.dataset.birth = birth;
+              editingRow.dataset.notes = notes;
+              const nameEl = editingRow.querySelector('.patient-name-title');
+              const phoneEl = editingRow.querySelector('.patient-cpf-subtext');
+              if (nameEl) nameEl.textContent = name;
+              if (phoneEl) phoneEl.textContent = phoneVal || 'Sem telefone';
+              
+              if (typeof ValeStore !== 'undefined' && id) {
+                await ValeStore.updatePaciente(id, { name, phone: phoneVal, birth, notes });
+              }
+            } else {
+              const pacData = { id: 'pac-' + Date.now(), name, phone: phoneVal, birth, notes };
+              if (typeof ValeStore !== 'undefined') {
+                await ValeStore.addPaciente(pacData);
+              }
+              renderPatientRow(pacData, true);
+              updatePatientCounter();
             }
-            alert(`&#9989; Cadastro de ${name} atualizado!`);
-          } else {
-            // Novo
-            const pacData = { id: 'pac-' + Date.now(), name, phone: phoneVal, birth, notes };
-            if (typeof ValeStore !== 'undefined') ValeStore.addPaciente(pacData);
-            renderPatientRow(pacData, true);
-            updatePatientCounter();
-            alert(`&#9989; Paciente ${name} cadastrado com sucesso!`);
+            closeModal();
+          } catch(err) {
+            console.error('Erro ao salvar paciente:', err);
+            alert('Erro ao salvar no banco de dados: ' + (err.message || 'Verifique a conexão.'));
+          } finally {
+            saveModalBtn.disabled = false;
+            saveModalBtn.textContent = originalBtnText;
           }
-          closeModal();
         });
       }
 
-      // &mdash;&mdash; Sininho de NotificA&ccedil;&atilde;o &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
       if (btnNotification && notificationsPopover) {
         btnNotification.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -571,7 +592,6 @@
         });
       }
 
-      // &mdash;&mdash; Pesquisa em Tempo Real &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
       if (searchInput && patientsTable) {
         searchInput.addEventListener('input', function() {
           const query = this.value.toLowerCase().trim();
@@ -583,7 +603,6 @@
         });
       }
 
-      // &mdash;&mdash; Sidebar Mobile &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
       const btnHamburger    = document.getElementById('btnHamburger');
       const sidebar         = document.querySelector('.sidebar');
       const sidebarOverlay  = document.getElementById('sidebarOverlay');
@@ -598,7 +617,6 @@
       }
     });
 
-    // Modal de Histórico de Prontuário do Paciente (Supabase)
     window.openHistoryModal = async function(tr) {
       const modal = document.getElementById('modalHistoricoProntuario');
       if (!modal) return;

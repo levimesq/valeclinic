@@ -1,16 +1,17 @@
 /* ==========================================
-   ValeClinic - Módulo Fisioterapia Clínica
+   ValeClinic - Módulo Psicopedagogia / Neuropsicopedagogia
    Sincronização Supabase + Agenda Geral + Blindagem de Timezone
-   Versão 4.0
+   Versão 4.0 - Dra. Cleópatra
    ========================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
-  const moduloNome = 'Fisioterapia';
+  const moduloNome = 'Psicopedagogia';
+  const profPadrao = 'Dra. Cleópatra';
   let activeDay = 'Segunda';
 
   // Determinar dia atual com persistência de sessão ou fuso local
-  const savedDay = sessionStorage.getItem('valeclinic_fisio_active_day');
+  const savedDay = sessionStorage.getItem('valeclinic_psico_active_day');
   if (savedDay) {
     activeDay = savedDay;
   } else {
@@ -34,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
       dayTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       activeDay = tab.textContent.trim().replace('-feira', '');
-      sessionStorage.setItem('valeclinic_fisio_active_day', activeDay);
-      renderFisioCards();
+      sessionStorage.setItem('valeclinic_psico_active_day', activeDay);
+      renderPsicoCards();
     });
   });
 
@@ -97,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalVincular = document.getElementById('modalMatricular');
   const modalEvoluirProntuario = document.getElementById('modalEvoluirProntuario');
   const modalGraficoProgresso = document.getElementById('modalGraficoProgresso');
+  const modalGerarLaudo = document.getElementById('modalGerarLaudo');
 
   const btnNovoAtendimento = document.getElementById('btnNovaTurma');
   const btnVincular = document.getElementById('btnMatricular');
@@ -104,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnNovoAtendimento && modalNovoAtendimento) {
     btnNovoAtendimento.addEventListener('click', () => {
       populatePatientSelects();
-      const inputData = document.getElementById('novoAtdDataFisio');
+      const inputData = document.getElementById('novoAtdDataPsico');
       if (inputData) inputData.value = getDateForWeekday(activeDay);
       modalNovoAtendimento.classList.add('active');
     });
@@ -122,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof ValeStore === 'undefined') return;
     const pacientesAtivos = ValeStore.getPacientesAtivos() || [];
 
-    const datalist = document.getElementById('fisioPacientesDatalist');
+    const datalist = document.getElementById('psicoPacientesDatalist');
     if (datalist) {
       datalist.innerHTML = '';
       pacientesAtivos.forEach(p => {
@@ -136,8 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const selects = [
-      document.getElementById('novoAtdPaciente'),
-      document.getElementById('vincPaciente')
+      document.getElementById('novoAtdPacientePsico'),
+      document.getElementById('vincPacientePsico'),
+      document.getElementById('laudoPaciente')
     ];
 
     selects.forEach(sel => {
@@ -158,47 +161,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 5. Renderização dos Cards de Fisioterapia
-  function renderFisioCards() {
+  // 5. Renderização dos Cards de Psicopedagogia
+  function renderPsicoCards() {
     if (typeof ValeStore === 'undefined') return;
-    const container = document.getElementById('fisioClassesList');
+    const container = document.getElementById('psicoClassesList');
     if (!container) return;
 
     const allAgendamentos = ValeStore.getAgendamentos() || [];
 
-    // Filtrar por especialidade Fisioterapia e status diferente de Cancelado
-    const fisioAgendamentos = allAgendamentos.filter(a =>
-      (a.especialidade === moduloNome || a.especialidade === 'Fisio') &&
-      a.status !== 'Cancelado'
-    );
+    // Filtrar por especialidade Psicopedagogia / Neuropsicopedagogia e status ativo
+    const psicoAgendamentos = allAgendamentos.filter(a => {
+      const esp = (a.especialidade || '').toLowerCase();
+      return (esp.includes('psico') || esp.includes('neuro')) && a.status !== 'Cancelado';
+    });
 
     // Filtrar pela aba de dia selecionada usando o helper de timezone
-    const diaAgendamentos = fisioAgendamentos.filter(a => {
+    const diaAgendamentos = psicoAgendamentos.filter(a => {
       const diaDaSemana = ValeStore.getDiaSemana(a.date);
       return diaDaSemana === activeDay || diaDaSemana.startsWith(activeDay);
     });
 
     // Atualizar KPIs
-    const hojeAgendamentos = fisioAgendamentos.filter(a => a.date === hojeDateStr);
-    const pacientesDistintos = new Set(fisioAgendamentos.map(a => a.paciente)).size;
+    const hojeAgendamentos = psicoAgendamentos.filter(a => a.date === hojeDateStr);
+    const pacientesDistintos = new Set(psicoAgendamentos.map(a => a.paciente)).size;
+    const faltasPsico = psicoAgendamentos.filter(a => a.status.includes('Faltou') || a.status.includes('Faltoso')).length;
 
-    const elPacientes = document.getElementById('kpiFisioPacientes');
-    const elHoje      = document.getElementById('kpiFisioHoje');
-    const elVagas     = document.getElementById('kpiFisioVagas');
-    const elPend      = document.getElementById('kpiFisioPend');
+    const elPacientes = document.getElementById('kpiPsicoPacientes');
+    const elHoje      = document.getElementById('kpiPsicoHoje');
+    const elLaudos    = document.getElementById('kpiPsicoLaudos');
+    const elFaltas    = document.getElementById('kpiPsicoFaltas');
 
     if (elPacientes) elPacientes.textContent = pacientesDistintos;
     if (elHoje)      elHoje.textContent      = hojeAgendamentos.length;
-    if (elVagas)     elVagas.textContent     = Math.max(0, 10 - hojeAgendamentos.length);
-    if (elPend)      elPend.textContent      = fisioAgendamentos.filter(a => a.status.includes('Aguardando')).length;
+    if (elLaudos)    elLaudos.textContent    = '0';
+    if (elFaltas)    elFaltas.textContent    = faltasPsico;
 
     container.innerHTML = '';
 
     if (diaAgendamentos.length === 0) {
       container.innerHTML = `
         <div style="padding: 40px; text-align: center; color: var(--color-text-muted); background: var(--color-card-bg); border-radius: var(--radius-card); border: 1px dashed var(--color-border-input); width: 100%;">
-          <h4>Nenhum atendimento de Fisioterapia agendado para ${activeDay}</h4>
-          <p style="font-size: 0.85rem; margin-top: 6px;">Os agendamentos feitos na recepção para este dia aparecerão aqui automaticamente.</p>
+          <h4>Nenhum atendimento de Psicopedagogia agendado para ${activeDay}</h4>
+          <p style="font-size: 0.85rem; margin-top: 6px;">Os agendamentos realizados para este dia aparecerão aqui automaticamente.</p>
         </div>
       `;
       return;
@@ -210,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     diaAgendamentos.forEach(a => {
       const hora = a.hora || a.time || '08:00';
       const paciente = a.paciente || '';
-      const profissional = a.profissional || 'Dra. Leonarda Vale';
+      const profissional = a.profissional || profPadrao;
       const status = a.status || 'Aguardando Chegada';
       const initials = paciente.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
 
@@ -261,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
             📝 Evoluir Prontuário
           </button>
           <button class="empty-slot-btn btn-grafico-modal" style="border-style: solid; justify-content: center; font-weight: 600;">
-            📊 Gráfico de Progresso
+            📊 Progresso Cognitivo
           </button>
         </div>
       `;
@@ -274,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
           e.stopPropagation();
           if (confirm(`Deseja excluir o agendamento de ${paciente}? O registro será removido permanentemente do Supabase e o horário liberado na Agenda Geral.`)) {
             ValeStore.deleteAgendamento(a.id);
-            renderFisioCards();
+            renderPsicoCards();
           }
         });
       }
@@ -309,17 +313,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. Formulário Novo Atendimento Fisioterapia
-  const formNovoFisio = document.getElementById('formNovoAtendimento');
-  if (formNovoFisio) {
-    formNovoFisio.addEventListener('submit', (e) => {
+  // 6. Formulário Novo Atendimento Psicopedagogia
+  const formNovoPsico = document.getElementById('formNovoAtendimentoPsico');
+  if (formNovoPsico) {
+    formNovoPsico.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const pac = document.getElementById('novoAtdPaciente')?.value || '';
-      const hora = document.getElementById('novoAtdHorario')?.value || '08:00';
-      const tipo = document.getElementById('novoAtdTipo')?.value || 'Fisioterapia - Avaliação / Consulta';
-      const prof = document.getElementById('novoAtdProf')?.value || 'Dra. Leonarda Vale';
-      const dataEscolhida = document.getElementById('novoAtdDataFisio')?.value || getDateForWeekday(activeDay);
+      const pac = document.getElementById('novoAtdPacientePsico')?.value || '';
+      const hora = document.getElementById('novoAtdHorarioPsico')?.value || '08:00';
+      const tipo = document.getElementById('novoAtdTipoPsico')?.value || 'Atendimento Psicopedagógico';
+      const prof = document.getElementById('novoAtdProfPsico')?.value || profPadrao;
+      const dataEscolhida = document.getElementById('novoAtdDataPsico')?.value || getDateForWeekday(activeDay);
 
       if (!pac) {
         alert('Por favor, selecione um paciente cadastrado.');
@@ -328,9 +332,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Buscar plano correspondente no catálogo do Supabase
       const planos = (typeof ValeStore !== 'undefined' ? ValeStore.getPlanosServicos() : []) || [];
-      const planoFisio = planos.find(p => (p.nome_servico || '').toLowerCase().includes('fisio'));
-      const valTot = planoFisio ? planoFisio.valor_total : 180;
-      const valCli = planoFisio ? planoFisio.valor_clinica : 60;
+      const planoPsico = planos.find(p => (p.nome_servico || '').toLowerCase().includes('psico'));
+      const valTot = planoPsico ? planoPsico.valor_total : 150;
+      const valCli = planoPsico ? planoPsico.valor_clinica : 30;
 
       const novoRegistro = {
         id: 'slot-' + Date.now(),
@@ -342,8 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
         profissional: prof,
         status: 'Aguardando Chegada',
         horarioChegada: null,
-        plano_id: planoFisio ? planoFisio.id : null,
-        plano_nome: planoFisio ? planoFisio.nome_servico : tipo,
+        plano_id: planoPsico ? planoPsico.id : null,
+        plano_nome: planoPsico ? planoPsico.nome_servico : tipo,
         valor_total: valTot,
         valor_clinica: valCli
       };
@@ -351,30 +355,43 @@ document.addEventListener('DOMContentLoaded', () => {
       ValeStore.addAgendamento(novoRegistro);
       alert(`✅ Atendimento de ${pac} agendado para ${dataEscolhida} às ${hora}! Sincronizado com a Agenda Geral.`);
       if (modalNovoAtendimento) modalNovoAtendimento.classList.remove('active');
-      formNovoFisio.reset();
-      renderFisioCards();
+      formNovoPsico.reset();
+      renderPsicoCards();
     });
   }
 
   // 7. Formulário Vincular Paciente
-  const formVincFisio = document.getElementById('formVincularPaciente');
-  if (formVincFisio) {
-    formVincFisio.addEventListener('submit', (e) => {
+  const formVincPsico = document.getElementById('formVincularPacientePsico');
+  if (formVincPsico) {
+    formVincPsico.addEventListener('submit', (e) => {
       e.preventDefault();
-      const pac = document.getElementById('vincPaciente')?.value || '';
+      const pac = document.getElementById('vincPacientePsico')?.value || '';
       if (!pac) {
         alert('Por favor, selecione um paciente cadastrado.');
         return;
       }
 
-      alert(`✅ Paciente ${pac} vinculado ao módulo Fisioterapia com sucesso!`);
+      alert(`✅ Paciente ${pac} vinculado ao módulo Psicopedagogia!`);
       if (modalVincular) modalVincular.classList.remove('active');
-      formVincFisio.reset();
-      renderFisioCards();
+      formVincPsico.reset();
+      renderPsicoCards();
     });
   }
 
-  // 8. Salvar Evolução
+  // 8. Formulário Gerar Laudo
+  const formLaudo = document.getElementById('formGerarLaudo');
+  if (formLaudo) {
+    formLaudo.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pac = document.getElementById('laudoPaciente')?.value || 'Paciente';
+      const tipo = document.getElementById('laudoTipo')?.value || 'Laudo';
+      alert(`✅ ${tipo} para ${pac} gerado com sucesso!`);
+      if (modalGerarLaudo) modalGerarLaudo.classList.remove('active');
+      formLaudo.reset();
+    });
+  }
+
+  // 9. Salvar Evolução
   const formEvolucao = document.getElementById('formEvolucaoProntuario');
   if (formEvolucao) {
     formEvolucao.addEventListener('submit', async (e) => {
@@ -383,39 +400,39 @@ document.addEventListener('DOMContentLoaded', () => {
       const pacienteNome = document.getElementById('modalEvolucaoNome')?.textContent || 'Paciente';
       const conduta = formEvolucao.querySelector('textarea')?.value || '';
       const activePain = document.querySelector('.pain-btn.active-green, .pain-btn.active-yellow, .pain-btn.active-red');
-      const nivelDor = activePain ? parseInt(activePain.dataset.level || '0', 10) : 0;
+      const nivelDor = activePain ? parseInt(activePain.dataset.level || '10', 10) : 10;
 
       if (typeof ValeStore !== 'undefined') {
         ValeStore.addEvolucao({
           paciente: pacienteNome,
-          modulo: 'fisioterapia',
+          modulo: 'psicopedagogia',
           procedimentos: conduta,
           nivel_dor: nivelDor,
           data: new Date().toLocaleDateString('pt-BR')
         });
       }
 
-      alert(`✅ Evolução do Prontuário de ${pacienteNome} salva com sucesso!`);
+      alert(`✅ Evolução Psicopedagógica de ${pacienteNome} salva com sucesso!`);
       if (modalEvoluirProntuario) modalEvoluirProntuario.classList.remove('active');
       formEvolucao.reset();
-      renderFisioCards();
+      renderPsicoCards();
     });
   }
 
-  // 9. Escala de Dor
+  // 10. Escala de Engajamento
   const painBtns = document.querySelectorAll('.pain-btn');
   painBtns.forEach(pBtn => {
     pBtn.addEventListener('click', () => {
       painBtns.forEach(b => b.className = 'pain-btn');
       const level = parseInt(pBtn.getAttribute('data-level') || '0', 10);
-      if (level <= 2) pBtn.classList.add('active-green');
-      else if (level <= 5) pBtn.classList.add('active-yellow');
-      else pBtn.classList.add('active-red');
+      if (level <= 3) pBtn.classList.add('active-red');
+      else if (level <= 6) pBtn.classList.add('active-yellow');
+      else pBtn.classList.add('active-green');
     });
   });
 
-  // 10. Fechamento de Modais
-  const allModals = [modalNovoAtendimento, modalVincular, modalEvoluirProntuario, modalGraficoProgresso];
+  // 11. Fechamento de Modais
+  const allModals = [modalNovoAtendimento, modalVincular, modalEvoluirProntuario, modalGraficoProgresso, modalGerarLaudo];
   allModals.forEach(modal => {
     if (!modal) return;
     const closeBtns = modal.querySelectorAll('.btn-close-modal, .btn-modal-cancel');
@@ -427,20 +444,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 11. Boot inicial e re-render ao sincronizar
-  populatePatientSelects();
-  if (typeof ValeStore !== 'undefined' && ValeStore.syncAgendamentos) {
-    ValeStore.syncAgendamentos().then(() => {
+  // 12. FETCH ASSÍNCRONO & SINGLE SOURCE OF TRUTH (Supabase)
+  async function fetchDados() {
+    try {
+      if (typeof ValeStore !== 'undefined' && ValeStore.syncAgendamentos) {
+        await ValeStore.syncAgendamentos();
+      }
       populatePatientSelects();
-      renderFisioCards();
-    });
-  } else {
-    renderFisioCards();
+      renderPsicoCards();
+    } catch (err) {
+      console.error('[Psicopedagogia] Erro ao sincronizar dados do Supabase:', err);
+      populatePatientSelects();
+      renderPsicoCards();
+    }
   }
 
+  // Executar fetch inicial
+  await fetchDados();
+
+  // Reagir a eventos de sincronização em tempo real
   document.addEventListener('valeclinic:dataSynced', () => {
     populatePatientSelects();
-    renderFisioCards();
+    renderPsicoCards();
   });
 
 });

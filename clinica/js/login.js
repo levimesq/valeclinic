@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       userName = membro ? membro.nome : 'Dra. Katiane (Pilates)';
     } else if (cleanEmail.includes('fisio') || (membro && membro.cargo === 'fisio')) {
       activeRole = 'fisio';
-      userName = membro ? membro.nome : 'Dr. Lucas Andrade (Fisio)';
+      userName = membro ? membro.nome : 'Dra. Leonarda Vale (Fisio)';
     } else if (cleanEmail.includes('admin') || cleanEmail.includes('leonarda') || (membro && membro.acesso === 'admin')) {
       activeRole = 'admin';
       userName = membro ? membro.nome : 'Dra. Leonarda Vale (Diretora)';
@@ -137,7 +137,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           recepcao: 'dashboard.html',
           fono: 'fono.html',
           pilates: 'pilates.html',
-          fisio: 'fisio.html'
+          fisio: 'fisio.html',
+          psico: 'psicopedagogia.html'
         };
         window.location.href = defaultPages[role] || 'dashboard.html';
 

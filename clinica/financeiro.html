@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="ValeClinic - Gest&atilde;o Financeira e Fluxo de Caixa. Controle de receitas, despesas e automa&ccedil;&atilde;o de recebimentos.">
-  <title>ValeClinic | Gest&atilde;o Financeira & Fluxo de Caixa</title>
+  <meta name="description" content="ValeClinic - Gestão Financeira e Fluxo de Caixa. Controle de receitas, despesas e automação de recebimentos.">
+  <title>ValeClinic | Gestão Financeira & Fluxo de Caixa</title>
   <link rel="icon" type="image/png" href="assets/logo.png">
 
   <!-- CSS Modular -->
@@ -85,6 +85,16 @@
             Fonoaudiologia
           </a>
         </li>
+        <li class="nav-item">
+          <a href="psicopedagogia.html">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            Psicopedagogia
+          </a>
+        </li>
         <li class="nav-item active">
           <a href="financeiro.html">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -100,15 +110,14 @@
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
               <line x1="7" y1="7" x2="7.01" y2="7"></line>
             </svg>
-            Configurar Pre&ccedil;os e Planos
+            Configurar Preços e Planos
           </a>
         </li>
-
       </ul>
     </nav>
 
     <div class="sidebar-footer">
-      <a href="/" class="btn-logout" style="text-decoration: none;">
+      <a href="index.html" class="btn-logout" style="text-decoration: none;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
@@ -119,7 +128,7 @@
     </div>
   </aside>
 
-  <!-- 2. CONTE&Uacute;DO PRINCIPAL -->
+  <!-- 2. CONTEÚDO PRINCIPAL -->
   <div class="main-wrapper">
     
     <!-- Header Superior -->
@@ -135,7 +144,7 @@
       <div class="header-greeting"></div>
 
       <div class="header-actions">
-        <button class="btn-notification" id="bellBtn" aria-label="Notifica&ccedil;&otilde;es">
+        <button class="btn-notification" id="bellBtn" aria-label="Notificações">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -152,29 +161,29 @@
           </div>
           <div class="user-info">
             <span class="user-name">Dra. Leonarda Vale</span>
-            <span class="user-role">Diretora Cl&iacute;nica</span>
+            <span class="user-role">Diretora Clínica</span>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Conte&uacute;do Espec&iacute;fico do Financeiro -->
+    <!-- Conteúdo Específico do Financeiro -->
     <main class="financeiro-content">
 
-      <!-- 1. CABE&Ccedil;ALHO & BOT&Otilde;ES DE A&Ccedil;O GLOBAIS -->
+      <!-- 1. CABEÇALHO & BOTÕES DE AÇÃO GLOBAIS -->
       <section class="fin-header-actions">
         <div class="fin-header-titles">
-          <h2>Gest&atilde;o Financeira & Fluxo de Caixa</h2>
-          <p>Controle centralizado de receitas, despesas e automa&ccedil;&atilde;o de recebimentos.</p>
+          <h2>Gestão Financeira &amp; Fluxo de Caixa</h2>
+          <p>Controle centralizado de receitas, despesas e automação de recebimentos.</p>
         </div>
         <div class="fin-btn-group">
           <a href="financeiro-config.html" class="btn-fin-secondary" id="btnPrecos" style="text-decoration: none;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-            Tabela de Pre&ccedil;os &amp; Planos
+            Tabela de Preços &amp; Planos
           </a>
           <button class="btn-fin-primary" id="btnLancamento">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Lan&ccedil;amento Manual
+            Lançamento Manual
           </button>
         </div>
       </section>
@@ -194,9 +203,9 @@
 
         <div class="fkpi-card kpi-receber" style="border-left: 4px solid var(--color-secondary);">
           <div class="fkpi-info">
-            <span class="fkpi-label">&#127973; Caixa L&iacute;quido da Cl&iacute;nica</span>
+            <span class="fkpi-label">&#127973; Caixa Líquido da Clínica</span>
             <span class="fkpi-value gold" id="kpiCaixaLiquido" style="color: #D97706;">R$ 0,00</span>
-            <div style="font-size:0.80rem; color:var(--color-text-muted); margin-top:4px;">Fatia l&iacute;quida retida no caixa</div>
+            <div style="font-size:0.80rem; color:var(--color-text-muted); margin-top:4px;">Fatia líquida retida no caixa</div>
           </div>
           <div class="fkpi-icon gold">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -205,9 +214,9 @@
 
         <div class="fkpi-card kpi-recebido" id="cardRecebido" style="cursor: pointer;">
           <div class="fkpi-info">
-            <span class="fkpi-label">&#9989; Total Recebido (Entradas)</span>
-            <span class="fkpi-value green" id="kpiRecebido">R$ 0,00</span>
-            <div style="font-size:0.80rem; color:var(--color-text-muted); margin-top:4px;"><span id="kpiTotalConfirmados">0</span> atendimentos realizados</div>
+            <span class="fkpi-label">&#128203; Histórico Recebidos</span>
+            <span class="fkpi-value green" style="font-size: 1.1rem;">Consultar Entradas</span>
+            <div style="font-size:0.80rem; color:var(--color-text-muted); margin-top:4px;"><span id="kpiTotalConfirmados">0</span> presenças confirmadas pela recepção</div>
           </div>
           <div class="fkpi-icon green">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -215,12 +224,12 @@
         </div>
       </section>
 
-      <!-- 3. GR&Aacute;FICOS (2 Colunas) -->
+      <!-- 3. GRÁFICOS (2 Colunas) -->
       <section class="fin-charts-grid">
 
-        <!-- Gr&aacute;fico Esquerdo: Evolução Mensal de Receitas -->
+        <!-- Gráfico Esquerdo: Evolução Mensal de Receitas -->
         <div class="fin-chart-card">
-          <h3>Evolu&ccedil;&atilde;o Mensal <span>Receitas Efetivadas</span></h3>
+          <h3>Evolução Mensal <span>Receitas Efetivadas</span></h3>
           <div class="chart-bar-group" id="chartEvolucao">
             <!-- Renderizado dinamicamente via financeiro.js -->
           </div>
@@ -229,9 +238,9 @@
           </div>
         </div>
 
-        <!-- Gr&aacute;fico Direito: Receita por Especialidade -->
+        <!-- Gráfico Direito: Receita por Especialidade -->
         <div class="fin-chart-card">
-          <h3>Receita por Especialidade <span>Distribui&ccedil;&atilde;o %</span></h3>
+          <h3>Receita &amp; Repasses por Especialidade <span>Distribuição %</span></h3>
           <div class="specialty-bars" id="chartEspecialidade">
             <!-- Renderizado dinamicamente via financeiro.js -->
           </div>
@@ -242,24 +251,24 @@
     </main>
   </div>
 
-  <!-- POPUP DE NOTIFICA&Ccedil;&Otilde;ES -->
+  <!-- POPUP DE NOTIFICAÇÕES -->
   <div id="notificationsPopover" class="notifications-popover">
     <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #E2E8F0;margin-bottom:12px;">
-      <h4 style="font-family:var(--font-title);color:var(--color-primary);font-size:1rem;">Notifica&ccedil;&otilde;es</h4>
+      <h4 style="font-family:var(--font-title);color:var(--color-primary);font-size:1rem;">Notificações</h4>
       <span id="notifBadgeFin" style="font-size:0.75rem;background:#E2E8F0;color:#64748B;padding:2px 8px;border-radius:10px;font-weight:700;">0 Pendentes</span>
     </div>
     <div id="notifListFin" style="display:flex;flex-direction:column;gap:10px;font-size:0.82rem;">
       <div style="padding:10px;background:#F8FAFC;border-radius:8px;border-left:3px solid #CBD5E1;color:#94A3B8;text-align:center;">
-        Nenhuma notifica&ccedil;&atilde;o pendente
+        Nenhuma notificação pendente
       </div>
     </div>
   </div>
 
   <!-- Modal: Detalhes Total Recebido -->
   <div class="fin-modal-overlay" id="modalRecebidos">
-    <div class="fin-modal" style="max-width: 800px;">
+    <div class="fin-modal" style="max-width: 860px;">
       <div class="fin-modal-header">
-        <h3>&#128176; Hist&oacute;rico de Atendimentos &amp; Recebimentos</h3>
+        <h3>&#128176; Histórico de Atendimentos &amp; Recebimentos</h3>
         <button class="fin-modal-close">&times;</button>
       </div>
       <div class="fin-modal-body">
@@ -272,7 +281,7 @@
                 <th>Especialidade / Plano</th>
                 <th>Profissional</th>
                 <th>Status / Pagamento</th>
-                <th>Valor (R$)</th>
+                <th style="text-align: right;">Valor (R$)</th>
               </tr>
             </thead>
             <tbody id="tbodyRecebidos"></tbody>
@@ -286,11 +295,11 @@
     </div>
   </div>
 
-  <!-- Modal: Novo Lan&ccedil;amento de Receita -->
+  <!-- Modal: Novo Lançamento de Receita -->
   <div class="fin-modal-overlay" id="modalLancamento">
     <div class="fin-modal">
       <div class="fin-modal-header">
-        <h3>Novo Lan&ccedil;amento de Receita</h3>
+        <h3>Novo Lançamento de Receita</h3>
         <button class="fin-modal-close">&times;</button>
       </div>
       <form id="formLancamento">
@@ -302,6 +311,7 @@
                 <option value="Pilates Studio">Pilates Studio</option>
                 <option value="Fisioterapia">Fisioterapia</option>
                 <option value="Fonoaudiologia">Fonoaudiologia</option>
+                <option value="Psicopedagogia">Psicopedagogia</option>
                 <option value="Consulta Geral">Consulta Geral / Outros</option>
               </select>
             </div>
@@ -314,23 +324,23 @@
           <div class="fin-form-row">
             <div class="fin-form-group">
               <label class="fin-form-label">Data *</label>
-              <input type="date" class="fin-form-input" id="lancData" required>
+              <input type="date" id="lancData" class="fin-form-input" required>
             </div>
             <div class="fin-form-group">
               <label class="fin-form-label">Forma de Pagamento</label>
               <select class="fin-form-select" id="lancPagamento">
                 <option>PIX</option>
-                <option>Cart&atilde;o Cr&eacute;dito</option>
-                <option>Cart&atilde;o D&eacute;bito</option>
+                <option>Cartão Crédito</option>
+                <option>Cartão Débito</option>
                 <option>Dinheiro</option>
-                <option>Transfer&ecirc;ncia</option>
+                <option>Transferência</option>
               </select>
             </div>
           </div>
 
           <div class="fin-form-group full">
-            <label class="fin-form-label">Descri&ccedil;&atilde;o / Paciente *</label>
-            <input type="text" class="fin-form-input" id="lancDescricao" placeholder="Ex: Pacote Pilates Mensal - Paciente João Silva" required>
+            <label class="fin-form-label">Descrição / Paciente *</label>
+            <input type="text" class="fin-form-input" id="lancDescricao" placeholder="Ex: Sessão Fonoaudiológica - Davi Morais" required>
           </div>
         </div>
         <div class="fin-modal-footer">
