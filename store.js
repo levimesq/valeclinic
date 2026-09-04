@@ -46,14 +46,51 @@ const ValeStore = (() => {
   const INITIAL_PACIENTES      = [];
   const INITIAL_EQUIPE         = [];
   const INITIAL_EVOLUCOES      = [];
-  const INITIAL_PILATES_TURMAS = [];
+  const INITIAL_PILATES_TURMAS = [
+    { id: 'turma-seg-07', nome: 'Pilates Studio (Manhã)', dia: 'Segunda', hora: '07:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-seg-08', nome: 'Pilates Studio (Manhã)', dia: 'Segunda', hora: '08:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-seg-09', nome: 'Pilates Studio (Manhã)', dia: 'Segunda', hora: '09:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-seg-16', nome: 'Pilates Studio (Tarde)', dia: 'Segunda', hora: '16:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-seg-17', nome: 'Pilates Studio (Tarde)', dia: 'Segunda', hora: '17:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-seg-18', nome: 'Pilates Studio (Noite)', dia: 'Segunda', hora: '18:00', profissional: 'Dra. Katiane', capacidade: 6 },
+
+    { id: 'turma-ter-07', nome: 'Pilates Studio (Manhã)', dia: 'Terça', hora: '07:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-ter-08', nome: 'Pilates Studio (Manhã)', dia: 'Terça', hora: '08:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-ter-09', nome: 'Pilates Studio (Manhã)', dia: 'Terça', hora: '09:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-ter-16', nome: 'Pilates Studio (Tarde)', dia: 'Terça', hora: '16:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-ter-17', nome: 'Pilates Studio (Tarde)', dia: 'Terça', hora: '17:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-ter-18', nome: 'Pilates Studio (Noite)', dia: 'Terça', hora: '18:00', profissional: 'Dra. Katiane', capacidade: 6 },
+
+    { id: 'turma-qua-07', nome: 'Pilates Studio (Manhã)', dia: 'Quarta', hora: '07:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qua-08', nome: 'Pilates Studio (Manhã)', dia: 'Quarta', hora: '08:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qua-09', nome: 'Pilates Studio (Manhã)', dia: 'Quarta', hora: '09:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qua-16', nome: 'Pilates Studio (Tarde)', dia: 'Quarta', hora: '16:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qua-17', nome: 'Pilates Studio (Tarde)', dia: 'Quarta', hora: '17:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qua-18', nome: 'Pilates Studio (Noite)', dia: 'Quarta', hora: '18:00', profissional: 'Dra. Katiane', capacidade: 6 },
+
+    { id: 'turma-qui-07', nome: 'Pilates Studio (Manhã)', dia: 'Quinta', hora: '07:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qui-08', nome: 'Pilates Studio (Manhã)', dia: 'Quinta', hora: '08:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qui-09', nome: 'Pilates Studio (Manhã)', dia: 'Quinta', hora: '09:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qui-16', nome: 'Pilates Studio (Tarde)', dia: 'Quinta', hora: '16:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qui-17', nome: 'Pilates Studio (Tarde)', dia: 'Quinta', hora: '17:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-qui-18', nome: 'Pilates Studio (Noite)', dia: 'Quinta', hora: '18:00', profissional: 'Dra. Katiane', capacidade: 6 },
+
+    { id: 'turma-sex-07', nome: 'Pilates Studio (Manhã)', dia: 'Sexta', hora: '07:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-sex-08', nome: 'Pilates Studio (Manhã)', dia: 'Sexta', hora: '08:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-sex-09', nome: 'Pilates Studio (Manhã)', dia: 'Sexta', hora: '09:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-sex-16', nome: 'Pilates Studio (Tarde)', dia: 'Sexta', hora: '16:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-sex-17', nome: 'Pilates Studio (Tarde)', dia: 'Sexta', hora: '17:00', profissional: 'Dra. Katiane', capacidade: 6 },
+    { id: 'turma-sex-18', nome: 'Pilates Studio (Noite)', dia: 'Sexta', hora: '18:00', profissional: 'Dra. Katiane', capacidade: 6 }
+  ];
   const INITIAL_PLANOS_SERVICOS = [
     { id: 'ps-1', nome_servico: 'Sessão Avulsa - Pilates', tipo_cobranca: 'avulso', quantidade_sessoes: 1, valor_total: 120, valor_clinica: 40 },
     { id: 'ps-2', nome_servico: 'Pacote Mensal Pilates (2x/sem - 8 sessões)', tipo_cobranca: 'pacote', quantidade_sessoes: 8, valor_total: 450, valor_clinica: 150 },
     { id: 'ps-3', nome_servico: 'Fisioterapia - Avaliação / Consulta', tipo_cobranca: 'avulso', quantidade_sessoes: 1, valor_total: 180, valor_clinica: 60 },
     { id: 'ps-4', nome_servico: 'Fisioterapia - Pacote 10 Sessões', tipo_cobranca: 'pacote', quantidade_sessoes: 10, valor_total: 1500, valor_clinica: 500 },
-    { id: 'ps-5', nome_servico: 'Fonoaudiologia - Sessão Avulsa', tipo_cobranca: 'avulso', quantidade_sessoes: 1, valor_total: 150, valor_clinica: 50 },
-    { id: 'ps-6', nome_servico: 'Fonoaudiologia - Pacote 5 Sessões', tipo_cobranca: 'pacote', quantidade_sessoes: 5, valor_total: 650, valor_clinica: 200 }
+    { id: 'ps-5', nome_servico: 'Sessão Fonoaudiológica', tipo_cobranca: 'avulso', quantidade_sessoes: 1, valor_total: 130, valor_clinica: 26 },
+    { id: 'ps-6', nome_servico: 'Fonoaudiologia - Pacote 5 Sessões', tipo_cobranca: 'pacote', quantidade_sessoes: 5, valor_total: 650, valor_clinica: 130 },
+    { id: 'ps-7', nome_servico: 'Psicopedagogia - Sessão Avulsa', tipo_cobranca: 'avulso', quantidade_sessoes: 1, valor_total: 150, valor_clinica: 30 },
+    { id: 'ps-8', nome_servico: 'Psicopedagogia - Pacote 4 Sessões', tipo_cobranca: 'pacote', quantidade_sessoes: 4, valor_total: 500, valor_clinica: 100 }
   ];
 
   // ============================================
@@ -84,6 +121,14 @@ const ValeStore = (() => {
   // ============================================
   // TIMEZONE SHIELDING (GMT-3 / Local Time)
   // ============================================
+  function getTodayDate() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   function getDiaSemana(dateStr) {
     if (!dateStr || typeof dateStr !== 'string') return '';
     const parts = dateStr.split('-');
@@ -105,12 +150,12 @@ const ValeStore = (() => {
     const hora = row.hora || row.time || '08:00';
     return {
       id: String(row.id),
-      date: row.date || new Date().toISOString().split('T')[0],
+      date: row.date || getTodayDate(),
       hora: hora,
       time: hora,
       paciente: row.paciente || '',
       especialidade: row.especialidade || 'Pilates Studio',
-      profissional: row.profissional || (row.especialidade === 'Fonoaudiologia' ? 'Dr. Jorge Linhares' : 'Dra. Katiane'),
+      profissional: row.profissional || (row.especialidade === 'Fonoaudiologia' ? 'Dr. Jorge Linhares' : (row.especialidade === 'Psicopedagogia' ? 'Dra. Cleópatra' : 'Dra. Katiane')),
       status: row.status || 'Aguardando Chegada',
       horarioChegada: row.horarioChegada || null,
       plano_id: row.plano_id || null,
@@ -128,15 +173,56 @@ const ValeStore = (() => {
       const { data, error } = await db.from(table).select('*');
       if (error) throw error;
 
-      let result = data || [];
+      let cloudData = data || [];
       if (table === 'agendamentos') {
-        result = result.map(normalizeAgendamento).filter(Boolean);
+        cloudData = cloudData.map(normalizeAgendamento).filter(Boolean);
       }
 
-      localSave(localKey, result);
+      // Se a tabela é financeiro e o cloud está zerado após o reset, mantém local zerado
+      if (table === 'financeiro' && cloudData.length === 0) {
+        localSave(localKey, []);
+        dispatchSync(table);
+        console.log(`[ValeStore] Sync OK: ${table} (0 registros - reset financeiro ativo)`);
+        return [];
+      }
+
+      // Safe Merge: Nunca apaga dados locais legítimos, preserva campos extras e mescla por ID
+      const currentLocal = localLoad(localKey, []) || [];
+      const cloudMap = new Map();
+      cloudData.forEach(item => cloudMap.set(String(item.id), item));
+
+      const merged = [...cloudData];
+
+      // IDs de defaults iniciais — nunca re-subir se o cloud já tem dados reais
+      const defaultIds = new Set((defaultData || []).map(d => String(d.id)));
+      const cloudHasRealData = cloudData.length > 0;
+
+      // Se houver algum item criado localmente que ainda não voltou do cloud, mantém e sobe
+      currentLocal.forEach(localItem => {
+        if (!localItem || !localItem.id) return;
+        const localId = String(localItem.id);
+
+        if (!cloudMap.has(localId)) {
+          // Se é um default local e o cloud já tem dados reais, não re-subir
+          if (cloudHasRealData && defaultIds.has(localId)) return;
+          // Se é financeiro antigo de testes, não re-subir
+          if (table === 'financeiro') return;
+
+          merged.push(localItem);
+          upsertOne(table, localItem).catch(e => console.warn(`[ValeStore] Background sync retry para ${table}:`, e.message));
+        } else {
+          // Merge campos extras locais (ex: valor_total, plano_id) que o cloud não tem
+          const idx = merged.findIndex(m => String(m.id) === localId);
+          if (idx !== -1) {
+            merged[idx] = { ...localItem, ...merged[idx] };
+          }
+        }
+      });
+
+      localSave(localKey, merged);
       dispatchSync(table);
-      console.log(`[ValeStore] Sync OK: ${table} (${result.length} registros)`);
-      return result;
+      console.log(`[ValeStore] Sync OK: ${table} (${merged.length} registros)`);
+      return merged;
     } catch (e) {
       console.warn(`[ValeStore] Falha ao puxar ${table}:`, e.message);
       return localLoad(localKey, defaultData);
@@ -145,26 +231,27 @@ const ValeStore = (() => {
 
   async function upsertOne(table, record) {
     const db = getClient();
-    if (!db || !record) return;
+    if (!db) {
+      console.warn(`[ValeStore] Supabase client não disponível para ${table}`);
+      return;
+    }
+    if (!record) return;
     try {
       let payload = { ...record };
 
+      // Filtragem estrita dos schemas das tabelas do Supabase (impede erro HTTP 400 por colunas extras)
       if (table === 'agendamentos') {
         const horaVal = record.hora || record.time || '08:00';
         payload = {
           id: String(record.id),
-          date: record.date,
+          date: String(record.date || new Date().toISOString().split('T')[0]),
           hora: horaVal,
           time: horaVal,
-          paciente: record.paciente || '',
-          especialidade: record.especialidade || 'Pilates Studio',
-          profissional: record.profissional || 'Dra. Katiane',
-          status: record.status || 'Aguardando Chegada',
-          horarioChegada: record.horarioChegada || null,
-          plano_id: record.plano_id || null,
-          plano_nome: record.plano_nome || null,
-          valor_total: record.valor_total !== undefined ? record.valor_total : null,
-          valor_clinica: record.valor_clinica !== undefined ? record.valor_clinica : null
+          paciente: String(record.paciente || ''),
+          especialidade: String(record.especialidade || 'Pilates Studio'),
+          profissional: String(record.profissional || (record.especialidade === 'Fonoaudiologia' ? 'Dr. Jorge Linhares' : (record.especialidade === 'Psicopedagogia' ? 'Dra. Cleópatra' : 'Dra. Katiane'))),
+          status: String(record.status || 'Aguardando Chegada'),
+          horarioChegada: record.horarioChegada || null
         };
       } else if (table === 'planos_servicos') {
         payload = {
@@ -212,20 +299,33 @@ const ValeStore = (() => {
       }
 
       const { error } = await db.from(table).upsert(payload, { onConflict: 'id' });
-      if (error) throw error;
+      if (error) {
+        console.error(`[ValeStore] Erro ao salvar em ${table}:`, error);
+        throw error;
+      }
+      console.log(`[ValeStore] Upsert OK em ${table}:`, payload.id);
     } catch (e) {
-      console.warn(`[ValeStore] Falha ao salvar em ${table}:`, e.message);
+      console.error(`[ValeStore] Falha ao salvar em ${table}:`, e.message);
+      throw e;
     }
   }
 
   async function deleteOne(table, id) {
     const db = getClient();
-    if (!db) return;
+    if (!db) {
+      console.warn(`[ValeStore] Supabase client não disponível para delete em ${table}`);
+      return;
+    }
     try {
       const { error } = await db.from(table).delete().eq('id', String(id));
-      if (error) throw error;
+      if (error) {
+        console.error(`[ValeStore] Erro ao deletar de ${table}:`, error);
+        throw error;
+      }
+      console.log(`[ValeStore] Delete OK em ${table}:`, id);
     } catch (e) {
-      console.warn(`[ValeStore] Falha ao deletar de ${table}:`, e.message);
+      console.error(`[ValeStore] Falha ao deletar de ${table}:`, e.message);
+      throw e;
     }
   }
 
@@ -241,16 +341,13 @@ const ValeStore = (() => {
     ]);
   }
 
-  // Limpeza preventiva de dados mock legados de testes
-  try {
-    const rawFin = localStorage.getItem(KEYS.FINANCEIRO);
-    if (rawFin) {
-      const parsed = JSON.parse(rawFin);
-      if (Array.isArray(parsed) && parsed.some(item => ['1','2','3','4','5','6','7','8','9','10','11','12'].includes(String(item.id)))) {
-        localStorage.removeItem(KEYS.FINANCEIRO);
-      }
-    }
-  } catch(e) {}
+  // Limpeza forçada e definitiva do cache legado de financeiro
+  const RESET_FIN_KEY = 'valeclinic_fin_reset_v4';
+  if (!localStorage.getItem(RESET_FIN_KEY)) {
+    localStorage.removeItem(KEYS.FINANCEIRO);
+    localStorage.setItem(RESET_FIN_KEY, 'true');
+    console.log('[ValeStore] Reset financeiro v4 executado com sucesso.');
+  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => setTimeout(syncAll, 100));
@@ -274,12 +371,15 @@ const ValeStore = (() => {
         return ['Dra. Katiane', 'Dra. Mirela'];
       }
       if (esp.includes('fisio')) {
-        return ['Dra. Leonarda Vale', 'Dr. Lucas Andrade'];
+        return ['Dra. Leonarda Vale'];
       }
       if (esp.includes('fono')) {
         return ['Dr. Jorge Linhares'];
       }
-      return ['Dra. Leonarda Vale', 'Dr. Lucas Andrade', 'Dr. Jorge Linhares', 'Dra. Katiane', 'Dra. Mirela'];
+      if (esp.includes('psico') || esp.includes('neuro')) {
+        return ['Dra. Cleópatra'];
+      }
+      return ['Dra. Leonarda Vale', 'Dr. Jorge Linhares', 'Dra. Cleópatra', 'Dra. Katiane', 'Dra. Mirela'];
     },
 
     getEquipeRecepcao: () => ['Leiriane', 'Fernanda'],
@@ -386,7 +486,7 @@ const ValeStore = (() => {
       });
     },
 
-    addPaciente: (r) => {
+    addPaciente: async (r) => {
       const all = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES);
       const nr  = {
         id: String(r.id || ('pac-' + Date.now())),
@@ -394,38 +494,39 @@ const ValeStore = (() => {
         phone: r.phone || r.telefone || '',
         birth: r.birth || r.nascimento || '',
         notes: r.notes || r.observacoes || '',
-        specialty: r.specialty || r.especialidade || '',
-        status: r.status || 'Ativo'
+        specialty: r.specialty || r.especialidade || ''
       };
       all.push(nr);
       localSave(KEYS.PACIENTES, all);
-      upsertOne('pacientes', nr);
+      await upsertOne('pacientes', nr);
       dispatchSync('pacientes');
-      return all;
+      return nr;
     },
 
-    updatePaciente: (id, changes) => {
+    updatePaciente: async (id, changes) => {
       const all = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES);
       const i   = all.findIndex(p => String(p.id) === String(id));
       if (i !== -1) {
         all[i] = { ...all[i], ...changes, id: String(id) };
         localSave(KEYS.PACIENTES, all);
-        upsertOne('pacientes', all[i]);
+        await upsertOne('pacientes', all[i]);
         dispatchSync('pacientes');
       }
       return all;
     },
 
-    savePacientes: (data) => {
+    savePacientes: async (data) => {
       localSave(KEYS.PACIENTES, data);
-      data.forEach(r => upsertOne('pacientes', r));
+      for (const r of data) {
+        await upsertOne('pacientes', r);
+      }
       dispatchSync('pacientes');
     },
 
-    deletePaciente: (id) => {
+    deletePaciente: async (id) => {
       const all = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES).filter(p => String(p.id) !== String(id));
       localSave(KEYS.PACIENTES, all);
-      deleteOne('pacientes', id);
+      await deleteOne('pacientes', id);
       dispatchSync('pacientes');
       return all;
     },
@@ -592,6 +693,20 @@ const ValeStore = (() => {
     },
 
     // ── UTILITÁRIOS ──────────────────────────────
+    getTodayDate: getTodayDate,
+    getDiaSemana: getDiaSemana,
+
+    clearFinanceiro: async () => {
+      localSave(KEYS.FINANCEIRO, []);
+      const db = getClient();
+      if (db) {
+        try {
+          await db.from('financeiro').delete().neq('id', 'none');
+        } catch(e) {}
+      }
+      dispatchSync('financeiro');
+    },
+
     clearCache: () => {
       Object.values(KEYS).forEach(k => localStorage.removeItem(k));
       console.log('[ValeStore] Cache local limpo.');
