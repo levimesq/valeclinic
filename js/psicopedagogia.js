@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 3. Modais
   const modalNovoAtendimento = document.getElementById('modalNovaTurma');
   const modalVincular = document.getElementById('modalMatricular');
-  const modalEvoluirProntuario = document.getElementById('modalEvoluirProntuario');
   const modalGraficoProgresso = document.getElementById('modalGraficoProgresso');
   const modalGerarLaudo = document.getElementById('modalGerarLaudo');
 
@@ -223,20 +222,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       const statusText  = status.includes('Presente') ? status :
                           status.includes('Faltou') || status.includes('Faltoso') ? status : 'Aguardando na Recepção';
 
-      // Link dinâmico do WhatsApp
-      const pacientes = (typeof ValeStore !== 'undefined' ? ValeStore.getPacientes() : []) || [];
-      const pacClean = (paciente || '').trim().toLowerCase();
-      const pacObj = pacientes.find(p => {
-        const n = (p.name || p.nome || '').trim().toLowerCase();
-        return n === pacClean || (n && pacClean && (n.includes(pacClean) || pacClean.includes(n)));
-      });
-      const rawPhone = pacObj && (pacObj.phone || pacObj.telefone) ? String(pacObj.phone || pacObj.telefone) : '';
-      let cleanTel = rawPhone.replace(/\D/g, '');
-      if (cleanTel.length >= 10 && !cleanTel.startsWith('55')) cleanTel = '55' + cleanTel;
-
-      const dataFormatada = a.date ? a.date.split('-').reverse().join('/') : '';
-      const msg = `Olá, ${paciente}! Passando para confirmar seu agendamento no dia ${dataFormatada} às ${hora}.`;
-      const waHref = cleanTel ? `https://api.whatsapp.com/send?phone=${cleanTel}&text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      // Link dinâmico do WhatsApp — helper centralizado (utils.js)
+      const waData = (typeof buildWhatsAppLink === 'function')
+        ? buildWhatsAppLink(paciente, a.date, hora, a.especialidade || 'Psicopedagogia')
+        : { url: '#', hasPhone: false, phone: '', message: '' };
+      const waHref = waData.url;
+      const cleanTel = waData.phone;
+      const msg = waData.message;
 
       const card = document.createElement('article');
       card.className = 'class-card';
@@ -261,10 +253,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
 
         <div class="enrolled-students-grid" style="grid-template-columns: 1fr 1fr; gap: 8px;">
-          <button class="empty-slot-btn btn-evoluir-modal" style="border-style: solid; background-color: var(--color-primary); color: #FFF; justify-content: center; font-weight: 600;">
-            📝 Evoluir Prontuário
-          </button>
-          <button class="empty-slot-btn btn-grafico-modal" style="border-style: solid; justify-content: center; font-weight: 600;">
+<button class="empty-slot-btn btn-grafico-modal" style="border-style: solid; justify-content: center; font-weight: 600;">
             📊 Progresso Cognitivo
           </button>
         </div>
@@ -282,21 +271,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
         });
       }
-
-      card.querySelector('.btn-evoluir-modal').addEventListener('click', (e) => {
-        e.preventDefault();
-        if (modalEvoluirProntuario) {
-          const nameTarget = modalEvoluirProntuario.querySelector('#modalEvolucaoNome');
-          const avatarTarget = modalEvoluirProntuario.querySelector('#modalEvolucaoAvatar');
-          const dataTarget = modalEvoluirProntuario.querySelector('#modalEvolucaoData');
-          const profTarget = modalEvoluirProntuario.querySelector('#modalEvolucaoProf');
-          if (nameTarget) nameTarget.textContent = paciente;
-          if (avatarTarget) avatarTarget.textContent = initials;
-          if (dataTarget) dataTarget.textContent = `${a.date} - ${hora}`;
-          if (profTarget) profTarget.textContent = profissional;
-          modalEvoluirProntuario.classList.add('active');
-        }
-      });
 
       card.querySelector('.btn-grafico-modal').addEventListener('click', (e) => {
         e.preventDefault();
@@ -391,34 +365,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 9. Salvar Evolução
-  const formEvolucao = document.getElementById('formEvolucaoProntuario');
-  if (formEvolucao) {
-    formEvolucao.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const pacienteNome = document.getElementById('modalEvolucaoNome')?.textContent || 'Paciente';
-      const conduta = formEvolucao.querySelector('textarea')?.value || '';
-      const activePain = document.querySelector('.pain-btn.active-green, .pain-btn.active-yellow, .pain-btn.active-red');
-      const nivelDor = activePain ? parseInt(activePain.dataset.level || '10', 10) : 10;
-
-      if (typeof ValeStore !== 'undefined') {
-        ValeStore.addEvolucao({
-          paciente: pacienteNome,
-          modulo: 'psicopedagogia',
-          procedimentos: conduta,
-          nivel_dor: nivelDor,
-          data: new Date().toLocaleDateString('pt-BR')
-        });
-      }
-
-      alert(`✅ Evolução Psicopedagógica de ${pacienteNome} salva com sucesso!`);
-      if (modalEvoluirProntuario) modalEvoluirProntuario.classList.remove('active');
-      formEvolucao.reset();
-      renderPsicoCards();
-    });
-  }
-
   // 10. Escala de Engajamento
   const painBtns = document.querySelectorAll('.pain-btn');
   painBtns.forEach(pBtn => {
@@ -432,7 +378,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // 11. Fechamento de Modais
-  const allModals = [modalNovoAtendimento, modalVincular, modalEvoluirProntuario, modalGraficoProgresso, modalGerarLaudo];
+  const allModals = [modalNovoAtendimento, modalVincular, modalGraficoProgresso, modalGerarLaudo];
   allModals.forEach(modal => {
     if (!modal) return;
     const closeBtns = modal.querySelectorAll('.btn-close-modal, .btn-modal-cancel');

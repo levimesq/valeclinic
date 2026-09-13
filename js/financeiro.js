@@ -143,8 +143,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const confirmados = [];
     const idsConfirmados = new Set();
 
+    // Rastreamento de ciclos de pacotes por paciente para evitar double billing (faturamento apenas na 1ª sessão)
+    const pacotesContados = new Map();
+
+    // Ordenar cronologicamente para garantir que a 1ª sessão seja a que fatura
+    const agendamentosOrdenados = [...agendamentos].sort((x, y) => {
+      const dtX = (x.date || '') + ' ' + (x.hora || x.time || '00:00');
+      const dtY = (y.date || '') + ' ' + (y.hora || y.time || '00:00');
+      return dtX.localeCompare(dtY);
+    });
+
     // 1. Processar agendamentos com presença confirmada
-    agendamentos.forEach(a => {
+    agendamentosOrdenados.forEach(a => {
       if (!a) return;
       if (!isPresencaConfirmada(a)) return;
 
@@ -161,9 +171,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (matchedPlano && parseValor(matchedPlano.valor_clinica) > 0) {
           valClinica = parseValor(matchedPlano.valor_clinica);
         } else {
-          // Retenção padrão: 20% para a clínica (conforme regra de R$ 26 de R$ 130)
+          // Retenção padrão: 20% para a clínica
           valClinica = Math.round(valTotal * 0.20 * 100) / 100;
         }
+      }
+
+      // Checar se é pacote e se já teve a 1ª sessão faturada
+      const planoNomeLower = ((a.plano_nome || (matchedPlano ? matchedPlano.nome_servico : '')) || '').toLowerCase();
+      const isPacote = planoNomeLower.includes('pacote') || (matchedPlano && matchedPlano.tipo_cobranca === 'pacote');
+      
+      if (isPacote) {
+        const pacoteKey = `${(a.paciente || '').trim().toLowerCase()}_${(a.especialidade || '').trim().toLowerCase()}_${planoNomeLower}`;
+        const contagem = pacotesContados.get(pacoteKey) || 0;
+        if (contagem >= 1) {
+          // Da 2ª à 10ª sessão: entrada no caixa da clínica é R$ 0,00 (sem double billing)
+          valTotal = 0;
+          valClinica = 0;
+        }
+        pacotesContados.set(pacoteKey, contagem + 1);
       }
 
       const repasseProfissional = Math.max(0, valTotal - valClinica);

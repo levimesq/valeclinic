@@ -554,34 +554,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Helper para construir link de confirmação do WhatsApp
-  function buildWhatsAppConfirmationLink(paciente, dataStr, hora) {
-    const pacientes = (typeof ValeStore !== 'undefined' ? ValeStore.getPacientes() : []) || [];
-    const pacClean = (paciente || '').trim().toLowerCase();
-
-    const pacObj = pacientes.find(p => {
-      const n = (p.name || p.nome || '').trim().toLowerCase();
-      return n === pacClean || (n && pacClean && (n.includes(pacClean) || pacClean.includes(n)));
-    });
-
-    const rawPhone = pacObj && (pacObj.phone || pacObj.telefone) ? String(pacObj.phone || pacObj.telefone) : '';
-    let cleanTel = rawPhone.replace(/\D/g, '');
-
-    const dataFormatada = formatarDataBR(dataStr);
-    const msg = `Olá, ${paciente}! Passando para confirmar seu agendamento no dia ${dataFormatada} às ${hora}.`;
-
-    if (cleanTel) {
-      if (cleanTel.length >= 10 && !cleanTel.startsWith('55')) {
-        cleanTel = '55' + cleanTel;
-      }
-      return {
-        url: `https://api.whatsapp.com/send?phone=${cleanTel}&text=${encodeURIComponent(msg)}`,
-        hasPhone: true,
-        phone: cleanTel,
-        message: msg
-      };
+  // Helper para construir link de confirmação do WhatsApp — centralizado em utils.js
+  function buildWhatsAppConfirmationLink(paciente, dataStr, hora, especialidade) {
+    if (typeof buildWhatsAppLink === 'function') {
+      return buildWhatsAppLink(paciente, dataStr, hora, especialidade || 'Clínica Vale');
     }
-
+    const dataFormatada = formatarDataBR(dataStr);
+    const msg = `Olá! Seu atendimento está confirmado! 💙\n\n📅 Data: ${dataFormatada}\n⏰ Horário: ${hora}\n📍 Atendimento: ${especialidade || 'Clínica Vale'}\n\n“Cuidar do corpo é também cuidar da qualidade de vida. Cada movimento é um passo em direção ao seu bem-estar.”\nAgradecemos a confiança em nosso trabalho.\nCentro de Fisioterapia e Reabilitação Dra. Leonarda Vale`;
     return {
       url: `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`,
       hasPhone: false,
@@ -730,8 +709,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const planoNome = a.plano_nome || '';
       const valorTotal = a.valor_total || 0;
 
-      // Link dinâmico com API oficial do WhatsApp
-      const waData = buildWhatsAppConfirmationLink(paciente, a.date, hora);
+      // Link dinâmico com API oficial do WhatsApp (template Dra. Leonarda Vale)
+      const waData = buildWhatsAppConfirmationLink(paciente, a.date, hora, especialidade);
 
       const rowHTML = buildCardHTML(a.id, hora, especialidade, paciente, profissional, status, waData, planoNome, valorTotal);
       scheduleList.insertAdjacentHTML('beforeend', rowHTML);
@@ -801,7 +780,35 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
 
-          if (valTotal > 0) {
+          // Detectar se o plano é do tipo Pacote (10 sessões, 5 sessões, etc.)
+          const isPacote = (agConfirmado.tipo_cobranca === 'pacote') ||
+                           (planoNome && planoNome.toLowerCase().includes('pacote')) ||
+                           (agConfirmado.especialidade && agConfirmado.especialidade.toLowerCase().includes('pacote'));
+
+          // Contar presenças confirmadas anteriores deste paciente no mesmo pacote
+          let sequenciaPacote = 1;
+          if (isPacote) {
+            const pacClean = (agConfirmado.paciente || '').trim().toLowerCase();
+            const espClean = (agConfirmado.especialidade || '').trim().toLowerCase();
+            const confAnteriores = agendamentos.filter(other => {
+              if (String(other.id) === String(slotId)) return false;
+              const otherPac = (other.paciente || '').trim().toLowerCase();
+              const otherEsp = (other.especialidade || '').trim().toLowerCase();
+              const otherSt = (other.status || '').toLowerCase();
+              const isConfirmed = otherSt.includes('presente') || otherSt.includes('atendido') || otherSt.includes('conclu');
+              return otherPac === pacClean && (otherEsp === espClean || (other.plano_nome && other.plano_nome === planoNome)) && isConfirmed;
+            });
+            sequenciaPacote = confAnteriores.length + 1;
+          }
+
+          // REGRA DE NEGÓCIO: No pacote, o faturamento da clínica ocorre na 1ª sessão.
+          // Da 2ª à 10ª sessão, a entrada no caixa da clínica é R$ 0,00 (sem double billing).
+          if (isPacote && sequenciaPacote > 1) {
+            valClinica = 0;
+            valTotal = 0;
+          }
+
+          if (valTotal > 0 || (isPacote && sequenciaPacote === 1)) {
             const categoriaMap = {
               'Pilates Studio': 'pilates',
               'Fisioterapia': 'fisio',
@@ -812,7 +819,7 @@ document.addEventListener('DOMContentLoaded', () => {
               id: 'fin-' + Date.now(),
               data: agConfirmado.date || new Date().toISOString().split('T')[0],
               paciente: agConfirmado.paciente,
-              descricao: planoNome ? `Consulta: ${planoNome}` : `Consulta: ${agConfirmado.especialidade}`,
+              descricao: planoNome ? `Consulta: ${planoNome}${isPacote ? ' (1ª Sessão/Pacote)' : ''}` : `Consulta: ${agConfirmado.especialidade}`,
               categoria: categoriaMap[agConfirmado.especialidade] || 'geral',
               pagamento: 'PIX',
               valor: valTotal,
@@ -824,7 +831,10 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        showToast('Presença confirmada! Receita lançada no financeiro.', 'success');
+        const msgToast = (agConfirmado && (agConfirmado.plano_nome || '').toLowerCase().includes('pacote'))
+          ? 'Presença confirmada! (Sessão de pacote computada sem duplicação de caixa)'
+          : 'Presença confirmada! Receita lançada no financeiro.';
+        showToast(msgToast, 'success');
 
         const dp = document.getElementById('agendaDatePicker');
         renderTimeline(dp ? dp.value : todayStr);

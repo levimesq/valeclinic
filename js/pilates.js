@@ -79,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Modais
   const modalNovaTurma = document.getElementById('modalNovaTurma');
   const modalMatricular = document.getElementById('modalMatricular');
-  const modalEvoluirProntuario = document.getElementById('modalEvoluirProntuario');
   const modalGraficoProgresso = document.getElementById('modalGraficoProgresso');
 
   const btnNovaTurma = document.getElementById('btnNovaTurma');
@@ -358,20 +357,11 @@ document.addEventListener('DOMContentLoaded', () => {
           statusText = status;
         }
 
-        // Link dinâmico do WhatsApp
-        const pacientes = (typeof ValeStore !== 'undefined' ? ValeStore.getPacientes() : []) || [];
-        const pacClean = (pacienteNome || '').trim().toLowerCase();
-        const pacObj = pacientes.find(p => {
-          const n = (p.name || p.nome || '').trim().toLowerCase();
-          return n === pacClean || (n && pacClean && (n.includes(pacClean) || pacClean.includes(n)));
-        });
-        const rawPhone = pacObj && (pacObj.phone || pacObj.telefone) ? String(pacObj.phone || pacObj.telefone) : '';
-        let cleanTel = rawPhone.replace(/\D/g, '');
-        if (cleanTel.length >= 10 && !cleanTel.startsWith('55')) cleanTel = '55' + cleanTel;
-
-        const dataFormatada = aluno.date ? aluno.date.split('-').reverse().join('/') : '';
-        const msg = `Olá, ${pacienteNome}! Passando para confirmar sua aula de Pilates no dia ${dataFormatada} às ${turma.hora}.`;
-        const waHref = cleanTel ? `https://api.whatsapp.com/send?phone=${cleanTel}&text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+        // Link dinâmico do WhatsApp — helper centralizado (utils.js)
+        const waDataPil = (typeof buildWhatsAppLink === 'function')
+          ? buildWhatsAppLink(pacienteNome, aluno.date, turma.hora, 'Pilates Studio')
+          : { url: '#', hasPhone: false, phone: '', message: '' };
+        const waHref = waDataPil.url;
 
         slotsHTML += `
           <div class="student-pill" data-slot-id="${aluno.id}">
@@ -384,9 +374,6 @@ document.addEventListener('DOMContentLoaded', () => {
               <a href="${waHref}" target="_blank" class="btn-icon-pill btn-whatsapp-pill" title="Confirmar via WhatsApp" style="background: rgba(16,185,129,0.12); color: #10B981; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="11" height="11"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
               </a>
-              <button type="button" class="btn-icon-pill btn-evoluir-pill" data-paciente="${pacienteNome}" data-data="${aluno.date}" data-hora="${turma.hora}" data-prof="${turma.profissional}" title="Evoluir Prontuário" style="background: rgba(11,27,54,0.06); color: var(--color-primary);">
-                📝 Evoluir
-              </button>
               <button type="button" class="btn-icon-pill btn-grafico-pill" data-paciente="${pacienteNome}" title="Gráfico de Progresso" style="background: rgba(197,160,89,0.12); color: var(--color-secondary);">
                 📊
               </button>
@@ -534,28 +521,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // B) Botões de Evoluir Prontuário
-      card.querySelectorAll('.btn-evoluir-pill').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          const pac = btn.dataset.paciente;
-          const initials = pac.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-
-          if (modalEvoluirProntuario) {
-            const nameTarget = modalEvoluirProntuario.querySelector('#modalEvolucaoNome');
-            const avatarTarget = modalEvoluirProntuario.querySelector('#modalEvolucaoAvatar');
-            const dataTarget = modalEvoluirProntuario.querySelector('#modalEvolucaoData');
-            const profTarget = modalEvoluirProntuario.querySelector('#modalEvolucaoProf');
-
-            if (nameTarget) nameTarget.textContent = pac;
-            if (avatarTarget) avatarTarget.textContent = initials;
-            if (dataTarget) dataTarget.textContent = `${btn.dataset.data || hojeDateStr} - ${btn.dataset.hora}`;
-            if (profTarget) profTarget.textContent = btn.dataset.prof || turma.profissional;
-
-            modalEvoluirProntuario.classList.add('active');
-          }
-        });
-      });
-
       // C) Botões de Gráfico de Progresso
       card.querySelectorAll('.btn-grafico-pill').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -691,48 +656,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 8. Salvar Evolução do Prontuário no Supabase
-  const formEvolucao = document.getElementById('formEvolucaoProntuario');
-  if (formEvolucao) {
-    formEvolucao.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const pacienteNome = document.getElementById('modalEvolucaoNome')?.textContent || 'Paciente';
-      const conduta = formEvolucao.querySelector('textarea')?.value || '';
-      const activePain = document.querySelector('.pain-btn.active-green, .pain-btn.active-yellow, .pain-btn.active-red');
-      const nivelDor = activePain ? parseInt(activePain.dataset.level || '0', 10) : 0;
-
-      if (typeof ValeStore !== 'undefined') {
-        ValeStore.addEvolucao({
-          paciente: pacienteNome,
-          modulo: 'pilates studio',
-          procedimentos: conduta,
-          nivel_dor: nivelDor,
-          data: new Date().toLocaleDateString('pt-BR')
-        });
-      }
-
-      alert(`✅ Evolução do Prontuário de ${pacienteNome} salva com sucesso!`);
-      if (modalEvoluirProntuario) modalEvoluirProntuario.classList.remove('active');
-      formEvolucao.reset();
-      renderPilatesCards();
-    });
-  }
-
-  // 9. Escala de Dor
-  const painBtns = document.querySelectorAll('.pain-btn');
-  painBtns.forEach(pBtn => {
-    pBtn.addEventListener('click', () => {
-      painBtns.forEach(b => b.className = 'pain-btn');
-      const level = parseInt(pBtn.getAttribute('data-level') || '0', 10);
-      if (level <= 2) pBtn.classList.add('active-green');
-      else if (level <= 5) pBtn.classList.add('active-yellow');
-      else pBtn.classList.add('active-red');
-    });
-  });
-
   // 10. Fechamento de Modais
-  const allModals = [modalNovaTurma, modalMatricular, modalEvoluirProntuario, modalGraficoProgresso];
+  const allModals = [modalNovaTurma, modalMatricular, modalGraficoProgresso];
   allModals.forEach(modal => {
     if (!modal) return;
     const closeBtns = modal.querySelectorAll('.btn-close-modal, .btn-modal-cancel');

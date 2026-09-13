@@ -291,6 +291,7 @@ const ValeStore = (() => {
         payload = {
           id: String(record.id),
           name: record.name || record.nome || '',
+          cpf: record.cpf ? String(record.cpf).trim() : null,
           phone: record.phone || record.telefone || '',
           birth: record.birth || record.nascimento || '',
           notes: record.notes || record.observacoes || '',
@@ -465,10 +466,10 @@ const ValeStore = (() => {
       dispatchSync('agendamentos');
     },
 
-    deleteAgendamento: (id) => {
+    deleteAgendamento: async (id) => {
       const all = localLoad(KEYS.AGENDAMENTOS, INITIAL_AGENDAMENTOS).filter(a => String(a.id) !== String(id));
       localSave(KEYS.AGENDAMENTOS, all);
-      deleteOne('agendamentos', id);
+      await deleteOne('agendamentos', id);
       dispatchSync('agendamentos');
       return all;
     },
@@ -491,6 +492,7 @@ const ValeStore = (() => {
       const nr  = {
         id: String(r.id || ('pac-' + Date.now())),
         name: r.name || r.nome || '',
+        cpf: r.cpf ? String(r.cpf).trim() : null,
         phone: r.phone || r.telefone || '',
         birth: r.birth || r.nascimento || '',
         notes: r.notes || r.observacoes || '',
@@ -523,12 +525,43 @@ const ValeStore = (() => {
       dispatchSync('pacientes');
     },
 
-    deletePaciente: async (id) => {
-      const all = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES).filter(p => String(p.id) !== String(id));
-      localSave(KEYS.PACIENTES, all);
-      await deleteOne('pacientes', id);
+    // Deleção em cascata garantida: remove agendamentos, faltas e evoluções antes de remover o paciente
+    deletePaciente: async (idOrName) => {
+      const pacientes = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES);
+      const targetPac = pacientes.find(p => String(p.id) === String(idOrName) || (p.name || p.nome) === idOrName);
+      const pacId = targetPac ? String(targetPac.id) : String(idOrName);
+      const pacName = targetPac ? (targetPac.name || targetPac.nome) : idOrName;
+
+      // 1. Atualizar localStorage em cascata
+      const allPac = pacientes.filter(p => String(p.id) !== pacId && (p.name || p.nome) !== pacName);
+      localSave(KEYS.PACIENTES, allPac);
+
+      const allAg = localLoad(KEYS.AGENDAMENTOS, INITIAL_AGENDAMENTOS).filter(a => a.paciente !== pacName && a.paciente_id !== pacId);
+      localSave(KEYS.AGENDAMENTOS, allAg);
+
+      const allFaltas = localLoad(KEYS.FALTAS, INITIAL_FALTAS).filter(f => f.paciente !== pacName);
+      localSave(KEYS.FALTAS, allFaltas);
+
+      // 2. Deletar dependências no Supabase antes de deletar o paciente
+      const db = getClient();
+      if (db) {
+        try {
+          if (pacName) {
+            await db.from('agendamentos').delete().eq('paciente', pacName);
+            await db.from('faltas').delete().eq('paciente', pacName);
+            await db.from('evolucoes').delete().eq('paciente', pacName);
+          }
+          await db.from('agendamentos').delete().eq('paciente_id', pacId);
+          await db.from('pacientes').delete().eq('id', pacId);
+        } catch(err) {
+          console.warn('[ValeStore] Erro ao deletar dependências no Supabase:', err.message);
+        }
+      }
+
       dispatchSync('pacientes');
-      return all;
+      dispatchSync('agendamentos');
+      dispatchSync('faltas');
+      return allPac;
     },
 
     // ── FALTAS ───────────────────────────────────
@@ -556,7 +589,7 @@ const ValeStore = (() => {
       data.forEach(r => upsertOne('faltas', r));
     },
 
-    // ── REGRA ESTRITA DE EVASÃO (2 Faltas Consecutivas) ──
+    // ── REGRA ESTRITA DE EVASÃO COM TTL (Apenas Faltas Recentes <= 24h / GMT-3) ──
     getAlertasAbandono: () => {
       const agendamentos = localLoad(KEYS.AGENDAMENTOS, INITIAL_AGENDAMENTOS);
       const faltas = localLoad(KEYS.FALTAS, INITIAL_FALTAS);
@@ -602,19 +635,29 @@ const ValeStore = (() => {
           const ultimo    = eventos[eventos.length - 1];
 
           if (penultimo.tipo === 'falta_injustificada' && ultimo.tipo === 'falta_injustificada') {
-            const pacInfo = pacientes.find(p => p.name === nome) || {};
-            alertas.push({
-              nome,
-              faltasConsecutivas: 2,
-              modulo: ultimo.modulo || 'Clínica Geral',
-              telefone: pacInfo.phone || ''
-            });
+            // TTL de 24 horas: apenas exibir alertas se a última falta foi recente
+            const isRecente = (typeof isFaltaRecente === 'function')
+              ? isFaltaRecente(ultimo.data, 24)
+              : true;
+
+            if (isRecente) {
+              const pacInfo = pacientes.find(p => p.name === nome) || {};
+              alertas.push({
+                nome,
+                faltasConsecutivas: 2,
+                modulo: ultimo.modulo || 'Clínica Geral',
+                dataUltimaFalta: ultimo.data,
+                telefone: pacInfo.phone || ''
+              });
+            }
           }
         }
       });
 
       return alertas;
     },
+
+    getTodayDate: () => (typeof getTodayDateBR === 'function' ? getTodayDateBR() : new Date().toISOString().split('T')[0]),
 
     // ── FINANCEIRO ───────────────────────────────
     getFinanceiro: () => localLoad(KEYS.FINANCEIRO, INITIAL_FINANCEIRO),

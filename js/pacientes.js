@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Elementos do formulário do modal
     const fullNameInput = document.getElementById('fullName');
+    const cpfInput = document.getElementById('cpf');
     const birthDateInput = document.getElementById('birthDate');
     const phoneInput = document.getElementById('phone');
     const notesInput = document.getElementById('notes');
@@ -17,6 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Elementos de Notificação
     const btnNotification = document.querySelector('.btn-notification');
     const notificationsPopover = document.getElementById('notificationsPopover');
+
+    function formatarCPF(v) {
+      if (!v) return '';
+      let clean = String(v).replace(/\D/g, '');
+      if (clean.length > 11) clean = clean.slice(0, 11);
+      if (clean.length > 9) return clean.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+      if (clean.length > 6) return clean.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+      if (clean.length > 3) return clean.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+      return clean;
+    }
 
     function updatePatientCounter() {
       const tbody = patientsTable ? patientsTable.querySelector('tbody') : null;
@@ -40,6 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Máscara automática para CPF
+    if (cpfInput) {
+      cpfInput.addEventListener('input', function() {
+        this.value = formatarCPF(this.value);
+      });
+    }
+
     function openNewModal() {
       modalTitle.textContent = 'Cadastrar Novo Paciente';
       saveModalBtn.textContent = 'Salvar Paciente';
@@ -52,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
       saveModalBtn.textContent = 'Atualizar Paciente';
 
       fullNameInput.value = tr.dataset.name || '';
+      if (cpfInput) cpfInput.value = formatarCPF(tr.dataset.cpf || '');
       phoneInput.value = tr.dataset.phone || '';
       birthDateInput.value = tr.dataset.birth || '';
       notesInput.value = tr.dataset.notes || '';
@@ -78,6 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const name = fullNameInput ? fullNameInput.value.trim() : '';
+        const cpfVal = cpfInput ? cpfInput.value.trim() : '';
+        const cleanCpf = cpfVal ? cpfVal.replace(/\D/g, '') : null;
         const phoneVal = phoneInput ? phoneInput.value.trim() : '';
 
         if (!name) return;
@@ -86,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ValeStore.addPaciente({
             id: 'pac-' + Date.now(),
             name: name,
+            cpf: cleanCpf,
             phone: phoneVal,
             birth: birthDateInput ? birthDateInput.value : '',
             notes: notesInput ? notesInput.value : ''
@@ -99,8 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tbody) {
           const newRow = document.createElement('tr');
           newRow.dataset.name = name;
+          newRow.dataset.cpf = cleanCpf || '';
           newRow.dataset.phone = phoneVal;
           newRow.dataset.notes = notesInput ? notesInput.value : '';
+
+          const subtext = cleanCpf ? `CPF: ${formatarCPF(cleanCpf)}` : (phoneVal || 'Sem CPF cadastrado');
 
           newRow.innerHTML = `
             <td>
@@ -108,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="patient-avatar-lg">${initials}</div>
                 <div class="patient-details-text">
                   <span class="patient-name-title">${name}</span>
-                  <span class="patient-cpf-subtext">${phoneVal || 'Sem telefone'}</span>
+                  <span class="patient-cpf-subtext">${subtext}</span>
                 </div>
               </div>
             </td>
