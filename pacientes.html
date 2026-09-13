@@ -239,6 +239,11 @@
               <input type="text" id="fullName" class="modal-input" placeholder="Ex: Maria da Silva" required>
             </div>
 
+            <div class="form-group-full">
+              <label class="modal-label" for="cpf">CPF do Paciente</label>
+              <input type="text" id="cpf" class="modal-input" placeholder="000.000.000-00" inputmode="numeric" maxlength="14">
+            </div>
+
             <div>
               <label class="modal-label" for="birthDate">Data de Nascimento</label>
               <input type="text" id="birthDate" class="modal-input" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10">
@@ -298,6 +303,7 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/utils.js"></script>
   <script src="js/store.js"></script>
   <script src="js/permissions.js"></script>
   <script src="js/modulos.js"></script>
@@ -312,6 +318,7 @@
       const searchInput          = document.getElementById('searchInput');
       const patientsTable        = document.getElementById('patientsTable');
       const fullNameInput        = document.getElementById('fullName');
+      const cpfInput             = document.getElementById('cpf');
       const birthDateInput       = document.getElementById('birthDate');
       const phoneInput           = document.getElementById('phone');
       const notesInput           = document.getElementById('notes');
@@ -319,12 +326,23 @@
       const notificationsPopover = document.getElementById('notificationsPopover');
       const emptyRow             = document.getElementById('emptyPatientsRow');
 
+      function formatarCPF(v) {
+        if (!v) return '';
+        let clean = String(v).replace(/\D/g, '');
+        if (clean.length > 11) clean = clean.slice(0, 11);
+        if (clean.length > 9) return clean.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+        if (clean.length > 6) return clean.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+        if (clean.length > 3) return clean.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+        return clean;
+      }
+
       // ── Renderiza linha do paciente ──────────────────────────────────
       function renderPatientRow(p, prepend = false) {
         const tbody = patientsTable ? patientsTable.querySelector('#patientsTbody') : null;
         if (!tbody) return;
 
         const nome = (p.name || p.nome || 'Paciente').trim();
+        const cpf  = p.cpf || '';
         const tel  = p.phone || p.telefone || '';
         const nasc = p.birth || p.nascimento || '';
         const obs  = p.notes || p.observacoes || '';
@@ -335,10 +353,13 @@
         const phoneClean = tel.replace(/\D/g, '');
         const newRow = document.createElement('tr');
         newRow.dataset.name  = nome;
+        newRow.dataset.cpf   = cpf;
         newRow.dataset.phone = tel;
         newRow.dataset.birth = nasc;
         newRow.dataset.notes = obs;
         newRow.dataset.id    = id;
+
+        const subtext = cpf ? `CPF: ${formatarCPF(cpf)}` : (tel || 'Sem CPF cadastrado');
 
         newRow.innerHTML = `
           <td>
@@ -346,7 +367,7 @@
               <div class="patient-avatar-lg">${initials}</div>
               <div class="patient-details-text">
                 <span class="patient-name-title">${nome}</span>
-                <span class="patient-cpf-subtext">${tel || 'Sem telefone'}</span>
+                <span class="patient-cpf-subtext">${subtext}</span>
               </div>
             </div>
           </td>
@@ -420,6 +441,13 @@
           if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
           if (v.length >= 6) v = v.slice(0,5) + '/' + v.slice(5, 9);
           this.value = v;
+        });
+      }
+
+      // Máscara 000.000.000-00 no campo de CPF
+      if (cpfInput) {
+        cpfInput.addEventListener('input', function() {
+          this.value = formatarCPF(this.value);
         });
       }
 
@@ -507,6 +535,7 @@
         modalTitle.textContent = 'Editar Cadastro de Paciente';
         saveModalBtn.textContent = 'Atualizar Paciente';
         if (fullNameInput) fullNameInput.value = tr.dataset.name || '';
+        if (cpfInput) cpfInput.value = formatarCPF(tr.dataset.cpf || '');
         if (phoneInput) phoneInput.value = tr.dataset.phone || '';
         if (birthDateInput) birthDateInput.value = tr.dataset.birth || '';
         if (notesInput) notesInput.value = tr.dataset.notes || '';
@@ -528,9 +557,11 @@
         newPatientForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           const name     = fullNameInput ? fullNameInput.value.trim() : '';
+          const cpfVal   = cpfInput ? cpfInput.value.trim() : '';
           const phoneVal = phoneInput ? phoneInput.value.trim() : '';
           const birth    = birthDateInput ? birthDateInput.value : '';
           const notes    = notesInput ? notesInput.value.trim() : '';
+          const cleanCpf = cpfVal ? cpfVal.replace(/\D/g, '') : null;
 
           if (!name) { alert('Por favor, informe o nome completo do paciente.'); return; }
 
@@ -542,19 +573,20 @@
             if (editingRow) {
               const id = editingRow.dataset.id;
               editingRow.dataset.name  = name;
+              editingRow.dataset.cpf   = cleanCpf || '';
               editingRow.dataset.phone = phoneVal;
               editingRow.dataset.birth = birth;
               editingRow.dataset.notes = notes;
               const nameEl = editingRow.querySelector('.patient-name-title');
               const phoneEl = editingRow.querySelector('.patient-cpf-subtext');
               if (nameEl) nameEl.textContent = name;
-              if (phoneEl) phoneEl.textContent = phoneVal || 'Sem telefone';
+              if (phoneEl) phoneEl.textContent = cleanCpf ? `CPF: ${formatarCPF(cleanCpf)}` : (phoneVal || 'Sem CPF cadastrado');
               
               if (typeof ValeStore !== 'undefined' && id) {
-                await ValeStore.updatePaciente(id, { name, phone: phoneVal, birth, notes });
+                await ValeStore.updatePaciente(id, { name, cpf: cleanCpf, phone: phoneVal, birth, notes });
               }
             } else {
-              const pacData = { id: 'pac-' + Date.now(), name, phone: phoneVal, birth, notes };
+              const pacData = { id: 'pac-' + Date.now(), name, cpf: cleanCpf, phone: phoneVal, birth, notes };
               if (typeof ValeStore !== 'undefined') {
                 await ValeStore.addPaciente(pacData);
               }
@@ -595,10 +627,15 @@
       if (searchInput && patientsTable) {
         searchInput.addEventListener('input', function() {
           const query = this.value.toLowerCase().trim();
+          const queryClean = query.replace(/\D/g, '');
           const rows  = patientsTable.querySelectorAll('#patientsTbody tr');
           rows.forEach(row => {
             if (row.id === 'emptyPatientsRow') return;
-            row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
+            const text = row.innerText.toLowerCase();
+            const rowCpf = (row.dataset.cpf || '').replace(/\D/g, '');
+            const rowPhone = (row.dataset.phone || '').replace(/\D/g, '');
+            const matches = text.includes(query) || (queryClean && (rowCpf.includes(queryClean) || rowPhone.includes(queryClean)));
+            row.style.display = matches ? '' : 'none';
           });
         });
       }

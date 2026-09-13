@@ -394,65 +394,6 @@
     </div>
   </div>
 
-  <!-- Modal 3: Evoluir Prontu&aacute;rio -->
-  <div class="modal-overlay" id="modalEvoluirProntuario">
-    <div class="modal-container" style="max-width: 640px;">
-      <div class="modal-header">
-        <h3>Evoluir Prontu&aacute;rio Cl&iacute;nico</h3>
-        <button class="btn-close-modal">&times;</button>
-      </div>
-      <form id="formEvolucaoProntuario">
-        <div class="modal-body">
-          <!-- Banner de Identificação -->
-          <div class="modal-patient-banner">
-            <div class="modal-patient-avatar" id="modalEvolucaoAvatar">--</div>
-            <div class="modal-patient-details">
-              <h4 id="modalEvolucaoNome">Paciente</h4>
-              <p>Sess&atilde;o: <strong id="modalEvolucaoData">--/--/----</strong> | Resp.: <span id="modalEvolucaoProf">Dra. Leonarda Vale</span></p>
-            </div>
-          </div>
-
-          <div class="modal-form-grid">
-            <div class="form-group-full">
-              <label class="modal-label">Procedimentos / Conduta Realizada *</label>
-              <textarea class="modal-textarea" placeholder="Descreva os exerc&iacute;cios, t&eacute;cnicas e terapias aplicadas nesta sess&atilde;o..." required></textarea>
-            </div>
-
-            <div class="form-group-full">
-              <label class="modal-label">Resposta / Evolu&ccedil;&atilde;o do Paciente *</label>
-              <textarea class="modal-textarea" placeholder="Descreva a reA&ccedil;&atilde;o, desempenho ou ganho observado no paciente..." required></textarea>
-            </div>
-
-            <div class="form-group-full pain-scale-group">
-              <label class="modal-label">N&iacute;vel de Dor / Desconforto (Escala EVA 0 a 10)</label>
-              <div class="pain-scale-buttons">
-                <button type="button" class="pain-btn active-green" data-level="0">0 (Sem Dor)</button>
-                <button type="button" class="pain-btn" data-level="2">2 (Leve)</button>
-                <button type="button" class="pain-btn" data-level="4">4 (Moderada)</button>
-                <button type="button" class="pain-btn" data-level="7">7 (Intensa)</button>
-                <button type="button" class="pain-btn" data-level="10">10 (Insuport&aacute;vel)</button>
-              </div>
-            </div>
-
-            <div class="form-group-full">
-              <label class="modal-label">Intercorr&ordf;ncias / Queixas</label>
-              <input type="text" class="modal-input" placeholder="Relato de dores pr&eacute;vias, faltas ou observA&ccedil;&otilde;es cl&iacute;nicas...">
-            </div>
-
-            <div class="form-group-full">
-              <label class="modal-label">Planejamento Pr&oacute;xima Sess&atilde;o</label>
-              <input type="text" class="modal-input" placeholder="Conduta planejada para o pr&oacute;ximo atendimento...">
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-modal-cancel">Cancelar</button>
-          <button type="submit" class="btn-modal-save">Salvar Evolu&ccedil;&atilde;o</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <!-- Modal 4: Gr&aacute;fico de Progresso -->
   <div class="modal-overlay" id="modalGraficoProgresso">
     <div class="modal-container" style="max-width: 720px;">
@@ -536,6 +477,7 @@
 
   <!-- Linkando Arquivo JS dedicado -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/utils.js"></script>
   <script src="js/store.js"></script>
   <script src="js/permissions.js"></script>
   <script src="js/pilates.js"></script>

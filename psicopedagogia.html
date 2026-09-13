@@ -286,63 +286,6 @@
 
   <!-- Modais Interativos para Psicopedagogia -->
   
-  <!-- Modal 1: Evoluir Prontuário -->
-  <div class="modal-overlay" id="modalEvoluirProntuario">
-    <div class="modal-container" style="max-width: 640px;">
-      <div class="modal-header">
-        <h3>Evoluir Prontuário Psicopedagógico</h3>
-        <button class="btn-close-modal">&times;</button>
-      </div>
-      <form id="formEvolucaoProntuario">
-        <div class="modal-body">
-          <div class="modal-patient-banner">
-            <div class="modal-patient-avatar" id="modalEvolucaoAvatar">--</div>
-            <div class="modal-patient-details">
-              <h4 id="modalEvolucaoNome">Selecione um paciente</h4>
-              <p>Sessão: <strong id="modalEvolucaoData">--</strong> | Resp.: <span id="modalEvolucaoProf">Dra. Cleópatra</span></p>
-            </div>
-          </div>
-
-          <div class="modal-form-grid">
-            <div class="form-group-full">
-              <label class="modal-label">Atividades Cognitivas / Conduta Realizada *</label>
-              <textarea class="modal-textarea" placeholder="Descreva os jogos, testes, intervenções pedagógicas e estratégias aplicadas..." required></textarea>
-            </div>
-
-            <div class="form-group-full">
-              <label class="modal-label">Desempenho e Resposta do Aprendiz *</label>
-              <textarea class="modal-textarea" placeholder="Descreva a atenção, foco, raciocínio lógico, avanços de leitura/escrita..." required></textarea>
-            </div>
-
-            <div class="form-group-full pain-scale-group">
-              <label class="modal-label">Nível de Engajamento / Foco (0 a 10)</label>
-              <div class="pain-scale-buttons" style="display:flex; flex-wrap:wrap; gap:6px;">
-                <button type="button" class="pain-btn" data-level="2" style="flex:1 1 auto; min-width:55px; font-size:0.72rem; padding:8px 4px;">2 Baixo</button>
-                <button type="button" class="pain-btn" data-level="5" style="flex:1 1 auto; min-width:55px; font-size:0.72rem; padding:8px 4px;">5 Médio</button>
-                <button type="button" class="pain-btn" data-level="8" style="flex:1 1 auto; min-width:55px; font-size:0.72rem; padding:8px 4px;">8 Bom</button>
-                <button type="button" class="pain-btn active-green" data-level="10" style="flex:1 1 auto; min-width:55px; font-size:0.72rem; padding:8px 4px;">10 Excelente</button>
-              </div>
-            </div>
-
-            <div class="form-group-full">
-              <label class="modal-label">Observações / Comportamento</label>
-              <input type="text" class="modal-input" placeholder="Relato familiar, agitação, desatenção ou avanços...">
-            </div>
-
-            <div class="form-group-full">
-              <label class="modal-label">Planejamento Próxima Sessão</label>
-              <input type="text" class="modal-input" placeholder="Planejamento de estímulos para o próximo encontro...">
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-modal-cancel">Cancelar</button>
-          <button type="submit" class="btn-modal-save">Salvar Evolução</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <!-- Modal 2: Gráfico de Progresso -->
   <div class="modal-overlay" id="modalGraficoProgresso">
     <div class="modal-container" style="max-width: 720px;">
@@ -546,6 +489,7 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/utils.js"></script>
   <script src="js/store.js"></script>
   <script src="js/permissions.js"></script>
   <script src="js/psicopedagogia.js"></script>
