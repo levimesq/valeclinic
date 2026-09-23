@@ -303,8 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Buscar plano correspondente no catálogo do Supabase
       const planos = (typeof ValeStore !== 'undefined' ? ValeStore.getPlanosServicos() : []) || [];
       const planoFisio = planos.find(p => (p.nome_servico || '').toLowerCase().includes('fisio'));
-      const valTot = planoFisio ? planoFisio.valor_total : 180;
-      const valCli = planoFisio ? planoFisio.valor_clinica : 60;
+      const valTot = (planoFisio && planoFisio.valor_total !== undefined && planoFisio.valor_total !== null) ? planoFisio.valor_total : 180;
+      const valCli = (planoFisio && planoFisio.valor_clinica !== undefined && planoFisio.valor_clinica !== null) ? planoFisio.valor_clinica : 60;
 
       const novoRegistro = {
         id: 'slot-' + Date.now(),

@@ -186,43 +186,35 @@ const ValeStore = (() => {
         return [];
       }
 
-      // Safe Merge: Nunca apaga dados locais legítimos, preserva campos extras e mescla por ID
+      // Supabase é a fonte da verdade (Single Source of Truth)
+      // Preserva metadados locais extras apenas se o item existir no Supabase
       const currentLocal = localLoad(localKey, []) || [];
-      const cloudMap = new Map();
-      cloudData.forEach(item => cloudMap.set(String(item.id), item));
+      const localMap = new Map();
+      if (Array.isArray(currentLocal)) {
+        currentLocal.forEach(item => {
+          if (item && item.id) localMap.set(String(item.id), item);
+        });
+      }
 
-      const merged = [...cloudData];
-
-      // IDs de defaults iniciais — nunca re-subir se o cloud já tem dados reais
-      const defaultIds = new Set((defaultData || []).map(d => String(d.id)));
-      const cloudHasRealData = cloudData.length > 0;
-
-      // Se houver algum item criado localmente que ainda não voltou do cloud, mantém e sobe
-      currentLocal.forEach(localItem => {
-        if (!localItem || !localItem.id) return;
-        const localId = String(localItem.id);
-
-        if (!cloudMap.has(localId)) {
-          // Se é um default local e o cloud já tem dados reais, não re-subir
-          if (cloudHasRealData && defaultIds.has(localId)) return;
-          // Se é financeiro antigo de testes, não re-subir
-          if (table === 'financeiro') return;
-
-          merged.push(localItem);
-          upsertOne(table, localItem).catch(e => console.warn(`[ValeStore] Background sync retry para ${table}:`, e.message));
-        } else {
-          // Merge campos extras locais (ex: valor_total, plano_id) que o cloud não tem
-          const idx = merged.findIndex(m => String(m.id) === localId);
-          if (idx !== -1) {
-            merged[idx] = { ...localItem, ...merged[idx] };
-          }
+      const merged = cloudData.map(cloudItem => {
+        if (!cloudItem || !cloudItem.id) return cloudItem;
+        const localItem = localMap.get(String(cloudItem.id));
+        if (localItem) {
+          return { ...localItem, ...cloudItem };
         }
+        return cloudItem;
       });
 
-      localSave(localKey, merged);
+      // Se o cloud estiver vazio e for tabela de catálogo inicial (ex: planos_servicos, pilates_turmas), usa defaults
+      let finalData = merged;
+      if (cloudData.length === 0 && defaultData && defaultData.length > 0 && (table === 'planos_servicos' || table === 'pilates_turmas')) {
+        finalData = defaultData;
+      }
+
+      localSave(localKey, finalData);
       dispatchSync(table);
-      console.log(`[ValeStore] Sync OK: ${table} (${merged.length} registros)`);
-      return merged;
+      console.log(`[ValeStore] Sync OK: ${table} (${finalData.length} registros)`);
+      return finalData;
     } catch (e) {
       console.warn(`[ValeStore] Falha ao puxar ${table}:`, e.message);
       return localLoad(localKey, defaultData);
@@ -299,7 +291,20 @@ const ValeStore = (() => {
         };
       }
 
-      const { error } = await db.from(table).upsert(payload, { onConflict: 'id' });
+      let { error } = await db.from(table).upsert(payload, { onConflict: 'id' });
+
+      // Fallback resiliente: se a coluna 'cpf' ainda não foi criada no Supabase ou estiver recarregando o cache
+      if (error && table === 'pacientes' && (error.code === 'PGRST204' || (error.message && error.message.includes("'cpf'")))) {
+        console.warn('[ValeStore] Coluna cpf não encontrada no schema cache do Supabase. Salvando com fallback resiliente...');
+        const fallbackPayload = { ...payload };
+        delete fallbackPayload.cpf;
+        if (payload.cpf && (!fallbackPayload.notes || !fallbackPayload.notes.includes(payload.cpf))) {
+          fallbackPayload.notes = (fallbackPayload.notes ? fallbackPayload.notes + ' | ' : '') + `CPF: ${payload.cpf}`;
+        }
+        const fallbackRes = await db.from(table).upsert(fallbackPayload, { onConflict: 'id' });
+        error = fallbackRes.error;
+      }
+
       if (error) {
         console.error(`[ValeStore] Erro ao salvar em ${table}:`, error);
         throw error;
@@ -477,6 +482,10 @@ const ValeStore = (() => {
     // ── PACIENTES ────────────────────────────────
     getPacientes: () => localLoad(KEYS.PACIENTES, INITIAL_PACIENTES),
 
+    syncPacientes: async () => {
+      return await pullFromSupabase('pacientes', KEYS.PACIENTES, INITIAL_PACIENTES);
+    },
+
     getPacientesAtivos: () => {
       const all = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES);
       return all.filter(p => {
@@ -525,24 +534,32 @@ const ValeStore = (() => {
       dispatchSync('pacientes');
     },
 
-    // Deleção em cascata garantida: remove agendamentos, faltas e evoluções antes de remover o paciente
+    // Deleção em cascata garantida: remove agendamentos, faltas, evoluções e todas as duplicatas do paciente
     deletePaciente: async (idOrName) => {
       const pacientes = localLoad(KEYS.PACIENTES, INITIAL_PACIENTES);
       const targetPac = pacientes.find(p => String(p.id) === String(idOrName) || (p.name || p.nome) === idOrName);
-      const pacId = targetPac ? String(targetPac.id) : String(idOrName);
-      const pacName = targetPac ? (targetPac.name || targetPac.nome) : idOrName;
+      const pacId = targetPac ? String(targetPac.id) : (String(idOrName).startsWith('pac-') ? String(idOrName) : null);
+      const pacName = targetPac ? (targetPac.name || targetPac.nome) : (!String(idOrName).startsWith('pac-') ? idOrName : null);
 
-      // 1. Atualizar localStorage em cascata
-      const allPac = pacientes.filter(p => String(p.id) !== pacId && (p.name || p.nome) !== pacName);
+      // 1. Atualizar localStorage em cascata (remove todas as ocorrências por id ou nome)
+      const allPac = pacientes.filter(p => {
+        const matchesId = pacId && String(p.id) === pacId;
+        const matchesName = pacName && (p.name || p.nome) === pacName;
+        return !matchesId && !matchesName;
+      });
       localSave(KEYS.PACIENTES, allPac);
 
-      const allAg = localLoad(KEYS.AGENDAMENTOS, INITIAL_AGENDAMENTOS).filter(a => a.paciente !== pacName && a.paciente_id !== pacId);
+      const allAg = localLoad(KEYS.AGENDAMENTOS, INITIAL_AGENDAMENTOS).filter(a => {
+        const matchesName = pacName && a.paciente === pacName;
+        const matchesId = pacId && a.paciente_id === pacId;
+        return !matchesName && !matchesId;
+      });
       localSave(KEYS.AGENDAMENTOS, allAg);
 
-      const allFaltas = localLoad(KEYS.FALTAS, INITIAL_FALTAS).filter(f => f.paciente !== pacName);
+      const allFaltas = localLoad(KEYS.FALTAS, INITIAL_FALTAS).filter(f => !pacName || f.paciente !== pacName);
       localSave(KEYS.FALTAS, allFaltas);
 
-      // 2. Deletar dependências no Supabase antes de deletar o paciente
+      // 2. Deletar dependências e o próprio paciente no Supabase (por ID e por Nome para eliminar duplicatas)
       const db = getClient();
       if (db) {
         try {
@@ -550,11 +567,14 @@ const ValeStore = (() => {
             await db.from('agendamentos').delete().eq('paciente', pacName);
             await db.from('faltas').delete().eq('paciente', pacName);
             await db.from('evolucoes').delete().eq('paciente', pacName);
+            await db.from('pacientes').delete().eq('name', pacName);
           }
-          await db.from('agendamentos').delete().eq('paciente_id', pacId);
-          await db.from('pacientes').delete().eq('id', pacId);
+          if (pacId) {
+            await db.from('agendamentos').delete().eq('paciente_id', pacId);
+            await db.from('pacientes').delete().eq('id', pacId);
+          }
         } catch(err) {
-          console.warn('[ValeStore] Erro ao deletar dependências no Supabase:', err.message);
+          console.warn('[ValeStore] Erro ao deletar no Supabase:', err.message);
         }
       }
 
