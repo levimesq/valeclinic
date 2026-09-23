@@ -418,7 +418,7 @@
 
             if (typeof ValeStore !== 'undefined') {
               try {
-                await ValeStore.deletePaciente(id);
+                await ValeStore.deletePaciente(id || nome);
               } catch(err) {
                 console.error('Erro ao deletar paciente:', err);
               }
@@ -479,33 +479,40 @@
         let patients = [];
         try {
           if (typeof ValeStore !== 'undefined') {
-            const db = ValeStore.getClient();
-            if (db) {
-              const { data, error } = await db
-                .from('pacientes')
-                .select('*')
-                .order('created_at', { ascending: false });
-              if (!error && data) {
-                patients = data;
-                localStorage.setItem('valeclinic_pacientes', JSON.stringify(patients));
-              }
-            }
+            patients = await ValeStore.syncPacientes();
           }
         } catch(e) {
           console.warn('[Pacientes] Falha ao carregar do Supabase:', e.message);
         }
 
-        if (patients.length === 0 && typeof ValeStore !== 'undefined') {
+        if ((!patients || patients.length === 0) && typeof ValeStore !== 'undefined') {
           patients = ValeStore.getPacientes() || [];
         }
 
         Array.from(tbody.children).forEach(c => { if (c.id !== 'emptyPatientsRow') c.remove(); });
 
-        if (patients.length === 0) {
+        // Deduplicação na renderização (por ID e por Nome)
+        const seenIds = new Set();
+        const seenNames = new Set();
+        const uniquePatients = [];
+
+        (patients || []).forEach(p => {
+          if (!p) return;
+          const pId = String(p.id || '').trim();
+          const pName = (p.name || p.nome || '').trim().toLowerCase();
+          if (!pName) return;
+          if (pId && seenIds.has(pId)) return;
+          if (seenNames.has(pName)) return;
+          if (pId) seenIds.add(pId);
+          seenNames.add(pName);
+          uniquePatients.push(p);
+        });
+
+        if (uniquePatients.length === 0) {
           if (emptyRow) emptyRow.style.display = 'table-row';
         } else {
           if (emptyRow) emptyRow.style.display = 'none';
-          patients.forEach(p => renderPatientRow(p, false));
+          uniquePatients.forEach(p => renderPatientRow(p, false));
         }
         updatePatientCounter();
         fillUserInfo();
@@ -589,9 +596,10 @@
               const pacData = { id: 'pac-' + Date.now(), name, cpf: cleanCpf, phone: phoneVal, birth, notes };
               if (typeof ValeStore !== 'undefined') {
                 await ValeStore.addPaciente(pacData);
+              } else {
+                renderPatientRow(pacData, true);
+                updatePatientCounter();
               }
-              renderPatientRow(pacData, true);
-              updatePatientCounter();
             }
             closeModal();
           } catch(err) {
