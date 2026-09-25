@@ -408,21 +408,15 @@
             const confirmed = confirm(`Tem certeza que deseja excluir o cadastro do paciente "${nome}"?\n\nEsta ação removerá o paciente permanentemente do sistema e do banco de dados.`);
             if (!confirmed) return;
 
-            newRow.remove();
-            updatePatientCounter();
-
-            const remaining = tbody.querySelectorAll('tr:not(#emptyPatientsRow)').length;
-            if (remaining === 0 && emptyRow) {
-              emptyRow.style.display = 'table-row';
-            }
-
             if (typeof ValeStore !== 'undefined') {
               try {
-                await ValeStore.deletePaciente(id || nome);
+                await ValeStore.deletePaciente(id);
               } catch(err) {
                 console.error('Erro ao deletar paciente:', err);
               }
             }
+
+            await loadSavedPatients();
           });
         }
 
@@ -477,34 +471,38 @@
         if (!tbody) return;
 
         let patients = [];
-        try {
-          if (typeof ValeStore !== 'undefined') {
-            patients = await ValeStore.syncPacientes();
-          }
-        } catch(e) {
-          console.warn('[Pacientes] Falha ao carregar do Supabase:', e.message);
-        }
-
-        if ((!patients || patients.length === 0) && typeof ValeStore !== 'undefined') {
+        if (typeof ValeStore !== 'undefined') {
           patients = ValeStore.getPacientes() || [];
         }
 
+        // Se o cache local estiver vazio (ex: primeiro acesso da sessão), sincroniza do Supabase
+        if (patients.length === 0 && typeof ValeStore !== 'undefined') {
+          try {
+            patients = await ValeStore.syncPacientes();
+          } catch(e) {
+            console.warn('[Pacientes] Falha ao carregar do Supabase:', e.message);
+          }
+        }
+
+        // Ordenar alfabeticamente por nome
+        patients.sort((a, b) => {
+          const nameA = (a.name || a.nome || '').toLowerCase();
+          const nameB = (b.name || b.nome || '').toLowerCase();
+          return nameA.localeCompare(nameB, 'pt-BR');
+        });
+
         Array.from(tbody.children).forEach(c => { if (c.id !== 'emptyPatientsRow') c.remove(); });
 
-        // Deduplicação na renderização (por ID e por Nome)
         const seenIds = new Set();
-        const seenNames = new Set();
         const uniquePatients = [];
 
         (patients || []).forEach(p => {
           if (!p) return;
           const pId = String(p.id || '').trim();
-          const pName = (p.name || p.nome || '').trim().toLowerCase();
+          const pName = (p.name || p.nome || '').trim();
           if (!pName) return;
           if (pId && seenIds.has(pId)) return;
-          if (seenNames.has(pName)) return;
           if (pId) seenIds.add(pId);
-          seenNames.add(pName);
           uniquePatients.push(p);
         });
 
@@ -579,16 +577,6 @@
           try {
             if (editingRow) {
               const id = editingRow.dataset.id;
-              editingRow.dataset.name  = name;
-              editingRow.dataset.cpf   = cleanCpf || '';
-              editingRow.dataset.phone = phoneVal;
-              editingRow.dataset.birth = birth;
-              editingRow.dataset.notes = notes;
-              const nameEl = editingRow.querySelector('.patient-name-title');
-              const phoneEl = editingRow.querySelector('.patient-cpf-subtext');
-              if (nameEl) nameEl.textContent = name;
-              if (phoneEl) phoneEl.textContent = cleanCpf ? `CPF: ${formatarCPF(cleanCpf)}` : (phoneVal || 'Sem CPF cadastrado');
-              
               if (typeof ValeStore !== 'undefined' && id) {
                 await ValeStore.updatePaciente(id, { name, cpf: cleanCpf, phone: phoneVal, birth, notes });
               }
@@ -596,11 +584,9 @@
               const pacData = { id: 'pac-' + Date.now(), name, cpf: cleanCpf, phone: phoneVal, birth, notes };
               if (typeof ValeStore !== 'undefined') {
                 await ValeStore.addPaciente(pacData);
-              } else {
-                renderPatientRow(pacData, true);
-                updatePatientCounter();
               }
             }
+            await loadSavedPatients();
             closeModal();
           } catch(err) {
             console.error('Erro ao salvar paciente:', err);
@@ -637,14 +623,25 @@
           const query = this.value.toLowerCase().trim();
           const queryClean = query.replace(/\D/g, '');
           const rows  = patientsTable.querySelectorAll('#patientsTbody tr');
+          let visibleCount = 0;
           rows.forEach(row => {
             if (row.id === 'emptyPatientsRow') return;
             const text = row.innerText.toLowerCase();
+            const rowName = (row.dataset.name || '').toLowerCase();
             const rowCpf = (row.dataset.cpf || '').replace(/\D/g, '');
             const rowPhone = (row.dataset.phone || '').replace(/\D/g, '');
-            const matches = text.includes(query) || (queryClean && (rowCpf.includes(queryClean) || rowPhone.includes(queryClean)));
+            const matches = text.includes(query) || rowName.includes(query) || (queryClean && (rowCpf.includes(queryClean) || rowPhone.includes(queryClean)));
             row.style.display = matches ? '' : 'none';
+            if (matches) visibleCount++;
           });
+          const counter = document.getElementById('patientCounter');
+          if (counter) {
+            if (query) {
+              counter.textContent = `Encontrado(s) ${visibleCount} paciente(s) para "${this.value}"`;
+            } else {
+              updatePatientCounter();
+            }
+          }
         });
       }
 
